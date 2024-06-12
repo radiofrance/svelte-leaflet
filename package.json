@@ -1,17 +1,28 @@
 {
-	"name": "svelte-leaflet",
+	"name": "@radiofrance/svelte-leaflet",
 	"version": "0.0.1",
+	"description": "A library that wraps leaflet classes in domless/renderless svelte components.",
+	"author": {
+		"email": "romain.durand@radiofrance.com",
+		"name": "Romain Durand"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/radiofrance/svelte-leaflet"
+	},
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build && npm run package",
 		"preview": "vite preview",
 		"package": "svelte-kit sync && svelte-package && publint",
 		"prepublishOnly": "npm run package",
+		"test": "npm run test:integration && npm run test:unit",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"test": "vitest",
 		"lint": "prettier --check . && eslint .",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"test:integration": "playwright test",
+		"test:unit": "vitest"
 	},
 	"exports": {
 		".": {
@@ -28,16 +39,25 @@
 		"svelte": "^4.0.0"
 	},
 	"devDependencies": {
+		"@playwright/test": "^1.28.1",
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/package": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
+		"@types/d3-scale": "^4.0.8",
+		"@types/d3-scale-chromatic": "^3.0.3",
 		"@types/eslint": "8.56.0",
+		"@types/leaflet": "^1.9.8",
+		"@types/leaflet.markercluster": "^1.5.4",
 		"@typescript-eslint/eslint-plugin": "^6.0.0",
 		"@typescript-eslint/parser": "^6.0.0",
+		"d3-scale": "^4.0.2",
+		"d3-scale-chromatic": "^3.0.0",
 		"eslint": "^8.56.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^2.35.1",
+		"leaflet": "^1.9.4",
+		"leaflet.markercluster": "^1.5.3",
 		"prettier": "^3.1.1",
 		"prettier-plugin-svelte": "^3.1.2",
 		"publint": "^0.1.9",
