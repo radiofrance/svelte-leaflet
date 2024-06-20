@@ -2,6 +2,13 @@
 	"name": "@radiofrance/svelte-leaflet",
 	"version": "0.1.0-alpha.0",
 	"description": "A library that wraps leaflet classes in domless/renderless svelte components.",
+	"keywords": [
+		"svelte",
+		"leaflet",
+		"map",
+		"cartography",
+		"sveltekit"
+	],
 	"author": {
 		"email": "romain.durand@radiofrance.com",
 		"name": "Romain Durand"
@@ -70,5 +77,10 @@
 	},
 	"svelte": "./dist/index.js",
 	"types": "./dist/index.d.ts",
-	"type": "module"
+	"type": "module",
+	"private": false,
+	"publishConfig": {
+		"access": "public",
+		"registry": "https://registry.npmjs.org/"
+	}
 }

@@ -29,18 +29,21 @@
 		layer = getLayer();
 		popup = L.popup().setContent(popupElement);
 		layer.bindPopup(popup, options);
-		layer.on('popupopen', () => {
+		layer.on('popupopen', async () => {
 			popupOpen = true;
 			showContents = true;
+			await tick();
+			// TODO : configurable autoupdate ?
+			popup?.update();
 		});
-		layer.on('popupclose', () => {
+		layer.on('popupclose', async () => {
 			popupOpen = false;
 			// change the state after the CSS transition
 			setTimeout(() => {
 				if (!popupOpen) {
 					showContents = false;
 				}
-			}, 500);
+			}, 200);
 		});
 	}
 
