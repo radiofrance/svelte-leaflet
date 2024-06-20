@@ -1,6 +1,6 @@
 {
 	"name": "svelte-leaflet",
-	"version": "0.0.1",
+	"version": "0.1.0-alpha.0",
 	"description": "A library that wraps leaflet classes in domless/renderless svelte components.",
 	"author": {
 		"email": "romain.durand@radiofrance.com",
