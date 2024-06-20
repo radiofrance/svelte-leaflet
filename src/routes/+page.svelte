@@ -63,10 +63,8 @@
 	});
 
 	function onMapClick(e: CustomEvent<L.LeafletMouseEvent>) {
-		console.log('map clicked');
 		newMarkerCoords = [e.detail.latlng.lat, e.detail.latlng.lng];
 		markerLocations = [...markerLocations, newMarkerCoords];
-		console.log(markerLocations);
 	}
 	let options: PopupOptions = {
 		offset: [0, 0]
