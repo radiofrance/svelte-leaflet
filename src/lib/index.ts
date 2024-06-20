@@ -5,4 +5,13 @@ export { default as MarkerClusterGroup } from './MarkerClusterGroup.svelte';
 export { default as Polyline } from './Polyline.svelte';
 export { default as Popup } from './Popup.svelte';
 
-export type { LatLngTuple, LatLng, LatLngExpression } from 'leaflet';
+export type { Marker as LeafletMarker } from './Marker.svelte';
+export type {
+	Map as LeafletMap,
+	LatLngTuple,
+	LatLngExpression,
+	LatLngLiteral,
+	LeafletEvent,
+	LeafletMouseEvent,
+	LeafletKeyboardEvent
+} from 'leaflet';
