@@ -1,13 +1,13 @@
 <script lang="ts">
 	import '../global.css';
-	import Map from '$lib/Map.svelte';
 	import type L from 'leaflet';
 	import type { LatLngExpression, LatLngTuple, PopupOptions } from 'leaflet';
+	import { scaleSequential } from 'd3-scale';
+	import { interpolateRainbow } from 'd3-scale-chromatic';
+	import Map from '$lib/Map.svelte';
 	import MarkerClusterGroup from '$lib/MarkerClusterGroup.svelte';
 	import Marker from '$lib/Marker.svelte';
 	import Popup from '$lib/Popup.svelte';
-	import { scaleSequential } from 'd3-scale';
-	import { interpolateRainbow } from 'd3-scale-chromatic';
 	import Polyline from '$lib/Polyline.svelte';
 	import MarkerIcon from '../components/MarkerIcon.svelte';
 
