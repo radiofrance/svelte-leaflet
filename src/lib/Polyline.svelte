@@ -22,7 +22,7 @@
 
 	onMount(async () => {
 		const L = window.L;
-		line = new L.Polyline(latlngs);
+		line = new L.Polyline(latlngs, options);
 		line.on('click', (e) => dispatch('click', e));
 		line.addTo(map);
 	});

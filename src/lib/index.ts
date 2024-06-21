@@ -7,11 +7,14 @@ export { default as Popup } from './Popup.svelte';
 
 export type { Marker as LeafletMarker } from './Marker.svelte';
 export type {
-	Map as LeafletMap,
-	LatLngTuple,
+	CircleOptions,
 	LatLngExpression,
 	LatLngLiteral,
+	LatLngTuple,
 	LeafletEvent,
+	LeafletKeyboardEvent,
 	LeafletMouseEvent,
-	LeafletKeyboardEvent
+	Map as LeafletMap,
+	MarkerOptions,
+	PathOptions
 } from 'leaflet';

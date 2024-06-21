@@ -22,6 +22,7 @@
 	export let size = 25;
 	export let latlng: LatLngExpression;
 	export let id: string = '';
+	export let options: MarkerOptions = {};
 
 	let markerElement: HTMLElement;
 	let marker: Marker;
@@ -30,29 +31,36 @@
 	const getLayerGroup = getContext<() => LayerGroup>('layerGroup');
 	setContext('layer', () => marker);
 
-	$: recreateMarker(size, latlng, id);
+	$: recreateMarker(size, latlng, id, options);
 
-	async function recreateMarker(size: number, latlng: LatLngExpression, id: string) {
+	async function recreateMarker(
+		size: number,
+		latlng: LatLngExpression,
+		id: string,
+		options: MarkerOptions
+	) {
 		removeMarker();
 		await tick();
-		createMarker(size, latlng, id);
+		createMarker(size, latlng, id, options);
 	}
 
-	async function createMarker(size: number, latlng: LatLngExpression, id: string) {
+	async function createMarker(
+		size: number,
+		latlng: LatLngExpression,
+		id: string,
+		options: MarkerOptions
+	) {
 		await tick(); // waits for next paint so layers and map are done rendering
 		const layerGroup = getLayerGroup?.();
 		const map = getMap();
 		const mapOrLayerGroup = layerGroup || map;
-		const markerOptions: MarkerOptions = {};
-		marker = L.marker(latlng, markerOptions);
+		marker = L.marker(latlng, options);
 		marker.id = id;
 		marker
 			.on('click', (e) => dispatch('click', e))
 			.on('dblclick', (e) => dispatch('dblclick', e))
 			.on('contextmenu', (e) => dispatch('contextmenu', e));
 		mapOrLayerGroup.addLayer(marker);
-		const icon = marker.getIcon();
-		// icon.options.iconSize = L.point(width, height);
 		await tick(); // waits for next paint so marker is done rendering
 		if (markerElement.childElementCount > 0) {
 			// if the marker has children, use them as the marker icon
