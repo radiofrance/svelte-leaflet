@@ -59,7 +59,10 @@
 		marker
 			.on('click', (e) => dispatch('click', e))
 			.on('dblclick', (e) => dispatch('dblclick', e))
-			.on('contextmenu', (e) => dispatch('contextmenu', e));
+			.on('contextmenu', (e) => dispatch('contextmenu', e))
+			.on('dragstart', (e) => dispatch('dragstart', e))
+			.on('drag', (e) => dispatch('drag', e))
+			.on('dragend', (e) => dispatch('dragend', e));
 		mapOrLayerGroup.addLayer(marker);
 		await tick(); // waits for next paint so marker is done rendering
 		if (markerElement.childElementCount > 0) {
