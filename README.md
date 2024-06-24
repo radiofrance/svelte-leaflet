@@ -10,16 +10,15 @@ A library that wraps leaflet classes in domless/renderless svelte components.
 
 ### Map
 
-Renders a map with the given center and zoom level.
+Renders a map Leaflet Map. The Map will take up 100% of its container's height and width.
 
 #### Attributes
 
-| Attribute     | Type                                                  | Default                                            | Notes                                                                              |
-| ------------- | ----------------------------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `center`      | [LatLng](https://leafletjs.com/reference.html#latlng) | _required_                                         | initial center of the map.                                                         |
-| `zoom`        | number                                                | _required_                                         | initial zoom level                                                                 |
-| `tilesUrl`    | string                                                | `'https://tile.openstreetmap.org/{z}/{x}/{y}.png'` | more free tile services can be found at https://alexurquhart.github.io/free-tiles/ |
-| `attribution` | string                                                | `'©OpenStreetMap'` _(link to openstreetmap)_      |                                                                                    |
+| Attribute     | Type                                                          | Default                                            | Notes                                                                              |
+| ------------- | ------------------------------------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `options`     | [MapOptions](https://leafletjs.com/reference.html#map-option) | `{}`                                               | Map options                                                                        |
+| `tilesUrl`    | string                                                        | `'https://tile.openstreetmap.org/{z}/{x}/{y}.png'` | more free tile services can be found at https://alexurquhart.github.io/free-tiles/ |
+| `attribution` | string                                                        | `'©OpenStreetMap'` _(link to openstreetmap)_      |                                                                                    |
 
 #### Events
 
@@ -30,7 +29,7 @@ All events are forwarded from the Map class, see the leaflet documentation for m
 Example:
 
 ```svelte
-<Map {center} {zoom} on:click={(e) => console.log(e.detail.latlng)} />
+<Map {options} on:click={(e) => console.log(e.detail.latlng)} />
 ```
 
 ### Marker
@@ -81,7 +80,7 @@ Enables clustering of child markers
 
 ### Polyline
 
-- Allows to draw lines on the map
+Allows to draw lines on the map
 
 #### Attributes
 

@@ -15,6 +15,7 @@ export type {
 	LeafletKeyboardEvent,
 	LeafletMouseEvent,
 	Map as LeafletMap,
+	MapOptions,
 	MarkerOptions,
 	PathOptions
 } from 'leaflet';

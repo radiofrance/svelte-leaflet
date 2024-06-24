@@ -72,7 +72,11 @@
 	};
 </script>
 
-<Map center={initialView} zoom={18} on:click={onMapClick} on:zoom={() => console.log('map zoom')}>
+<Map
+	options={{ center: initialView, zoom: 18 }}
+	on:click={onMapClick}
+	on:zoom={() => console.log('map zoom')}
+>
 	<Circle center={initialView} options={{ radius: 100 }} />
 	<!-- use stringification of latLngs as key to identify lines -->
 	{#each lines as { latLngs, color } (JSON.stringify(latLngs))}
