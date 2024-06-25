@@ -47,7 +47,7 @@
 
 	function onLoad() {
 		L = window.L;
-		thisMap = L.map(container, options)
+		thisMap = L.map(container, { maxZoom: 18, ...options })
 			// Layer events
 			.on('baselayerchange', (e) => dispatch('baselayerchange', e))
 			.on('overlayadd', (e) => dispatch('overlayadd', e))
@@ -115,8 +115,11 @@
 
 		L.tileLayer(tilesUrl, {
 			attribution
-			// maxZoom: 20
 		}).addTo(thisMap);
+		// TODO: find out why manually firing the load event is needed
+		thisMap.whenReady(() => {
+			thisMap.fireEvent('load');
+		});
 	}
 
 	function leafletLoader(_node: HTMLElement) {
