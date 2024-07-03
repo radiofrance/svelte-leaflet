@@ -5,6 +5,9 @@
 	import 'leaflet/dist/leaflet.css';
 	import 'leaflet.markercluster/dist/MarkerCluster.css';
 	import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+	import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+	import markerIcon from 'leaflet/dist/images/marker-icon.png';
+	import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
 	import { createEventDispatcher, setContext } from 'svelte';
 
@@ -13,13 +16,13 @@
 	export let options: MapOptions = {};
 	export let tilesUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 	export let attribution = `&copy;<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>`;
+	export let instance: Map;
 
 	const dispatch = createEventDispatcher();
-	let thisMap: Map;
 	// consider exporting a reference to the markers instead of a getter
 	export const getMarkers: () => Marker[] = () => {
 		const markers: Marker[] = [];
-		thisMap?.eachLayer((layer) => {
+		instance?.eachLayer((layer) => {
 			if (layer instanceof L.Marker) {
 				markers.push(layer);
 			}
@@ -28,13 +31,12 @@
 	};
 
 	// so the parent has access to the map
-	export const map = () => thisMap;
-	//
-	setContext('map', () => thisMap);
+	// export const map = () => instance;
+	setContext('map', () => instance);
 	let container: HTMLElement;
 
 	// Using Object.assign to avoid losing inherited prototype values
-	$: if (thisMap) thisMap.options = Object.assign(thisMap.options, options);
+	$: if (instance) instance.options = Object.assign(instance.options, options);
 	// $: if (thisMap) thisMap.options = options; // ERROR : this.options.crs is undefined
 	// this doesnt work because a new options object is created and does not
 	// contains default options values (inherited via prototype) required for the map to work properly
@@ -42,12 +44,19 @@
 	// as spreading only copies the object own enumerable properties (not the inherited ones)
 
 	function resizeMap() {
-		thisMap?.invalidateSize();
+		instance?.invalidateSize();
 	}
 
 	function onLoad() {
 		L = window.L;
-		thisMap = L.map(container, { maxZoom: 18, ...options })
+		// @ts-ignore
+		delete L.Icon.Default.prototype._getIconUrl;
+		L.Icon.Default.mergeOptions({
+			iconRetinaUrl: markerIcon2x,
+			iconUrl: markerIcon,
+			shadowUrl: markerShadow
+		});
+		instance = L.map(container, { maxZoom: 18, ...options })
 			// Layer events
 			.on('baselayerchange', (e) => dispatch('baselayerchange', e))
 			.on('overlayadd', (e) => dispatch('overlayadd', e))
@@ -113,12 +122,14 @@
 		// .setMinZoom(5)
 		// .setMaxZoom(20);
 
+		// create component for the tile layer ?
 		L.tileLayer(tilesUrl, {
 			attribution
-		}).addTo(thisMap);
+		}).addTo(instance);
+
 		// TODO: find out why manually firing the load event is needed
-		thisMap.whenReady(() => {
-			thisMap.fireEvent('load');
+		instance.whenReady(() => {
+			instance.fireEvent('load');
 		});
 	}
 
@@ -132,7 +143,7 @@
 <svelte:window on:resize={resizeMap} use:leafletLoader />
 
 <div class="Map" bind:this={container} style="height: 100%; width: 100%">
-	{#if thisMap}
-		<slot map={thisMap} />
+	{#if instance}
+		<slot map={instance} />
 	{/if}
 </div>

@@ -4,29 +4,35 @@
 
 	export let center: LatLngExpression;
 	export let options: CircleOptions = { radius: 100 };
+	export let instance: Circle | undefined = undefined;
 
-	let circle: Circle;
 	let map: Map = getContext<() => Map>('map')();
 	const dispatch = createEventDispatcher();
 
 	$: updateCicle(center, options);
 
 	function updateCicle(center: LatLngExpression, options: CircleOptions) {
-		if (circle) {
-			circle.setLatLng(center);
-			circle.options = options;
+		console.log('updateCicle', center, options);
+		if (instance) {
+			performance.mark('circle-update-start');
+			instance.setLatLng(center);
+			instance.setStyle(options);
+			instance.setRadius(options.radius);
+			performance.mark('circle-update-end');
+			performance.measure('circle-update', 'circle-update-start', 'circle-update-end');
+			console.log(performance.getEntriesByName('circle-update'));
 		}
 	}
 
 	onMount(async () => {
 		const L = window.L;
-		circle = new L.Circle(center, options);
-		circle.on('click', (e) => dispatch('click', e));
-		circle.addTo(map);
+		instance = new L.Circle(center, options);
+		instance.on('click', (e) => dispatch('click', e));
+		instance.addTo(map);
 	});
 
 	onDestroy(() => {
-		circle?.remove();
+		instance?.remove();
 	});
 </script>
 

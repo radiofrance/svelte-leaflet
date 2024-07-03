@@ -11,6 +11,7 @@
 	import Polyline from '$lib/Polyline.svelte';
 	import MarkerIcon from '../components/MarkerIcon.svelte';
 	import Circle from '$lib/Circle.svelte';
+	import type { LeafletMap } from '$lib/index.js';
 
 	let newMarkerCoords: LatLngExpression;
 	const initialView: LatLngExpression = [48.86750658335676, 2.3638381549875467];
@@ -49,6 +50,9 @@
 		[48.84878619153661, 2.3952448368072514],
 		[48.8483837645005, 2.395910024642945]
 	];
+	let location: LatLngTuple = [...initialView];
+	let locationRadius = 100;
+	let map: LeafletMap;
 
 	$: halfIndex = Math.floor(markerLocations.length / 2);
 	$: firstHalf = markerLocations.slice(0, halfIndex);
@@ -70,14 +74,21 @@
 	let options: PopupOptions = {
 		offset: [0, 0]
 	};
+
+	function onLocationFound(e: CustomEvent<L.LocationEvent>) {
+		location = [e.detail.latlng.lat, e.detail.latlng.lng];
+		locationRadius = e.detail.accuracy;
+	}
 </script>
 
 <Map
+	bind:instance={map}
 	options={{ center: initialView, zoom: 18 }}
 	on:click={onMapClick}
 	on:zoom={() => console.log('map zoom')}
+	on:locationfound={onLocationFound}
 >
-	<Circle center={initialView} options={{ radius: 100 }} />
+	<Circle center={location} options={{ radius: locationRadius }} />
 	<!-- use stringification of latLngs as key to identify lines -->
 	{#each lines as { latLngs, color } (JSON.stringify(latLngs))}
 		<Polyline latlngs={latLngs} options={{ color, opacity: 1, weight: 5 }} />
@@ -87,7 +98,7 @@
 		<!-- use stringification of latLng as key to identify markers -->
 		{#each firstHalf as latlng, i (JSON.stringify(latlng))}
 			<Marker {latlng}>
-				<MarkerIcon slot="icon" />
+				<!-- <MarkerIcon slot="icon" /> -->
 				<Popup {options}>
 					<div>popup text</div>
 					<div>
@@ -116,3 +127,14 @@
 		</Marker>
 	{/each}
 </Map>
+
+<button class="locateButton" on:click={() => map.locate({ setView: true })}>locate</button>
+
+<style>
+	.locateButton {
+		position: absolute;
+		top: 100px;
+		left: 10px;
+		z-index: 1000;
+	}
+</style>
