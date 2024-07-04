@@ -5,6 +5,8 @@
 
 	export let options: MarkerClusterGroupOptions = {};
 
+	let markerElement: HTMLElement;
+
 	const L = globalThis.window.L;
 
 	const getMap = getContext<() => Map>('map');
@@ -18,4 +20,18 @@
 	});
 </script>
 
-<slot />
+<template>
+	<div bind:this={markerElement} class="leaflet-markercluster">
+		<slot name="icon" />
+	</div>
+</template>
+
+<style>
+	.leaflet-markercluster {
+		display: none;
+	}
+
+	:global(.map-marker .leaflet-markercluster) {
+		display: inherit;
+	}
+</style>

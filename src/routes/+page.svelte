@@ -1,7 +1,5 @@
 <script lang="ts">
 	import '../global.css';
-	import type L from 'leaflet';
-	import type { LatLngExpression, LatLngTuple, PopupOptions } from 'leaflet';
 	import { scaleSequential } from 'd3-scale';
 	import { interpolateRainbow } from 'd3-scale-chromatic';
 	import Map from '$lib/Map.svelte';
@@ -11,7 +9,14 @@
 	import Polyline from '$lib/Polyline.svelte';
 	import MarkerIcon from '../components/MarkerIcon.svelte';
 	import Circle from '$lib/Circle.svelte';
-	import type { LeafletMap } from '$lib/index.js';
+	import type {
+		LeafletMap,
+		LeafletMouseEvent,
+		LatLngExpression,
+		LatLngTuple,
+		PopupOptions,
+		LocationEvent
+	} from '$lib/index.js';
 
 	let newMarkerCoords: LatLngExpression;
 	const initialView: LatLngExpression = [48.86750658335676, 2.3638381549875467];
@@ -67,7 +72,7 @@
 		};
 	});
 
-	function onMapClick(e: CustomEvent<L.LeafletMouseEvent>) {
+	function onMapClick(e: CustomEvent<LeafletMouseEvent>) {
 		newMarkerCoords = [e.detail.latlng.lat, e.detail.latlng.lng];
 		markerLocations = [...markerLocations, newMarkerCoords];
 	}
@@ -75,7 +80,7 @@
 		offset: [0, 0]
 	};
 
-	function onLocationFound(e: CustomEvent<L.LocationEvent>) {
+	function onLocationFound(e: CustomEvent<LocationEvent>) {
 		location = [e.detail.latlng.lat, e.detail.latlng.lng];
 		locationRadius = e.detail.accuracy;
 	}
@@ -85,7 +90,7 @@
 	bind:instance={map}
 	options={{ center: initialView, zoom: 18 }}
 	on:click={onMapClick}
-	on:zoom={() => console.log('map zoom')}
+	on:zoom={(e) => console.log('map zoom')}
 	on:locationfound={onLocationFound}
 >
 	<Circle center={location} options={{ radius: locationRadius }} />
