@@ -16,20 +16,19 @@
 	setContext('layerGroup', () => clusterGroup);
 	onMount(async () => {
 		const map = getMap();
-		// await tick(); // wait for next paint so marker cluster group is done rendering
 		// using the "icon" prop API
 		if (icon) {
 			options.iconCreateFunction = function (cluster) {
 				const html = document.createElement('div');
 				new icon({ target: html, props: { count: cluster.getChildCount() } });
-				return L.divIcon({ html, className: 'foobar' });
+				return L.divIcon({ html });
 			};
 		}
 		// using the "icon" slot API
 		if (markerElement.childElementCount > 0) {
 			options.iconCreateFunction = function (cluster) {
 				const html = markerElement.innerHTML.replace('%count%', cluster.getChildCount().toString());
-				return L.divIcon({ html, className: '' });
+				return L.divIcon({ html });
 			};
 		}
 		clusterGroup = L.markerClusterGroup(options);
@@ -45,11 +44,11 @@
 </template>
 
 <style>
-	.leaflet-markercluster {
+	/* .leaflet-markercluster {
 		display: none;
 	}
 
 	:global(.map-marker .leaflet-markercluster) {
 		display: inherit;
-	}
+	} */
 </style>
