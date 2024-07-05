@@ -17,6 +17,8 @@
 		PopupOptions,
 		LocationEvent
 	} from '$lib/index.js';
+	import ClusterMarker from '../components/ClusterMarker.svelte';
+	import StaticClusterMarker from '../components/StaticClusterMarker.svelte';
 
 	let newMarkerCoords: LatLngExpression;
 	const initialView: LatLngExpression = [48.86750658335676, 2.3638381549875467];
@@ -99,11 +101,12 @@
 		<Polyline latlngs={latLngs} options={{ color, opacity: 1, weight: 5 }} />
 	{/each}
 
-	<MarkerClusterGroup>
+	<MarkerClusterGroup icon={ClusterMarker}>
+		<!-- <StaticClusterMarker slot="icon" /> -->
 		<!-- use stringification of latLng as key to identify markers -->
 		{#each firstHalf as latlng, i (JSON.stringify(latlng))}
 			<Marker {latlng}>
-				<!-- <MarkerIcon slot="icon" /> -->
+				<MarkerIcon slot="icon" />
 				<Popup {options}>
 					<div>popup text</div>
 					<div>

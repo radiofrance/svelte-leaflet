@@ -1,25 +1,43 @@
 <script lang="ts">
 	import type { Map, MarkerClusterGroup, MarkerClusterGroupOptions } from 'leaflet';
 
-	import { getContext, onMount, setContext } from 'svelte';
+	import { getContext, onMount, setContext, tick } from 'svelte';
 
 	export let options: MarkerClusterGroupOptions = {};
+	export let icon: any = null;
 
 	let markerElement: HTMLElement;
 
 	const L = globalThis.window.L;
 
 	const getMap = getContext<() => Map>('map');
-	let markers: MarkerClusterGroup;
+	let clusterGroup: MarkerClusterGroup;
 
-	setContext('layerGroup', () => markers);
+	setContext('layerGroup', () => clusterGroup);
 	onMount(async () => {
 		const map = getMap();
-		markers = L.markerClusterGroup(options);
-		map.addLayer(markers);
+		// await tick(); // wait for next paint so marker cluster group is done rendering
+		// using the "icon" prop API
+		if (icon) {
+			options.iconCreateFunction = function (cluster) {
+				const html = document.createElement('div');
+				new icon({ target: html, props: { count: cluster.getChildCount() } });
+				return L.divIcon({ html, className: 'foobar' });
+			};
+		}
+		// using the "icon" slot API
+		if (markerElement.childElementCount > 0) {
+			options.iconCreateFunction = function (cluster) {
+				const html = markerElement.innerHTML.replace('%count%', cluster.getChildCount().toString());
+				return L.divIcon({ html, className: '' });
+			};
+		}
+		clusterGroup = L.markerClusterGroup(options);
+		map.addLayer(clusterGroup);
 	});
 </script>
 
+<slot />
 <template>
 	<div bind:this={markerElement} class="leaflet-markercluster">
 		<slot name="icon" />
