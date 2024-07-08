@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { MapOptions, Marker, Map } from 'leaflet';
+	import type { MapOptions, Marker, Map, LatLngTuple } from 'leaflet';
 	import type Leaflet from 'leaflet';
 
 	import 'leaflet/dist/leaflet.css';
@@ -27,6 +27,7 @@
 
 	let L: typeof Leaflet;
 	let locateButtonContainer: HTMLDivElement;
+	const defaultOptions = { center: [46.6188459, 1.7262114] as LatLngTuple, zoom: 7, maxZoom: 18 };
 
 	export let options: MapOptions = {};
 	export let tilesUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -52,7 +53,9 @@
 	let container: HTMLElement;
 
 	// Using Object.assign to avoid losing inherited prototype values
-	$: if (instance) instance.options = Object.assign(instance.options, options);
+	$: if (instance) {
+		instance.options = Object.assign(instance.options, options);
+	}
 	// $: if (thisMap) thisMap.options = options; // ERROR : this.options.crs is undefined
 	// this doesnt work because a new options object is created and does not
 	// contains default options values (inherited via prototype) required for the map to work properly
@@ -85,7 +88,7 @@
 			iconUrl: markerIcon,
 			shadowUrl: markerShadow
 		});
-		instance = L.map(container, { maxZoom: 18, ...options });
+		instance = L.map(container, { ...defaultOptions, ...options });
 
 		bindEvents(instance, dispatch, events);
 

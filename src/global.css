@@ -1,4 +1,15 @@
 body {
+	background-color: DarkSlateGray;
+	color: lightgray;
+	font-family: Verdana, Geneva, sans-serif;
 	height: 100vh;
 	margin: 0;
+}
+
+a {
+	color: lightgray;
+}
+
+a:visited {
+	color: lightgray;
 }
