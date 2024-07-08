@@ -131,7 +131,7 @@
 
 <div class="Map" bind:this={container} style="height: 100%; width: 100%">
 	{#if instance}
-		<slot map={instance} />
+		<slot />
 	{/if}
 </div>
 <div class="locate-button-container" bind:this={locateButtonContainer}>

@@ -1,0 +1,63 @@
+<script lang="ts">
+	import CopyIcon from './CopyIcon.svelte';
+
+	function copyToClipboard(
+		event: MouseEvent & {
+			currentTarget: EventTarget & HTMLButtonElement;
+		}
+	) {
+		const previousSibling = event.currentTarget.previousElementSibling;
+		if (!previousSibling) return;
+		const text = previousSibling.textContent || '';
+		navigator.clipboard
+			.writeText(text)
+			.then(() => {
+				previousSibling.parentElement?.animate(
+					[
+						{ backgroundColor: 'lightgray' },
+						{ backgroundColor: 'var(--primary-color)' },
+						{ backgroundColor: 'lightgray' }
+					],
+					{
+						delay: 100,
+						duration: 400,
+						iterations: 1
+					}
+				);
+			})
+			.catch((error) => {
+				console.error('Error copying text to clipboard:', error);
+			});
+	}
+</script>
+
+<pre>
+  <code><slot /></code>
+  <button on:click={copyToClipboard}><CopyIcon width="16" /></button>
+</pre>
+
+<style>
+	pre {
+		background-color: lightgray;
+		color: black;
+		display: inline-flex;
+		gap: 0.5rem;
+		align-items: center;
+		padding: 0.25rem;
+		border-radius: 0.25rem;
+		/* border: 5px double gray; */
+		margin: 1rem;
+
+		button {
+			background: none;
+			border: 2px outset var(--primary-color);
+			border-radius: 0.25rem;
+			padding: 0.25rem;
+			cursor: pointer;
+
+			&:active {
+				border-style: inset;
+			}
+		}
+	}
+</style>

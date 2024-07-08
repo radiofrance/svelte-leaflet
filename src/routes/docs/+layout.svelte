@@ -1,3 +1,8 @@
+<script lang="ts">
+	import Header from '../../components/Header.svelte';
+</script>
+
+<Header />
 <main>
 	<nav>
 		<ul>
@@ -7,33 +12,43 @@
 			<li><a href="/docs/two">Two</a></li>
 		</ul>
 	</nav>
-
-	<slot />
+	<div class="content">
+		<slot />
+	</div>
 </main>
 
 <style>
 	main {
 		display: flex;
-		flex-direction: column;
+		flex-direction: row;
 		padding: 1rem;
 	}
 
 	nav {
 		box-sizing: border-box;
-		border: 1px solid lightgray;
+		border: 5px solid #284612;
 		border-radius: 0.25rem;
 		height: calc(100vh - 2rem);
 		width: 300px;
 		padding: 1rem;
-	}
 
-	nav a {
-		text-decoration: none;
+		a {
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
 	}
 
 	ul {
 		list-style: none;
 		padding: 0;
 		margin: 0;
+	}
+
+	.content {
+		flex: 1;
+		padding: 1rem;
 	}
 </style>

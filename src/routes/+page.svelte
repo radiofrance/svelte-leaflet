@@ -1,70 +1,66 @@
 <script lang="ts">
 	import Map from '$lib/Map.svelte';
 	import Logo from '../components/Logo.svelte';
-	import CopyIcon from '../components/CopyIcon.svelte';
 	import TsIcon from '../components/TSIcon.svelte';
 	import EventsIcon from '../components/EventsIcon.svelte';
 	import ClusterIcon from '../components/ClusterIcon.svelte';
 	import CustomizeIcon from '../components/CustomizeIcon.svelte';
 	import SsrIcon from '../components/SSRIcon.svelte';
-
-	function copyToClipboard(
-		event: MouseEvent & {
-			currentTarget: EventTarget & HTMLButtonElement;
-		}
-	) {
-		const text = event.currentTarget.previousElementSibling?.textContent || '';
-		navigator.clipboard.writeText(text).catch((error) => {
-			console.error('Error copying text to clipboard:', error);
-		});
-	}
 </script>
 
-<div class="hero">
-	<Map
-		options={{
-			center: [46.92025531537454, 2.04],
-			zoom: 5.5,
-			zoomSnap: 0.5,
-			zoomControl: false,
-			dragging: false,
-			scrollWheelZoom: false,
-			attributionControl: false
-		}}
-	/>
-	<div class="overlay">
-		<Logo width={'200'} />
-		<h1>@radiofrance/svelte-leaflet</h1>
-		<p class="baseline">Create Leaflet maps the Svelte way</p>
+<div class="container">
+	<div class="hero">
+		<Map
+			options={{
+				center: [46.92025531537454, 2.04],
+				zoom: 5.5,
+				zoomSnap: 0.5,
+				zoomControl: false,
+				dragging: false,
+				scrollWheelZoom: false,
+				attributionControl: false
+			}}
+		/>
+		<div class="overlay">
+			<Logo width={'200'} />
+			<h1>@radiofrance/svelte-leaflet</h1>
+			<p class="baseline">Create Leaflet maps the Svelte way</p>
+		</div>
 	</div>
+
+	<main>
+		<div class="action-buttons">
+			<a href="/docs/getting-started" class="getting-started">Getting started</a>
+			<a href="/docs" class="documentation">Documentation</a>
+		</div>
+		<div class="features">
+			<ul>
+				<li><TsIcon /> Fully typed components</li>
+				<li>
+					<EventsIcon />
+					<span>Subscribe to all Leaflet events using <code>on:event_name</code></span>
+				</li>
+				<li><ClusterIcon /> Markers clustering</li>
+				<li><CustomizeIcon /> Customize markers and clusters with Svelte components</li>
+				<li><SsrIcon /> Compatible with SvelteKit SSR projects/pages</li>
+			</ul>
+		</div>
+	</main>
+
+	<footer>
+		Made with 💚 by <a href="https://github.com/radiofrance" target="_blank">Radio France</a>
+	</footer>
 </div>
 
-<main>
-	<div class="action-buttons">
-		<a href="/docs/getting-started" class="getting-started">Getting started</a>
-		<a href="/docs" class="documentation">Documentation</a>
-	</div>
-	<ul>
-		<li><TsIcon /> Fully typed components</li>
-		<li>
-			<EventsIcon /> <span>Subscribe to all Leaflet events using <code>on:event_name</code></span>
-		</li>
-		<li><ClusterIcon /> Markers clustering</li>
-		<li><CustomizeIcon /> Customize markers and clusters with Svelte components</li>
-		<li><SsrIcon /> Compatible with SvelteKit SSR projects/pages</li>
-	</ul>
-	<h2>Installation</h2>
-	<pre>
-    <code>npm i -D @radiofrance/svelte-leaflet</code>
-    <button on:click={copyToClipboard}><CopyIcon width="16" /></button>
-  </pre>
-</main>
-
-<style>
+<style lang="postcss">
+	.container {
+		height: 100vh;
+	}
 	.hero {
 		position: relative;
 		height: 400px;
 		overflow: hidden;
+		border-bottom: 2px solid var(--primary-color);
 	}
 
 	.overlay {
@@ -86,55 +82,38 @@
 	}
 
 	.baseline {
+		font-weight: bold;
 		font-size: 1.5em;
 		font-size: clamp(1rem, 5vw, 1.5rem);
-		color: rgb(137, 196, 66);
+		color: var(--primary-color);
 		text-shadow: 0 0 3px #000000;
-	}
-
-	pre {
-		background-color: lightgray;
-		color: black;
-		display: inline-flex;
-		gap: 0.5rem;
-		align-items: center;
-		padding: 0.25rem;
-		border-radius: 0.25rem;
-		/* border: 5px double gray; */
-		margin: 1rem;
-	}
-
-	pre button {
-		background: none;
-		border: 2px outset gray;
-		/* border-radius: 0.25rem; */
-		padding: 0.25rem;
-		cursor: pointer;
-	}
-
-	pre button:active {
-		border-style: inset;
 	}
 
 	main {
 		padding: 1rem;
+
+		ul {
+			display: flex;
+			flex-direction: column;
+			gap: 1rem;
+		}
+		li {
+			font-size: 1.25rem;
+			display: flex;
+			align-items: center;
+			gap: 1rem;
+			& :global(svg) {
+				flex-shrink: 0;
+				color: var(--primary-color);
+			}
+		}
 	}
 
-	main ul {
+	.features {
+		margin-top: 2rem;
+		margin-bottom: 5rem;
 		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-
-	main li {
-		font-size: 1.25rem;
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-	}
-
-	main li :global(svg) {
-		flex-shrink: 0;
+		justify-content: center;
 	}
 
 	code {
@@ -147,16 +126,36 @@
 	.action-buttons {
 		display: flex;
 		justify-content: center;
-		gap: 1rem;
+		gap: 2rem;
+		padding: 1rem;
+		margin-top: 2rem;
 	}
 
 	.getting-started,
 	.documentation {
-		background-color: rgb(137, 196, 66);
-		color: white;
-		border: none;
+		background-color: var(--primary-color);
+		/* border: 2px solid green; */
 		padding: 0.5rem 1rem;
 		border-radius: 0.25rem;
 		cursor: pointer;
+
+		a& {
+			text-decoration: none;
+			color: black;
+		}
+	}
+
+	footer {
+		background-color: #222;
+		text-align: center;
+		padding: 1rem;
+		border-top: 2px solid var(--primary-color);
+		color: white;
+		font-size: 1.25rem;
+		font-size: clamp(1rem, 5vw, 1.25rem);
+		bottom: 0;
+		position: fixed;
+		width: 100%;
+		box-sizing: border-box;
 	}
 </style>
