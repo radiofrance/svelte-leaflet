@@ -23,7 +23,7 @@
 		popupEvents,
 		tooltipEvents
 	} from './index.js';
-	import GeolocationButton from '$components/GeolocationButton.svelte';
+	import GeolocationButton from './private/GeolocationButton.svelte';
 
 	let L: typeof Leaflet;
 	let locateButtonContainer: HTMLDivElement;
