@@ -15,7 +15,7 @@
 				previousSibling.parentElement?.animate(
 					[
 						{ backgroundColor: 'lightgray' },
-						{ backgroundColor: 'var(--primary-color)' },
+						{ backgroundColor: 'var(--color-primary)' },
 						{ backgroundColor: 'lightgray' }
 					],
 					{
@@ -50,7 +50,7 @@
 
 		button {
 			background: none;
-			border: 2px outset var(--primary-color);
+			border: 2px outset var(--color-primary);
 			border-radius: 0.25rem;
 			padding: 0.25rem;
 			cursor: pointer;

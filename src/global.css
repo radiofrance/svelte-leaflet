@@ -20,5 +20,5 @@ a:visited {
 }
 
 * {
-	--primary-color: rgb(137, 196, 66);
+	--color-primary: rgb(137, 196, 66);
 }

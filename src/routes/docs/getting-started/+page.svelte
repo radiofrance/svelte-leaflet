@@ -3,5 +3,5 @@
 </script>
 
 <h1>Getting started</h1>
-<h2>Install the package</h2>
+<h2>Install</h2>
 <CodeSnippet>npm i -D @radiofrance/svelte-leaflet</CodeSnippet>

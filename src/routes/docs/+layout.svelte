@@ -6,10 +6,10 @@
 <main>
 	<nav>
 		<ul>
-			<li><a href="/docs/getting-started">Getting started</a></li>
-
-			<li><a href="/docs/one">One</a></li>
-			<li><a href="/docs/two">Two</a></li>
+			<li><a href="/docs/getting-started"><h3>Getting started</h3></a></li>
+			<li><h3>Components</h3></li>
+			<li><a href="/docs/map">Map</a></li>
+			<li><a href="/docs/marker">Marker</a></li>
 		</ul>
 	</nav>
 	<div class="content">
@@ -21,13 +21,11 @@
 	main {
 		display: flex;
 		flex-direction: row;
-		padding: 1rem;
 	}
 
 	nav {
 		box-sizing: border-box;
-		border: 5px solid #284612;
-		border-radius: 0.25rem;
+		border-right: 1px solid var(--color-primary);
 		height: calc(100vh - 2rem);
 		width: 300px;
 		padding: 1rem;

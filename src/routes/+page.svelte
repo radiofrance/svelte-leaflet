@@ -60,7 +60,7 @@
 		position: relative;
 		height: 400px;
 		overflow: hidden;
-		border-bottom: 2px solid var(--primary-color);
+		border-bottom: 2px solid var(--color-primary);
 	}
 
 	.overlay {
@@ -85,7 +85,7 @@
 		font-weight: bold;
 		font-size: 1.5em;
 		font-size: clamp(1rem, 5vw, 1.5rem);
-		color: var(--primary-color);
+		color: var(--color-primary);
 		text-shadow: 0 0 3px #000000;
 	}
 
@@ -104,7 +104,7 @@
 			gap: 1rem;
 			& :global(svg) {
 				flex-shrink: 0;
-				color: var(--primary-color);
+				color: var(--color-primary);
 			}
 		}
 	}
@@ -133,7 +133,7 @@
 
 	.getting-started,
 	.documentation {
-		background-color: var(--primary-color);
+		background-color: var(--color-primary);
 		/* border: 2px solid green; */
 		padding: 0.5rem 1rem;
 		border-radius: 0.25rem;
@@ -149,7 +149,7 @@
 		background-color: #222;
 		text-align: center;
 		padding: 1rem;
-		border-top: 2px solid var(--primary-color);
+		border-top: 2px solid var(--color-primary);
 		color: white;
 		font-size: 1.25rem;
 		font-size: clamp(1rem, 5vw, 1.25rem);

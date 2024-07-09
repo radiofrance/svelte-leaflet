@@ -22,7 +22,7 @@
 		justify-content: space-between;
 		align-items: center;
 		background-color: #222;
-		border-bottom: 1px solid var(--primary-color);
+		border-bottom: 1px solid var(--color-primary);
 	}
 
 	.start {
