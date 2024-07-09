@@ -1,5 +1,5 @@
 <script lang="ts">
-	import '../global.css';
+	import '../../global.css';
 	import { scaleSequential } from 'd3-scale';
 	import { interpolateRainbow } from 'd3-scale-chromatic';
 	import Map from '$lib/Map.svelte';

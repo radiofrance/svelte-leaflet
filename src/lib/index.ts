@@ -1,4 +1,5 @@
 import type {
+	ControlPosition,
 	DragEndEvent,
 	ErrorEvent,
 	Evented,
@@ -7,6 +8,7 @@ import type {
 	LeafletEvent,
 	LeafletKeyboardEvent,
 	LeafletMouseEvent,
+	LocateOptions,
 	LocationEvent,
 	PopupEvent,
 	ResizeEvent,
@@ -159,4 +161,9 @@ type KeyboardEvents = {
 
 export type LeafletEventsRecord<T extends readonly string[]> = {
 	[K in T[number]]: K extends keyof LeafletEventTypes ? LeafletEventTypes[K] : LeafletEvent;
+};
+
+export type LocateControlOptions = {
+	position?: ControlPosition;
+	options?: LocateOptions;
 };

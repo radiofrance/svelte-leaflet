@@ -9,9 +9,10 @@
 	import markerIcon from 'leaflet/dist/images/marker-icon.png';
 	import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
-	import { createEventDispatcher, setContext } from 'svelte';
+	import { createEventDispatcher, setContext, tick } from 'svelte';
 	import {
 		type LeafletEventsRecord,
+		type LocateControlOptions,
 		bindEvents,
 		keyboardEvents,
 		layerGroupEvents,
@@ -22,13 +23,16 @@
 		popupEvents,
 		tooltipEvents
 	} from './index.js';
+	import GeolocationButton from '$components/GeolocationButton.svelte';
 
 	let L: typeof Leaflet;
+	let locateButtonContainer: HTMLDivElement;
 
 	export let options: MapOptions = {};
 	export let tilesUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 	export let attribution = `&copy;<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>`;
 	export let instance: Map = null as unknown as Map;
+	export let locateControl: LocateControlOptions | undefined = undefined;
 
 	const dispatch = createEventDispatcher<LeafletEventsRecord<typeof events>>();
 	// consider exporting a reference to the markers instead of a getter
@@ -91,15 +95,32 @@
 		}).addTo(instance);
 
 		// TODO: find out why manually firing the load event is needed
-		instance.whenReady(() => {
+		instance.whenReady(async () => {
 			instance.fireEvent('load');
+			await tick();
+			if (locateControl) {
+				const control = L.Control.extend({
+					position: 'topleft',
+					onAdd() {
+						const button = locateButtonContainer.firstChild as HTMLElement;
+						button.onclick = (e: MouseEvent) => {
+							e.stopPropagation();
+							instance.locate(locateControl?.options);
+						};
+						return button;
+					}
+				});
+				instance.addControl(new control(locateControl));
+			}
 		});
 	}
 
 	function leafletLoader(_node: HTMLElement) {
-		import('leaflet').then(() => {
-			import('leaflet.markercluster').then(onLoad);
-		});
+		(async function () {
+			await import('leaflet');
+			await import('leaflet.markercluster');
+			onLoad();
+		})();
 	}
 </script>
 
@@ -110,3 +131,18 @@
 		<slot map={instance} />
 	{/if}
 </div>
+<div class="locate-button-container" bind:this={locateButtonContainer}>
+	<slot name="locate-button">
+		<GeolocationButton />
+	</slot>
+</div>
+
+<style>
+	.Map {
+		z-index: 0;
+	}
+
+	.locate-button-container {
+		display: none;
+	}
+</style>
