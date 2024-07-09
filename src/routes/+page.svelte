@@ -7,7 +7,7 @@
 	import Marker from '$lib/Marker.svelte';
 	import Popup from '$lib/Popup.svelte';
 	import Polyline from '$lib/Polyline.svelte';
-	import MarkerIcon from '../components/MarkerIcon.svelte';
+	import MarkerIcon from '$components/MarkerIcon.svelte';
 	import Circle from '$lib/Circle.svelte';
 	import type {
 		LeafletMap,
@@ -17,8 +17,11 @@
 		PopupOptions,
 		LocationEvent
 	} from '$lib/index.js';
-	import ClusterMarker from '../components/ClusterMarker.svelte';
-	import StaticClusterMarker from '../components/StaticClusterMarker.svelte';
+	import ClusterMarker from '$components/ClusterMarker.svelte';
+	import StaticClusterMarker from '$components/StaticClusterMarker.svelte';
+
+	let locateButton: HTMLButtonElement;
+	let map: LeafletMap;
 
 	let newMarkerCoords: LatLngExpression;
 	const initialView: LatLngExpression = [48.86750658335676, 2.3638381549875467];
@@ -59,7 +62,6 @@
 	];
 	let location: LatLngTuple = [...initialView];
 	let locationRadius = 100;
-	let map: LeafletMap;
 
 	$: halfIndex = Math.floor(markerLocations.length / 2);
 	$: firstHalf = markerLocations.slice(0, halfIndex);
@@ -85,16 +87,21 @@
 	function onLocationFound(e: CustomEvent<LocationEvent>) {
 		location = [e.detail.latlng.lat, e.detail.latlng.lng];
 		locationRadius = e.detail.accuracy;
+		map.flyTo(location, 15);
 	}
 </script>
 
 <Map
-	bind:instance={map}
 	options={{ center: initialView, zoom: 18 }}
+	bind:instance={map}
 	on:click={onMapClick}
 	on:zoom={(e) => console.log('map zoom')}
 	on:locationfound={onLocationFound}
+	locateControl={{
+		position: 'topleft'
+	}}
 >
+	<!-- <button slot="locate-button">LOCATE ME</button> -->
 	<Circle center={location} options={{ radius: locationRadius }} />
 	<!-- use stringification of latLngs as key to identify lines -->
 	{#each lines as { latLngs, color } (JSON.stringify(latLngs))}
@@ -136,13 +143,12 @@
 	{/each}
 </Map>
 
-<button class="locateButton" on:click={() => map.locate({ setView: true })}>locate</button>
-
 <style>
-	.locateButton {
-		position: absolute;
-		top: 100px;
-		left: 10px;
-		z-index: 1000;
+	button {
+		background-color: red;
+		border: 1px solid black;
+		padding: 0px 5px;
+		cursor: pointer;
+		border-radius: 5px;
 	}
 </style>
