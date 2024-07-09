@@ -52,8 +52,14 @@
 	}
 
 	main :global(code) {
+		font-size: 1rem;
 		border: 1px solid var(--color-primary);
 		padding: 0.125rem 0.25rem;
 		border-radius: 0.25rem;
+	}
+
+	main :global(p) {
+		margin-top: 2rem;
+		font-size: 1.125rem;
 	}
 </style>
