@@ -15,7 +15,17 @@ const config = {
 		adapter: adapter(),
 
 		alias: {
-			'$components/*': 'src/components/*'
+			'$components/*': 'src/components/*',
+			'@radiofrance/svelte-leaflet': 'src/lib/index.ts'
+		}
+	},
+
+	vitePlugin: {
+		// set to true for defaults or customize with object
+		inspector: {
+			// toggleKeyCombo: 'meta-shift',
+			showToggleButton: 'always',
+			toggleButtonPos: 'bottom-right'
 		}
 	}
 };

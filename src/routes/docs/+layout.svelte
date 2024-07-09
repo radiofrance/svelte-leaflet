@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '../../global.css';
 	import Header from '../../components/Header.svelte';
 </script>
 
@@ -48,5 +49,11 @@
 	.content {
 		flex: 1;
 		padding: 1rem;
+	}
+
+	main :global(code) {
+		border: 1px solid var(--color-primary);
+		padding: 0.125rem 0.25rem;
+		border-radius: 0.25rem;
 	}
 </style>

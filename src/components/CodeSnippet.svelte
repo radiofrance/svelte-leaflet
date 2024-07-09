@@ -38,6 +38,7 @@
 
 <style>
 	pre {
+		tab-size: 2;
 		background-color: lightgray;
 		color: black;
 		display: inline-flex;
@@ -47,6 +48,10 @@
 		border-radius: 0.25rem;
 		/* border: 5px double gray; */
 		margin: 1rem;
+
+		code {
+			border: none;
+		}
 
 		button {
 			background: none;

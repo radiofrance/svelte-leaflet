@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '../global.css';
 	import Map from '$lib/Map.svelte';
 	import Logo from '../components/Logo.svelte';
 	import TsIcon from '../components/TSIcon.svelte';
@@ -151,8 +152,7 @@
 		padding: 1rem;
 		border-top: 2px solid var(--color-primary);
 		color: white;
-		font-size: 1.25rem;
-		font-size: clamp(1rem, 5vw, 1.25rem);
+		font-size: 1rem;
 		bottom: 0;
 		position: fixed;
 		width: 100%;
