@@ -1,5 +1,6 @@
 <script lang="ts">
 	import CodeSnippet from '../../../components/CodeSnippet.svelte';
+	import minimalPage from '../../minimal/+page.svelte?raw';
 </script>
 
 <h1>Getting started</h1>
@@ -25,37 +26,7 @@
 	Here's a minimal SvelteKit <code>+page.svelte</code>
 </p>
 
-<CodeSnippet>
-	{'<' +
-		`script>
-	import { Map } from '@radiofrance/svelte-leaflet';
-</script>
-
-<Map />
-
-<` +
-		`style>
-	:global(body) {
-		height: 100vh;
-		margin: 0;
-	}
-</style>
-`}
-</CodeSnippet>
+<CodeSnippet>{minimalPage}</CodeSnippet>
 
 <style>
-	.note {
-		font-size: 1.25rem;
-		border: 1px solid var(--color-primary);
-		max-width: 50ch;
-		padding: 1rem;
-		border-radius: 0.25rem;
-
-		&::before {
-			content: 'Note';
-			display: block;
-			font-weight: bold;
-			margin-bottom: 0.5rem;
-		}
-	}
 </style>

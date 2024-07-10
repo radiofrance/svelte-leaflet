@@ -12,7 +12,7 @@
 		navigator.clipboard
 			.writeText(text)
 			.then(() => {
-				previousSibling.parentElement?.animate(
+				previousSibling.animate(
 					[
 						{ backgroundColor: 'lightgray' },
 						{ backgroundColor: 'var(--color-primary)' },
@@ -31,30 +31,22 @@
 	}
 </script>
 
-<pre>
-  <code><slot /></code>
-  <button on:click={copyToClipboard}><CopyIcon width="16" /></button>
-</pre>
+<div class="CodeSnippet">
+	<pre><slot /></pre>
+	<button on:click={copyToClipboard}><CopyIcon width="16" /></button>
+</div>
 
 <style>
-	pre {
-		tab-size: 2;
-		background-color: lightgray;
-		color: black;
-		display: inline-flex;
-		gap: 0.5rem;
-		align-items: center;
-		padding: 0.25rem;
-		border-radius: 0.25rem;
-		/* border: 5px double gray; */
-		margin: 1rem;
-
-		code {
-			border: none;
-		}
+	.CodeSnippet {
+		position: relative;
+		max-width: max-content;
 
 		button {
-			background: none;
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
+			right: 5px;
+			background-color: lightgray;
 			border: 2px outset var(--color-primary);
 			border-radius: 0.25rem;
 			padding: 0.25rem;
@@ -64,5 +56,15 @@
 				border-style: inset;
 			}
 		}
+	}
+	pre {
+		tab-size: 2;
+		background-color: lightgray;
+		color: black;
+		align-items: center;
+		padding: 1rem;
+		padding-right: 3rem;
+		border-radius: 0.25rem;
+		overflow: auto;
 	}
 </style>

@@ -26,9 +26,9 @@
 
 	nav {
 		box-sizing: border-box;
-		border-right: 1px solid var(--color-primary);
 		height: calc(100vh - 2rem);
-		width: 300px;
+		width: 200px;
+		flex-shrink: 0;
 		padding: 1rem;
 
 		a {
@@ -47,8 +47,11 @@
 	}
 
 	.content {
-		flex: 1;
+		box-sizing: border-box;
+		border-left: 1px solid var(--color-primary);
 		padding: 1rem;
+		flex: 0.5;
+		max-width: calc(100% - 200px);
 	}
 
 	main :global(code) {
@@ -60,6 +63,22 @@
 
 	main :global(p) {
 		margin-top: 2rem;
+		font-size: 1rem;
+	}
+
+	main :global(.note) {
 		font-size: 1.125rem;
+		border: 1px solid var(--color-primary);
+		max-width: 50ch;
+		min-width: none;
+		padding: 1rem;
+		border-radius: 0.25rem;
+
+		&::before {
+			content: 'Note';
+			display: block;
+			font-weight: bold;
+			margin-bottom: 0.5rem;
+		}
 	}
 </style>
