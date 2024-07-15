@@ -90,16 +90,14 @@
 	});
 </script>
 
-<template>
-	{#key marker}
-		{#if marker}
-			<div bind:this={markerElement} class="leaflet-marker">
-				<slot name="icon" />
-			</div>
-			<slot />
-		{/if}
-	{/key}
-</template>
+{#key marker}
+	{#if marker}
+		<div bind:this={markerElement} class="leaflet-marker">
+			<slot name="icon" />
+		</div>
+		<slot />
+	{/if}
+{/key}
 
 <style>
 	.leaflet-marker {
