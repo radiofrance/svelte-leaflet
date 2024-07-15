@@ -1,11 +1,12 @@
 import adapter from '@sveltejs/adapter-auto';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import preprocess from 'svelte-preprocess';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	// Consult https://kit.svelte.dev/docs/integrations#preprocessors
 	// for more information about preprocessors
-	preprocess: vitePreprocess(),
+	preprocess: [vitePreprocess(), preprocess()],
 
 	kit: {
 		// adapter-auto only supports some environments, see https://kit.svelte.dev/docs/adapter-auto for a list.
@@ -14,7 +15,17 @@ const config = {
 		adapter: adapter(),
 
 		alias: {
-			'$components/*': 'src/components/*'
+			'$components/*': 'src/components/*',
+			'@radiofrance/svelte-leaflet': 'src/lib/index.ts'
+		}
+	},
+
+	vitePlugin: {
+		// set to true for defaults or customize with object
+		inspector: {
+			// toggleKeyCombo: 'meta-shift',
+			showToggleButton: 'always',
+			toggleButtonPos: 'bottom-right'
 		}
 	}
 };
