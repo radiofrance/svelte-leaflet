@@ -143,6 +143,7 @@
 		</Marker>
 	{/each}
 	<Polygon
+		on:click={() => console.log('polygon clicked')}
 		latlngs={[
 			[48.86750658335676, 2.3638381549875467],
 			[48.868751688545345, 2.367215752601624],

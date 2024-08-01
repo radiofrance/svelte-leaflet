@@ -115,6 +115,12 @@ const leafletEvents = [
 ] as const;
 
 export const mapStateChangeEvents = [...leafletEvents, 'resize'] as const;
+export const polygonEvents = [
+	...tooltipEvents,
+	...layerEvents,
+	...popupEvents,
+	...interactiveLayerEvents
+] as const;
 
 type LeafletEventTypes = {
 	resize: ResizeEvent;
