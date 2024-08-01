@@ -23,6 +23,7 @@ export { default as MarkerClusterGroup } from './MarkerClusterGroup.svelte';
 export { default as Polyline } from './Polyline.svelte';
 export { default as Popup } from './Popup.svelte';
 export { default as Circle } from './Circle.svelte';
+export { default as Polygon } from './Polygon.svelte';
 
 export type { Marker as LeafletMarker } from './Marker.svelte';
 export type {
