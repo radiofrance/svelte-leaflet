@@ -12,6 +12,7 @@
 	import { createEventDispatcher, setContext, tick } from 'svelte';
 	import {
 		type LeafletEventsRecord,
+		type LeafletMap,
 		type LocateControlOptions,
 		bindEvents,
 		keyboardEvents,
@@ -35,7 +36,7 @@
 	export let instance: Map = null as unknown as Map;
 	export let locateControl: LocateControlOptions | undefined = undefined;
 
-	const dispatch = createEventDispatcher<LeafletEventsRecord<typeof events>>();
+	const dispatch = createEventDispatcher<LeafletEventsRecord<typeof events, LeafletMap>>();
 	// consider exporting a reference to the markers instead of a getter
 	export const getMarkers: () => Marker[] = () => {
 		const markers: Marker[] = [];

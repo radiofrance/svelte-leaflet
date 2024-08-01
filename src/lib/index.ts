@@ -5,7 +5,7 @@ import type {
 	Evented,
 	LayerEvent,
 	LayersControlEvent,
-	LeafletEvent,
+	LeafletEvent as LeafletEventBase,
 	LeafletKeyboardEvent,
 	LeafletMouseEvent,
 	LocateOptions,
@@ -14,6 +14,7 @@ import type {
 	ResizeEvent,
 	TooltipEvent
 } from 'leaflet';
+import L from 'leaflet';
 import type { EventDispatcher } from 'svelte';
 
 // Reexport your entry components here
@@ -35,7 +36,6 @@ export type {
 	LatLngTuple,
 	LayerEvent,
 	LayersControlEvent,
-	LeafletEvent,
 	LeafletKeyboardEvent,
 	LeafletMouseEvent,
 	LocationEvent,
@@ -48,6 +48,13 @@ export type {
 	ResizeEvent,
 	TooltipEvent
 } from 'leaflet';
+
+// const MarkerCluster
+export const MarkerCluster = L.MarkerCluster;
+
+export interface LeafletEvent<T = unknown> extends LeafletEventBase {
+	target: T;
+}
 
 export function bindEvents(
 	instance: Evented,
@@ -115,6 +122,7 @@ const leafletEvents = [
 ] as const;
 
 export const mapStateChangeEvents = [...leafletEvents, 'resize'] as const;
+export const markerEvents = [...interactiveLayerEvents, 'drag', 'dragend'] as const;
 
 type LeafletEventTypes = {
 	resize: ResizeEvent;
@@ -159,8 +167,12 @@ type KeyboardEvents = {
 	[K in (typeof keyboardEvents)[number]]: LeafletKeyboardEvent;
 };
 
-export type LeafletEventsRecord<T extends readonly string[]> = {
-	[K in T[number]]: K extends keyof LeafletEventTypes ? LeafletEventTypes[K] : LeafletEvent;
+export type LeafletEventsRecord<EventNames extends readonly string[], T = unknown> = {
+	[K in EventNames[number]]: K extends keyof LeafletEventTypes
+		? LeafletEventTypes[K] extends LeafletEvent
+			? LeafletEvent<T>
+			: LeafletEventTypes[K]
+		: LeafletEvent<T>;
 };
 
 export type LocateControlOptions = {
