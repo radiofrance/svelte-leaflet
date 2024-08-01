@@ -3,6 +3,7 @@ import type {
 	DragEndEvent,
 	ErrorEvent,
 	Evented,
+	LatLngExpression,
 	LayerEvent,
 	LayersControlEvent,
 	LeafletEvent,
@@ -49,6 +50,8 @@ export type {
 	ResizeEvent,
 	TooltipEvent
 } from 'leaflet';
+
+export type Latlngs = LatLngExpression[] | LatLngExpression[][] | LatLngExpression[][][];
 
 export function bindEvents(
 	instance: Evented,

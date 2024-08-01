@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { Polygon as LeafletPolygon, PolylineOptions, LatLngExpression, Map } from 'leaflet';
 	import { createEventDispatcher, getContext, onDestroy, onMount } from 'svelte';
-	import { bindEvents, polygonEvents, type LeafletEventsRecord } from './index.js';
+	import { bindEvents, polygonEvents, type Latlngs, type LeafletEventsRecord } from './index.js';
 
-	export let latlngs: LatLngExpression[];
+	export let latlngs: Latlngs;
 	export let options: PolylineOptions = {};
 	export let instance: LeafletPolygon | undefined = undefined;
 
@@ -12,7 +12,7 @@
 
 	$: update(latlngs, options);
 
-	function update(latlngs: LatLngExpression[], options: PolylineOptions) {
+	function update(latlngs: Latlngs, options: PolylineOptions) {
 		if (instance) {
 			instance.setLatLngs(latlngs);
 			instance.setStyle(options);
