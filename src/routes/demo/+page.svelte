@@ -19,6 +19,7 @@
 	} from '$lib/index.js';
 	import ClusterMarker from '$components/ClusterMarker.svelte';
 	import StaticClusterMarker from '$components/StaticClusterMarker.svelte';
+	import Polygon from '$lib/Polygon.svelte';
 
 	let locateButton: HTMLButtonElement;
 	let map: LeafletMap;
@@ -141,6 +142,16 @@
 			</Popup>
 		</Marker>
 	{/each}
+	<Polygon
+		latlngs={[
+			[48.86750658335676, 2.3638381549875467],
+			[48.868751688545345, 2.367215752601624],
+			[48.86633451191472, 2.368857264518738],
+			[48.86693087729111, 2.365472316741944],
+			[48.866518009710575, 2.3648071289062504],
+			[48.867326097766764, 2.3634070158004765]
+		]}
+	/>
 </Map>
 
 <style>

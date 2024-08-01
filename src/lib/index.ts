@@ -49,7 +49,6 @@ export type {
 	TooltipEvent
 } from 'leaflet';
 
-// const MarkerCluster
 export const MarkerCluster = L.MarkerCluster;
 
 export interface LeafletEvent<T = unknown> extends LeafletEventBase {
