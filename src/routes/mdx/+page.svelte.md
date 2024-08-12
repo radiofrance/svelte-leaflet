@@ -16,6 +16,15 @@ if (test === true) {
 }
 ```
 
+```typescript {2-3}
+const test = true;
+//    ^?
+
+if (test === true) {
+	console.log('Made it here!');
+}
+```
+
 ## Svelte
 
 ```svelte {5-7,10-11}

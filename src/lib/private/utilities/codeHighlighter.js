@@ -1,19 +1,24 @@
 import { codeToHtml, getSingletonHighlighter } from 'shiki';
+import { transformerMetaHighlight } from '@shikijs/transformers';
+import { transformerTwoslash } from '@shikijs/twoslash';
 
 const THEME = 'github-dark';
 
 /**
  * @param {string} code
  * @param {string} lang
+ * @param {string} meta
  */
-async function highlighter(code, lang) {
+async function highlighter(code, lang, meta) {
 	await getSingletonHighlighter({
 		langs: [lang],
 		themes: [THEME]
 	});
 	const html = await codeToHtml(code, {
 		theme: THEME,
-		lang
+		lang,
+		meta: { __raw: meta },
+		transformers: [transformerMetaHighlight(), transformerTwoslash()]
 	});
 
 	return escapeHtml(html);

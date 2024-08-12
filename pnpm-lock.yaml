@@ -31,6 +31,9 @@ devDependencies:
   '@shikijs/transformers':
     specifier: ^1.10.3
     version: 1.10.3
+  '@shikijs/twoslash':
+    specifier: ^1.12.1
+    version: 1.12.1(typescript@5.3.3)
   '@sveltejs/adapter-auto':
     specifier: ^3.0.0
     version: 3.1.1(@sveltejs/kit@2.5.0)
@@ -1044,10 +1047,26 @@ packages:
       '@types/hast': 3.0.4
     dev: true
 
+  /@shikijs/core@1.12.1:
+    resolution: {integrity: sha512-biCz/mnkMktImI6hMfMX3H9kOeqsInxWEyCHbSlL8C/2TR1FqfmGxTLRNwYCKsyCyxWLbB8rEqXRVZuyxuLFmA==}
+    dependencies:
+      '@types/hast': 3.0.4
+    dev: true
+
   /@shikijs/transformers@1.10.3:
     resolution: {integrity: sha512-MNjsyye2WHVdxfZUSr5frS97sLGe6G1T+1P41QjyBFJehZphMcr4aBlRLmq6OSPBslYe9byQPVvt/LJCOfxw8Q==}
     dependencies:
       shiki: 1.10.3
+    dev: true
+
+  /@shikijs/twoslash@1.12.1(typescript@5.3.3):
+    resolution: {integrity: sha512-k4D6sC9p9GksbHa4RnB1VkQIZtQ+L7nQMqi/YAxEgTKZF5v7IW6dHak0Z7bvZXrfhle36NIqWMJXz5xDexupvw==}
+    dependencies:
+      '@shikijs/core': 1.12.1
+      twoslash: 0.2.9(typescript@5.3.3)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
     dev: true
 
   /@sinclair/typebox@0.27.8:
@@ -1344,6 +1363,14 @@ packages:
     dependencies:
       '@typescript-eslint/types': 6.20.0
       eslint-visitor-keys: 3.4.3
+    dev: true
+
+  /@typescript/vfs@1.5.0:
+    resolution: {integrity: sha512-AJS307bPgbsZZ9ggCT3wwpg3VbTKMFNHfaY/uF0ahSkYYrPF2dSSKDNIDIQAHm9qJqbLvCsSJH7yN4Vs/CsMMg==}
+    dependencies:
+      debug: 4.3.4
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /@ungap/structured-clone@1.2.0:
@@ -3670,6 +3697,22 @@ packages:
 
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+    dev: true
+
+  /twoslash-protocol@0.2.9:
+    resolution: {integrity: sha512-uKQl8UboT6JU4VAtYaSI3DbNtgaNhFaTpCSMy/n3tRl5lMlMhrjiuNKdqx15xjcviconuGJ9oObkz1h9zJFrJg==}
+    dev: true
+
+  /twoslash@0.2.9(typescript@5.3.3):
+    resolution: {integrity: sha512-oj7XY6h8E9nTZBmfRE1gpsSSUqAQo5kcIpFkXyQPp8UCsyCQsUlP2bJ2s32o02c1n5+xl4h9rcCsQ1F97Z6LZg==}
+    peerDependencies:
+      typescript: '*'
+    dependencies:
+      '@typescript/vfs': 1.5.0
+      twoslash-protocol: 0.2.9
+      typescript: 5.3.3
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /type-check@0.4.0:
