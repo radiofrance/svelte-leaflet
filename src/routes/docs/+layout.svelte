@@ -68,17 +68,18 @@
 
 	main :global(.note) {
 		font-size: 1.125rem;
-		border: 1px solid var(--color-primary);
+		border: 3px dotted lightgray;
 		max-width: 50ch;
 		min-width: none;
 		padding: 1rem;
-		border-radius: 0.25rem;
+		border-radius: 1rem;
 
 		&::before {
+			color: white;
 			content: 'Note';
 			display: block;
 			font-weight: bold;
-			margin-bottom: 0.5rem;
+			margin-bottom: 1rem;
 		}
 	}
 </style>
