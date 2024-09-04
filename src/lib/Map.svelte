@@ -99,7 +99,7 @@
 
 		if (options.zoomControl !== false) {
 			const zoomControl = L.control.zoom({
-				position: 'bottomright'
+				position: 'topleft'
 			});
 			zoomControl.addTo(instance);
 			zoomControl.getContainer()!.childNodes.forEach((child) => {
