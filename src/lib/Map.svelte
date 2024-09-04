@@ -27,14 +27,20 @@
 
 	let L: typeof Leaflet;
 	let locateButtonContainer: HTMLDivElement;
-	const defaultOptions = { center: [46.6188459, 1.7262114] as LatLngTuple, zoom: 7, maxZoom: 18 };
 
 	export let options: MapOptions = {};
 	export let tilesUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 	export let attribution = `&copy;<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>`;
 	export let instance: Map = null as unknown as Map;
 	export let locateControl: LocateControlOptions | undefined = undefined;
+	export let focusable = true;
 
+	const defaultOptions = {
+		center: [46.6188459, 1.7262114] as LatLngTuple,
+		zoom: 7,
+		maxZoom: 18,
+		keyboard: options.keyboard === undefined ? focusable : options.keyboard
+	};
 	const dispatch = createEventDispatcher<LeafletEventsRecord<typeof events>>();
 	// consider exporting a reference to the markers instead of a getter
 	export const getMarkers: () => Marker[] = () => {
@@ -50,6 +56,7 @@
 	// so the parent has access to the map
 	// export const map = () => instance;
 	setContext('map', () => instance);
+	setContext('focusable', focusable ? null : -1);
 	let container: HTMLElement;
 
 	// Using Object.assign to avoid losing inherited prototype values
@@ -88,7 +95,17 @@
 			iconUrl: markerIcon,
 			shadowUrl: markerShadow
 		});
-		instance = L.map(container, { ...defaultOptions, ...options });
+		instance = L.map(container, { ...defaultOptions, ...options, zoomControl: false });
+
+		if (options.zoomControl !== false) {
+			const zoomControl = L.control.zoom({
+				position: 'bottomright'
+			});
+			zoomControl.addTo(instance);
+			zoomControl.getContainer()!.childNodes.forEach((child) => {
+				(child as HTMLElement).setAttribute('tabindex', focusable ? '0' : '-1');
+			});
+		}
 
 		bindEvents(instance, dispatch, events);
 

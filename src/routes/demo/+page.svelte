@@ -93,6 +93,7 @@
 </script>
 
 <Map
+	focusable={false}
 	options={{ center: initialView, zoom: 18 }}
 	bind:instance={map}
 	on:click={onMapClick}
@@ -156,11 +157,4 @@
 </Map>
 
 <style>
-	button {
-		background-color: red;
-		border: 1px solid black;
-		padding: 0px 5px;
-		cursor: pointer;
-		border-radius: 5px;
-	}
 </style>

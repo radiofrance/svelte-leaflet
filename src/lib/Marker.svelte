@@ -26,6 +26,7 @@
 
 	let markerElement: HTMLElement;
 	let marker: Marker;
+	const tabindex = getContext('focusable');
 
 	const getMap = getContext<() => Map>('map');
 	const getLayerGroup = getContext<() => LayerGroup>('layerGroup');
@@ -54,7 +55,10 @@
 		const layerGroup = getLayerGroup?.();
 		const map = getMap();
 		const mapOrLayerGroup = layerGroup || map;
-		marker = L.marker(latlng, options);
+		marker = L.marker(latlng, {
+			...options,
+			keyboard: tabindex === -1 ? false : true
+		});
 		marker.id = id;
 		marker
 			.on('click', (e) => dispatch('click', e))

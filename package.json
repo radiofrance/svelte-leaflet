@@ -49,6 +49,7 @@
 		"@csstools/postcss-global-data": "^2.1.1",
 		"@fontsource-variable/fira-code": "^5.0.18",
 		"@playwright/test": "^1.28.1",
+		"@shikijs/core": "1.12.1",
 		"@shikijs/transformers": "^1.10.3",
 		"@shikijs/twoslash": "^1.12.1",
 		"@sveltejs/adapter-auto": "^3.0.0",
