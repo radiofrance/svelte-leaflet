@@ -1,9 +1,12 @@
 <script>
+	import { getContext } from 'svelte';
 	import GeolocationIcon from './GeolocationIcon.svelte';
+
+	const tabindex = getContext('focusable');
 </script>
 
 <div>
-	<button>
+	<button {tabindex}>
 		<GeolocationIcon width="1rem" />
 	</button>
 </div>

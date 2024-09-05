@@ -3,6 +3,7 @@ import type {
 	DragEndEvent,
 	ErrorEvent,
 	Evented,
+	LatLngExpression,
 	LayerEvent,
 	LayersControlEvent,
 	LeafletEvent,
@@ -23,6 +24,7 @@ export { default as MarkerClusterGroup } from './MarkerClusterGroup.svelte';
 export { default as Polyline } from './Polyline.svelte';
 export { default as Popup } from './Popup.svelte';
 export { default as Circle } from './Circle.svelte';
+export { default as Polygon } from './Polygon.svelte';
 
 export type { Marker as LeafletMarker } from './Marker.svelte';
 export type {
@@ -48,6 +50,8 @@ export type {
 	ResizeEvent,
 	TooltipEvent
 } from 'leaflet';
+
+export type Latlngs = LatLngExpression[] | LatLngExpression[][] | LatLngExpression[][][];
 
 export function bindEvents(
 	instance: Evented,
@@ -115,6 +119,12 @@ const leafletEvents = [
 ] as const;
 
 export const mapStateChangeEvents = [...leafletEvents, 'resize'] as const;
+export const polygonEvents = [
+	...tooltipEvents,
+	...layerEvents,
+	...popupEvents,
+	...interactiveLayerEvents
+] as const;
 
 type LeafletEventTypes = {
 	resize: ResizeEvent;

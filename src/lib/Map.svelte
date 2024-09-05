@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { MapOptions, Marker, Map } from 'leaflet';
+	import type { MapOptions, Marker, Map, LatLngTuple } from 'leaflet';
 	import type Leaflet from 'leaflet';
 
 	import 'leaflet/dist/leaflet.css';
@@ -33,7 +33,14 @@
 	export let attribution = `&copy;<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>`;
 	export let instance: Map = null as unknown as Map;
 	export let locateControl: LocateControlOptions | undefined = undefined;
+	export let focusable = true;
 
+	const defaultOptions = {
+		center: [46.6188459, 1.7262114] as LatLngTuple,
+		zoom: 7,
+		maxZoom: 18,
+		keyboard: options.keyboard === undefined ? focusable : options.keyboard
+	};
 	const dispatch = createEventDispatcher<LeafletEventsRecord<typeof events>>();
 	// consider exporting a reference to the markers instead of a getter
 	export const getMarkers: () => Marker[] = () => {
@@ -49,10 +56,13 @@
 	// so the parent has access to the map
 	// export const map = () => instance;
 	setContext('map', () => instance);
+	setContext('focusable', focusable ? null : -1);
 	let container: HTMLElement;
 
 	// Using Object.assign to avoid losing inherited prototype values
-	$: if (instance) instance.options = Object.assign(instance.options, options);
+	$: if (instance) {
+		instance.options = Object.assign(instance.options, options);
+	}
 	// $: if (thisMap) thisMap.options = options; // ERROR : this.options.crs is undefined
 	// this doesnt work because a new options object is created and does not
 	// contains default options values (inherited via prototype) required for the map to work properly
@@ -85,7 +95,17 @@
 			iconUrl: markerIcon,
 			shadowUrl: markerShadow
 		});
-		instance = L.map(container, { maxZoom: 18, ...options });
+		instance = L.map(container, { ...defaultOptions, ...options, zoomControl: false });
+
+		if (options.zoomControl !== false) {
+			const zoomControl = L.control.zoom({
+				position: 'topleft'
+			});
+			zoomControl.addTo(instance);
+			zoomControl.getContainer()!.childNodes.forEach((child) => {
+				(child as HTMLElement).setAttribute('tabindex', focusable ? '0' : '-1');
+			});
+		}
 
 		bindEvents(instance, dispatch, events);
 
@@ -128,7 +148,7 @@
 
 <div class="Map" bind:this={container} style="height: 100%; width: 100%">
 	{#if instance}
-		<slot map={instance} />
+		<slot />
 	{/if}
 </div>
 <div class="locate-button-container" bind:this={locateButtonContainer}>
