@@ -12,7 +12,7 @@ test('Getting started page', async ({ page }) => {
 	await page.goto('http://localhost:5173/');
 	await page.getByRole('link', { name: 'Getting started' }).click();
 	await page.getByRole('link', { name: 'Map' }).click();
-	await expect(page.getByText('It\'s the only component you')).toBeVisible();
+	await expect(page.getByText("It's the only component you")).toBeVisible();
 	await expect(page.getByText('A Map has an options props')).toBeVisible();
 });
 
