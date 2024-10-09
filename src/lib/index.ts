@@ -171,7 +171,9 @@ type KeyboardEvents = {
 };
 
 export type LeafletEventsRecord<T extends readonly string[]> = {
-	[K in T[number]]: K extends keyof LeafletEventTypes ? LeafletEventTypes[K] : LeafletEvent;
+	[K in T[number] as `on${K}`]: K extends keyof LeafletEventTypes
+		? LeafletEventTypes[K]
+		: LeafletEvent;
 };
 
 export type LocateControlOptions = {
