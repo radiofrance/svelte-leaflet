@@ -30,7 +30,7 @@
 	let L: typeof Leaflet;
 	// let locateButtonContainer: HTMLDivElement = $state();
 
-	interface Props {
+	type Props = {
 		options?: MapOptions;
 		tilesUrl?: string;
 		attribution?: any;
@@ -39,7 +39,7 @@
 		focusable?: boolean;
 		children?: import('svelte').Snippet;
 		// locate_button?: import('svelte').Snippet;
-	}
+	} & Partial<LeafletEventsRecord<typeof events>>;
 
 	let {
 		options = {},
