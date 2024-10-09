@@ -1,90 +1,58 @@
-# @radiofrance/svelte-leaflet
+# create-svelte
 
-A library that wraps leaflet classes in domless/renderless svelte components.
+Everything you need to build a Svelte library, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
 
-## Install
+Read more about creating a library [in the docs](https://kit.svelte.dev/docs/packaging).
 
-`npm i -D @radiofrance/svelte-leaflet`
+## Creating a project
 
-## Components
+If you're seeing this, you've probably already done this step. Congrats!
 
-### Map
+```bash
+# create a new project in the current directory
+npm create svelte@latest
 
-Renders a map Leaflet Map. The Map will take up 100% of its container's height and width.
-
-#### Attributes
-
-| Attribute     | Type                                                          | Default                                            | Notes                                                                              |
-| ------------- | ------------------------------------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `options`     | [MapOptions](https://leafletjs.com/reference.html#map-option) | `{}`                                               | Map options                                                                        |
-| `tilesUrl`    | string                                                        | `'https://tile.openstreetmap.org/{z}/{x}/{y}.png'` | more free tile services can be found at https://alexurquhart.github.io/free-tiles/ |
-| `attribution` | string                                                        | `'©OpenStreetMap'` _(link to openstreetmap)_      |                                                                                    |
-
-#### Events
-
-All events are forwarded from the Map class, see the leaflet documentation for more information.
-
-- https://leafletjs.com/reference.html#map-event
-
-Example:
-
-```svelte
-<Map {options} on:click={(e) => console.log(e.detail.latlng)} />
+# create a new project in my-app
+npm create svelte@latest my-app
 ```
 
-### Marker
+## Developing
 
-Add a marker to the map.
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
 
-- Can be used as a child of `<Map>` or `<MarkerClusterGroup>`
-- A `<Popup>` component can be passed as the Marker child to display a popup when the marker is clicked.
-- A component with `slot="icon"` attribute can be passed as the Marker child to display a custom icon.
+```bash
+npm run dev
 
-#### Attributes
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
 
-| Name     | Type                                                  | Default    | Notes                                         |
-| -------- | ----------------------------------------------------- | ---------- | --------------------------------------------- |
-| `latlng` | [LatLng](https://leafletjs.com/reference.html#latlng) | _required_ | position of the marker                        |
-| `size`   | number                                                | `25`       | icon size (only used with a custom icon)      |
-| `id`     | string                                                | `''`       | an identifier to link the maker with you data |
+Everything inside `src/lib` is part of your library, everything inside `src/routes` can be used as a showcase or preview app.
 
-#### Events
+## Building
 
-All events are forwarded from the Marker class, see the leaflet documentation for more information.
+To build your library:
 
-- https://leafletjs.com/reference.html#marker-event
+```bash
+npm run package
+```
 
-### Popup
+To create a production version of your showcase app:
 
-`<Popup>` children will be displayed when the marker is clicked.
+```bash
+npm run build
+```
 
-- Use as a `<Marker>` child.
+You can preview the production build with `npm run preview`.
 
-#### Attributes
+> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
 
-| Name      | Type                                                              | Default | Notes                                |
-| --------- | ----------------------------------------------------------------- | ------- | ------------------------------------ |
-| `options` | [PopupOptions](https://leafletjs.com/reference.html#popup-option) | `{}`    | options to pass to the leaflet popup |
+## Publishing
 
-### MarkerClusterGroup
+Go into the `package.json` and give your package the desired name through the `"name"` option. Also consider adding a `"license"` field and point it to a `LICENSE` file which you can create from a template (one popular option is the [MIT license](https://opensource.org/license/mit/)).
 
-Enables clustering of child markers
+To publish your library to [npm](https://www.npmjs.com):
 
-- Use as a `<Map>` child
-
-#### Attributes
-
-| Name      | Type                                                                                                                                   | Default | Notes                                                                                                      |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------- |
-| `options` | [MarkerClusterGroupOptions](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/leaflet.markercluster/index.d.ts#L36) | `{}`    | [MarkerClusterGroup options](https://github.com/leaflet/Leaflet.markercluster?tab=readme-ov-file#defaults) |
-
-### Polyline
-
-Allows to draw lines on the map
-
-#### Attributes
-
-| Name      | Type                                                                    | Default    | Notes                                   |
-| --------- | ----------------------------------------------------------------------- | ---------- | --------------------------------------- |
-| `latlngs` | [LatLng[]](https://leafletjs.com/reference.html#latlng)                 | _required_ | array of points to draw the line        |
-| `options` | [PolylineOptions](https://leafletjs.com/reference.html#polyline-option) | `{}`       | options to pass to the leaflet polyline |
+```bash
+npm publish
+```
