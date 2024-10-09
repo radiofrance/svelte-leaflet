@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import type { MapOptions, Marker, Map, LatLngTuple } from 'leaflet';
 	import type Leaflet from 'leaflet';
 
@@ -12,7 +14,7 @@
 	import { createEventDispatcher, setContext, tick } from 'svelte';
 	import {
 		type LeafletEventsRecord,
-		type LocateControlOptions,
+		// type LocateControlOptions,
 		bindEvents,
 		keyboardEvents,
 		layerGroupEvents,
@@ -23,17 +25,32 @@
 		popupEvents,
 		tooltipEvents
 	} from './index.js';
-	import GeolocationButton from './private/GeolocationButton.svelte';
+	// import GeolocationButton from './private/GeolocationButton.svelte';
 
 	let L: typeof Leaflet;
-	let locateButtonContainer: HTMLDivElement;
+	// let locateButtonContainer: HTMLDivElement = $state();
 
-	export let options: MapOptions = {};
-	export let tilesUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
-	export let attribution = `&copy;<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>`;
-	export let instance: Map = null as unknown as Map;
-	export let locateControl: LocateControlOptions | undefined = undefined;
-	export let focusable = true;
+	interface Props {
+		options?: MapOptions;
+		tilesUrl?: string;
+		attribution?: any;
+		instance?: Map;
+		// locateControl?: LocateControlOptions | undefined;
+		focusable?: boolean;
+		children?: import('svelte').Snippet;
+		// locate_button?: import('svelte').Snippet;
+	}
+
+	let {
+		options = {},
+		tilesUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+		attribution = `&copy;<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>`,
+		instance = $bindable(undefined as unknown as Map),
+		// locateControl = undefined,
+		focusable = true,
+		children
+		// locate_button
+	}: Props = $props();
 
 	const defaultOptions = {
 		center: [46.6188459, 1.7262114] as LatLngTuple,
@@ -57,12 +74,14 @@
 	// export const map = () => instance;
 	setContext('map', () => instance);
 	setContext('focusable', focusable ? null : -1);
-	let container: HTMLElement;
+	let container: HTMLElement | null = $state(null);
 
 	// Using Object.assign to avoid losing inherited prototype values
-	$: if (instance) {
-		instance.options = Object.assign(instance.options, options);
-	}
+	run(() => {
+		if (instance) {
+			instance.options = Object.assign(instance.options, options);
+		}
+	});
 	// $: if (thisMap) thisMap.options = options; // ERROR : this.options.crs is undefined
 	// this doesnt work because a new options object is created and does not
 	// contains default options values (inherited via prototype) required for the map to work properly
@@ -87,6 +106,7 @@
 	] as const;
 
 	function onLoad() {
+		if (!container) return;
 		L = window.L;
 		// @ts-ignore
 		delete L.Icon.Default.prototype._getIconUrl;
@@ -115,24 +135,24 @@
 		}).addTo(instance);
 
 		// TODO: find out why manually firing the load event is needed
-		instance.whenReady(async () => {
-			instance.fireEvent('load');
-			await tick();
-			if (locateControl) {
-				const control = L.Control.extend({
-					position: 'topleft',
-					onAdd() {
-						const button = locateButtonContainer.firstChild as HTMLElement;
-						button.onclick = (e: MouseEvent) => {
-							e.stopPropagation();
-							instance.locate(locateControl?.options);
-						};
-						return button;
-					}
-				});
-				instance.addControl(new control(locateControl));
-			}
-		});
+		// instance.whenReady(async () => {
+		// 	instance.fireEvent('load');
+		// 	await tick();
+		// 	if (locateControl) {
+		// 		const control = L.Control.extend({
+		// 			position: 'topleft',
+		// 			onAdd() {
+		// 				const button = locateButtonContainer.firstChild as HTMLElement;
+		// 				button.onclick = (e: MouseEvent) => {
+		// 					e.stopPropagation();
+		// 					instance.locate(locateControl?.options);
+		// 				};
+		// 				return button;
+		// 			}
+		// 		});
+		// 		instance.addControl(new control(locateControl));
+		// 	}
+		// });
 	}
 
 	function leafletLoader(_node: HTMLElement) {
@@ -144,25 +164,26 @@
 	}
 </script>
 
-<svelte:window on:resize={resizeMap} use:leafletLoader />
+<svelte:window onresize={resizeMap} use:leafletLoader />
 
 <div class="Map" bind:this={container} style="height: 100%; width: 100%">
 	{#if instance}
-		<slot />
+		{@render children?.()}
 	{/if}
 </div>
-<div class="locate-button-container" bind:this={locateButtonContainer}>
-	<slot name="locate-button">
+
+<!-- <div class="locate-button-container" bind:this={locateButtonContainer}>
+	{#if locate_button}{@render locate_button()}{:else}
 		<GeolocationButton />
-	</slot>
-</div>
+	{/if}
+</div> -->
 
 <style>
 	.Map {
 		z-index: 0;
 	}
 
-	.locate-button-container {
+	/* .locate-button-container {
 		display: none;
-	}
+	} */
 </style>

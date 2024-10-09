@@ -5,20 +5,3 @@ body {
 	height: 100vh;
 	margin: 0;
 }
-
-a {
-	color: inherit;
-	text-decoration: none;
-}
-
-a:hover {
-	text-decoration: underline;
-}
-
-a:visited {
-	color: inherit;
-}
-
-* {
-	--color-primary: rgb(137, 196, 66);
-}
