@@ -1,6 +1,6 @@
 {
 	"name": "@radiofrance/svelte-leaflet",
-	"version": "0.1.0-alpha.18",
+	"version": "0.1.0-alpha.19",
 	"description": "A library that wraps leaflet classes in domless/renderless svelte components.",
 	"keywords": [
 		"svelte",
@@ -19,11 +19,11 @@
 	},
 	"scripts": {
 		"dev": "vite dev",
-		"build": "vite build && npm run package",
+		"build": "vite build && npm package",
 		"preview": "vite preview",
 		"package": "svelte-kit sync && svelte-package && publint",
 		"prepublishOnly": "npm run package",
-		"test": "npm run test:integration && npm run test:unit",
+		"test": "npm run check && npm run test:unit",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
