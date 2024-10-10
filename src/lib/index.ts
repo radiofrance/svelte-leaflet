@@ -7,6 +7,7 @@ import type {
 	LayerEvent,
 	LayersControlEvent,
 	LeafletEvent,
+	LeafletEventHandlerFnMap,
 	LeafletKeyboardEvent,
 	LeafletMouseEvent,
 	LocateOptions,
@@ -15,7 +16,6 @@ import type {
 	ResizeEvent,
 	TooltipEvent
 } from 'leaflet';
-import type { EventDispatcher } from 'svelte';
 
 // Reexport your entry components here
 export { default as Map } from './Map.svelte';
@@ -54,13 +54,49 @@ export type {
 
 export type Latlngs = LatLngExpression[] | LatLngExpression[][] | LatLngExpression[][][];
 
+// type FuncType<T> = (e: T) => void;
+type AllFuncTypes =
+	| ((e: LeafletEvent) => void)
+	| ((e: LeafletKeyboardEvent) => void)
+	| ((e: LayersControlEvent) => void)
+	| ((e: LeafletMouseEvent) => void)
+	| ((e: LocationEvent) => void)
+	| ((e: ErrorEvent) => void)
+	| ((e: ResizeEvent) => void)
+	| ((e: TooltipEvent) => void);
+
+type EventsParamsIntersection = UnionToIntersection<Parameters<AllFuncTypes>[0]>;
+type UnionToIntersection<U> = (U extends unknown ? (k: U) => void : never) extends (
+	k: infer I
+) => void
+	? I
+	: never;
+
+// export function bindEvents(
+// 	instance: Evented,
+// 	eventsProps: Record<string, AllFuncTypes>,
+// 	events: readonly string[]
+// ) {
+// 	events.forEach((event) => {
+// 		const eventCallback = eventsProps[`on${event}`];
+// 		if (typeof eventCallback !== 'function') return;
+// 		instance.on(event, (e) => eventCallback(e as EventsParamsIntersection));
+// 	});
+// }
+
+type PrefixedLeafletEventHandlerFnMap = {
+	[K in keyof LeafletEventHandlerFnMap as `on${K}`]: LeafletEventHandlerFnMap[K];
+};
+
 export function bindEvents(
 	instance: Evented,
-	dispatch: EventDispatcher<Record<string, unknown>>,
-	events: readonly string[]
+	eventsProps: PrefixedLeafletEventHandlerFnMap,
+	events: readonly (keyof LeafletEventHandlerFnMap)[]
 ) {
 	events.forEach((event) => {
-		instance.on(event, (e) => dispatch(event, e));
+		const eventCallback = eventsProps[`on${event}`];
+		if (typeof eventCallback !== 'function') return;
+		instance.on(event, (e) => eventCallback(e));
 	});
 }
 
@@ -172,8 +208,8 @@ type KeyboardEvents = {
 
 export type LeafletEventsRecord<T extends readonly string[]> = {
 	[K in T[number] as `on${K}`]: K extends keyof LeafletEventTypes
-		? LeafletEventTypes[K]
-		: LeafletEvent;
+		? (e: LeafletEventTypes[K]) => void
+		: (e: LeafletEvent) => void;
 };
 
 export type LocateControlOptions = {

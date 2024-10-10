@@ -7,4 +7,11 @@
 	const initialView: LatLngExpression = [48.86750658335676, 2.3638381549875467];
 </script>
 
-<Map focusable={false} options={{ center: initialView, zoom: 18 }} bind:instance={map} />
+<Map
+	focusable={false}
+	options={{ center: initialView, zoom: 18 }}
+	bind:instance={map}
+	onmousemove={(e) => {
+		console.log({ e });
+	}}
+/>
