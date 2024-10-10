@@ -48,7 +48,8 @@
 		instance = $bindable(undefined as unknown as Map),
 		// locateControl = undefined,
 		focusable = true,
-		children
+		children,
+		...restProps
 		// locate_button
 	}: Props = $props();
 
@@ -127,7 +128,7 @@
 			});
 		}
 
-		bindEvents(instance, dispatch, events);
+		bindEvents(instance, restProps, events);
 
 		// create component for the tile layer ?
 		L.tileLayer(tilesUrl, {
