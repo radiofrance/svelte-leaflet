@@ -4,7 +4,6 @@ import type {
 	ErrorEvent,
 	Evented,
 	LatLngExpression,
-	LayerEvent,
 	LayersControlEvent,
 	LeafletEvent,
 	LeafletEventHandlerFnMap,
@@ -12,9 +11,12 @@ import type {
 	LeafletMouseEvent,
 	LocateOptions,
 	LocationEvent,
-	PopupEvent,
+	MarkerClusterSpiderfyEvent,
 	ResizeEvent,
-	TooltipEvent
+	TileErrorEvent,
+	TileEvent,
+	TooltipEvent,
+	ZoomAnimEvent
 } from 'leaflet';
 
 // Reexport your entry components here
@@ -63,7 +65,12 @@ type AllFuncTypes =
 	| ((e: LocationEvent) => void)
 	| ((e: ErrorEvent) => void)
 	| ((e: ResizeEvent) => void)
-	| ((e: TooltipEvent) => void);
+	| ((e: TooltipEvent) => void)
+	| ((e: ZoomAnimEvent) => void)
+	| ((e: DragEndEvent) => void)
+	| ((e: TileEvent) => void)
+	| ((e: TileErrorEvent) => void)
+	| ((e: MarkerClusterSpiderfyEvent) => void);
 
 type EventsParamsIntersection = UnionToIntersection<Parameters<AllFuncTypes>[0]>;
 type UnionToIntersection<U> = (U extends unknown ? (k: U) => void : never) extends (
@@ -84,7 +91,7 @@ type UnionToIntersection<U> = (U extends unknown ? (k: U) => void : never) exten
 // 	});
 // }
 
-type PrefixedLeafletEventHandlerFnMap = {
+export type PrefixedLeafletEventHandlerFnMap = {
 	[K in keyof LeafletEventHandlerFnMap as `on${K}`]: LeafletEventHandlerFnMap[K];
 };
 
@@ -96,7 +103,7 @@ export function bindEvents(
 	events.forEach((event) => {
 		const eventCallback = eventsProps[`on${event}`];
 		if (typeof eventCallback !== 'function') return;
-		instance.on(event, (e) => eventCallback(e));
+		instance.on(event, (e) => eventCallback(e as EventsParamsIntersection));
 	});
 }
 
@@ -163,56 +170,25 @@ export const polygonEvents = [
 	...interactiveLayerEvents
 ] as const;
 
-type LeafletEventTypes = {
-	resize: ResizeEvent;
-	locationerror: ErrorEvent;
-	locationfound: LocationEvent;
-	add: LeafletEvent;
-	remove: LeafletEvent;
-	dragend: DragEndEvent;
-} & LeafletEvents &
-	LayersControlEvents &
-	MouseEvents &
-	PopupEvents &
-	TooltipEvents &
-	LayerGroupEvents &
-	KeyboardEvents;
-
-type LeafletEvents = {
-	[K in (typeof leafletEvents)[number]]: LeafletEvent;
-};
-
-type LayersControlEvents = {
-	[K in (typeof layersControlEvents)[number]]: LayersControlEvent;
-};
-
-type MouseEvents = {
-	[K in (typeof leafletMouseEvents)[number]]: LeafletMouseEvent;
-};
-
-type PopupEvents = {
-	[K in (typeof popupEvents)[number]]: PopupEvent;
-};
-
-type TooltipEvents = {
-	[K in (typeof tooltipEvents)[number]]: TooltipEvent;
-};
-
-type LayerGroupEvents = {
-	[K in (typeof layerGroupEvents)[number]]: LayerEvent;
-};
-
-type KeyboardEvents = {
-	[K in (typeof keyboardEvents)[number]]: LeafletKeyboardEvent;
-};
-
-export type LeafletEventsRecord<T extends readonly string[]> = {
-	[K in T[number] as `on${K}`]: K extends keyof LeafletEventTypes
-		? (e: LeafletEventTypes[K]) => void
-		: (e: LeafletEvent) => void;
-};
-
 export type LocateControlOptions = {
 	position?: ControlPosition;
 	options?: LocateOptions;
+};
+
+export const mapEvents = [
+	...keyboardEvents,
+	...layerGroupEvents,
+	...layersControlEvents,
+	...leafletMouseEvents,
+	...locationEvents,
+	...mapStateChangeEvents,
+	...popupEvents,
+	...tooltipEvents,
+	'autopanstart',
+	'zoomanim'
+] as const;
+
+// TODO : create generic type for this
+export type MapEvents = {
+	[K in (typeof mapEvents)[number] as `on${K}`]: LeafletEventHandlerFnMap[K];
 };

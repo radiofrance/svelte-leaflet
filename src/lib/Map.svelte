@@ -11,19 +11,12 @@
 	import markerIcon from 'leaflet/dist/images/marker-icon.png';
 	import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
-	import { createEventDispatcher, setContext, tick } from 'svelte';
+	import { setContext } from 'svelte';
 	import {
-		type LeafletEventsRecord,
+		type MapEvents,
 		// type LocateControlOptions,
 		bindEvents,
-		keyboardEvents,
-		layerGroupEvents,
-		layersControlEvents,
-		leafletMouseEvents,
-		locationEvents,
-		mapStateChangeEvents,
-		popupEvents,
-		tooltipEvents
+		mapEvents
 	} from './index.js';
 	// import GeolocationButton from './private/GeolocationButton.svelte';
 
@@ -39,7 +32,8 @@
 		focusable?: boolean;
 		children?: import('svelte').Snippet;
 		// locate_button?: import('svelte').Snippet;
-	} & Partial<LeafletEventsRecord<typeof events>>;
+	} & Partial<MapEvents>;
+	// } & Partial<LeafletEventsRecord<typeof events>>;
 
 	let {
 		options = {},
@@ -59,7 +53,6 @@
 		maxZoom: 18,
 		keyboard: options.keyboard === undefined ? focusable : options.keyboard
 	};
-	const dispatch = createEventDispatcher<LeafletEventsRecord<typeof events>>();
 	// consider exporting a reference to the markers instead of a getter
 	export const getMarkers: () => Marker[] = () => {
 		const markers: Marker[] = [];
@@ -93,19 +86,6 @@
 		instance?.invalidateSize();
 	}
 
-	const events = [
-		...keyboardEvents,
-		...layerGroupEvents,
-		...layersControlEvents,
-		...leafletMouseEvents,
-		...locationEvents,
-		...mapStateChangeEvents,
-		...popupEvents,
-		...tooltipEvents,
-		'autopanstart',
-		'zoomanim'
-	] as const;
-
 	function onLoad() {
 		if (!container) return;
 		L = window.L;
@@ -128,7 +108,7 @@
 			});
 		}
 
-		bindEvents(instance, restProps, events);
+		bindEvents(instance, restProps, mapEvents);
 
 		// create component for the tile layer ?
 		L.tileLayer(tilesUrl, {
