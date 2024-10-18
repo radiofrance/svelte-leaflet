@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import type { MapOptions, Marker, Map, LatLngTuple } from 'leaflet';
 	import type Leaflet from 'leaflet';
 
@@ -18,6 +16,7 @@
 		bindEvents,
 		mapEvents
 	} from './index.js';
+	import { updateMapProps, updateProps } from './updateProps.js';
 	// import GeolocationButton from './private/GeolocationButton.svelte';
 
 	let L: typeof Leaflet;
@@ -71,20 +70,21 @@
 	let container: HTMLElement | null = $state(null);
 
 	// Using Object.assign to avoid losing inherited prototype values
-	run(() => {
+	$effect(() => {
 		if (instance) {
-			instance.options = Object.assign(instance.options, options);
+			updateMapProps(L, instance, options);
 		}
 	});
+	// run(() => {
+	// 	if (instance) {
+	// 		instance.options = Object.assign(instance.options, options);
+	// 	}
+	// });
 	// $: if (thisMap) thisMap.options = options; // ERROR : this.options.crs is undefined
 	// this doesnt work because a new options object is created and does not
 	// contains default options values (inherited via prototype) required for the map to work properly
 	// Spreading thisMap.options + options in a new object doesnt work either
 	// as spreading only copies the object own enumerable properties (not the inherited ones)
-
-	function resizeMap() {
-		instance?.invalidateSize();
-	}
 
 	function onLoad() {
 		if (!container) return;
@@ -96,17 +96,7 @@
 			iconUrl: markerIcon,
 			shadowUrl: markerShadow
 		});
-		instance = L.map(container, { ...defaultOptions, ...options, zoomControl: false });
-
-		if (options.zoomControl !== false) {
-			const zoomControl = L.control.zoom({
-				position: 'topleft'
-			});
-			zoomControl.addTo(instance);
-			zoomControl.getContainer()!.childNodes.forEach((child) => {
-				(child as HTMLElement).setAttribute('tabindex', focusable ? '0' : '-1');
-			});
-		}
+		instance = L.map(container, { ...defaultOptions, ...options });
 
 		bindEvents(instance, restProps, mapEvents);
 
@@ -145,7 +135,7 @@
 	}
 </script>
 
-<svelte:window onresize={resizeMap} use:leafletLoader />
+<svelte:window use:leafletLoader />
 
 <div class="Map" bind:this={container} style="height: 100%; width: 100%">
 	{#if instance}
