@@ -19,8 +19,8 @@ export function updateProps<T extends Map | Marker>(instance: T, newProps: AnyLe
 	}
 }
 
-function capitalize(str: string) {
-	return str[0].toUpperCase() + str.slice(1);
+function capitalize<T extends string>(str: T): Capitalize<T> {
+	return (str[0].toUpperCase() + str.slice(1)) as Capitalize<T>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -40,13 +40,26 @@ export function updateMapProps(L: typeof import('leaflet'), map: Map, newProps: 
 	for (const [key, value] of Object.entries(newProps)) {
 		// skip if the option value is unchanged
 		if (map.options[key as keyof MapOptions] === value) continue;
+		// debugger;
 		switch (key) {
 			// TODO : move check of unsupported options before the unchanged check
 			case 'fadeAnimation':
 			case 'zoomAnimation':
-				// some could be hacked around by changing style attributes
+			case 'wheelPxPerZoomLevel':
+				// animations could be hacked around by changing style attributes
 				// not a priority
 				throw new Error(`mutation of ${key} option is not supported`);
+
+			// setters cases
+			case 'minZoom':
+			case 'maxZoom':
+			case 'zoom': {
+				map.options[key] = value;
+				const setterName = `set${capitalize(key)}` as const;
+				const setter = map[setterName].bind(map);
+				setter(value);
+				break;
+			}
 
 			// enable/disable cases (handlers)
 			case 'boxZoom':
@@ -57,17 +70,27 @@ export function updateMapProps(L: typeof import('leaflet'), map: Map, newProps: 
 			case 'tapHold':
 			case 'touchZoom': // untested
 				map.options[key as keyof MapOptions] = value;
-				if (value) map[key].enable();
-				else map[key].disable();
+				if (value) map[key]?.enable();
+				else map[key]?.disable();
 				break;
 
 			// simple cases
-			case 'inertia':
-			case 'preferCanvas':
-			case 'bounceAtZoomLimits':
-			case 'markerZoomAnimation': // untested
-			case 'worldCopyJump': // untested
 			case 'closePopupOnClick': // untested
+			case 'markerZoomAnimation': // untested
+			case 'tapTolerance': // untested
+			case 'worldCopyJump': // untested
+			case 'bounceAtZoomLimits':
+			case 'easeLinearity':
+			case 'inertia':
+			case 'inertiaDeceleration':
+			case 'inertiaMaxSpeed':
+			case 'maxBoundsViscosity':
+			case 'preferCanvas':
+			case 'transform3DLimit':
+			case 'wheelDebounceTime':
+			case 'zoomAnimationThreshold':
+			case 'zoomDelta':
+			case 'zoomSnap':
 				map.options[key] = value;
 				break;
 
@@ -86,8 +109,14 @@ export function updateMapProps(L: typeof import('leaflet'), map: Map, newProps: 
 				break;
 
 			//complex cases
+			case 'keyboardPanDelta':
+				// seems fine despite using a private method
+				map.keyboard._setPanDelta(value);
+				break;
 			case 'trackResize':
-				if (!boundInvalidateMapSize) boundInvalidateMapSize = invalidateMapSize.bind(null, map);
+				map.options.trackResize = value;
+				if (boundInvalidateMapSize === null)
+					boundInvalidateMapSize = invalidateMapSize.bind(null, map);
 				window.removeEventListener('resize', boundInvalidateMapSize);
 				if (value) {
 					window.addEventListener('resize', boundInvalidateMapSize);
@@ -103,17 +132,24 @@ export type BooleanMapOption = keyof {
 		: never]: MapOptions[K];
 };
 
-type UnionContainsBoolean<T> = T extends boolean ? true : never;
+export type StringMapOption = keyof {
+	[K in keyof MapOptions as true extends UnionContainsString<MapOptions[K]>
+		? K
+		: never]: MapOptions[K];
+};
 
-// TODO : remove when https://github.com/DefinitelyTyped/DefinitelyTyped/pull/70943 is merged and published
+export type NumberMapOption = keyof {
+	[K in keyof MapOptions as true extends UnionContainsNumber<MapOptions[K]>
+		? K
+		: never]: MapOptions[K];
+};
+
+type UnionContainsBoolean<T> = T extends boolean ? true : never;
+type UnionContainsString<T> = T extends string ? true : never;
+type UnionContainsNumber<T> = T extends number ? true : never;
+
 declare module 'leaflet' {
-	interface MapOptions {
-		tapHold?: boolean;
-	}
-	interface Map {
-		tapHold: {
-			enable(): void;
-			disable(): void;
-		};
+	interface Handler {
+		_setPanDelta(delta: number): void;
 	}
 }

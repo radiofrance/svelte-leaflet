@@ -16,7 +16,7 @@
 		bindEvents,
 		mapEvents
 	} from './index.js';
-	import { updateMapProps, updateProps } from './updateProps.js';
+	import { updateMapProps } from './updateProps.js';
 	// import GeolocationButton from './private/GeolocationButton.svelte';
 
 	let L: typeof Leaflet;
@@ -48,6 +48,7 @@
 
 	const defaultOptions = {
 		center: [46.6188459, 1.7262114] as LatLngTuple,
+		trackResize: true,
 		zoom: 7,
 		maxZoom: 18,
 		keyboard: options.keyboard === undefined ? focusable : options.keyboard
@@ -96,8 +97,13 @@
 			iconUrl: markerIcon,
 			shadowUrl: markerShadow
 		});
-		instance = L.map(container, { ...defaultOptions, ...options });
-
+		const mergedOptions = { ...defaultOptions, ...options };
+		// trackResize is set to false else the resize callback couldn't be unbined (no reference)
+		instance = L.map(container, { ...mergedOptions, trackResize: false });
+		if (mergedOptions.trackResize) {
+			// this triggers updateMapProps and binds the custom resize callback
+			options.trackResize = true;
+		}
 		bindEvents(instance, restProps, mapEvents);
 
 		// create component for the tile layer ?
