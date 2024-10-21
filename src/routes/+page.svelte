@@ -1,13 +1,19 @@
 <script lang="ts">
 	import '../global.css';
-	import type { LeafletMap, LatLngExpression, MapOptions } from '$lib/index.js';
+	import type {
+		LeafletMap,
+		LatLngExpression,
+		MapOptions,
+		LatLngTuple,
+		LatLngBoundsLiteral
+	} from '$lib/index.js';
 	import Map from '$lib/Map.svelte';
 	import type { BooleanMapOption, NumberMapOption } from '$lib/updateProps.js';
 	import Details from '../components/Details.svelte';
 
 	let map: LeafletMap | undefined = $state();
-	const initialView: LatLngExpression = [48.86750658335676, 2.3638381549875467];
-	let options: MapOptions = $state({
+	const initialView: LatLngTuple = [48.86750658335676, 2.3638381549875467];
+	let options = $state({
 		// boolean options
 		preferCanvas: false,
 		attributionControl: false,
@@ -50,8 +56,14 @@
 		maxBounds: [
 			[41.22824901518532, -6.525878906250001],
 			[52.37559917665913, 9.843750000000002]
-		]
+		] as LatLngBoundsLiteral
 	});
+
+	function changeCenter(event: Event) {
+		const target = event.target as HTMLInputElement;
+		const [lat, lng] = target.value.split(',').map((v) => parseFloat(v));
+		options.center = [lat, lng];
+	}
 
 	const booleanOptions = Object.keys(options).filter(
 		(key) => typeof options[key as keyof typeof options] === 'boolean'
@@ -83,6 +95,10 @@
 			<button onclick={() => (options[key] = !options[key])}>{key}: {options[key]}</button>
 		{/each}
 	</Details>
+	<label>
+		center
+		<input type="text" onchange={changeCenter} value={`${initialView[0]},${initialView[1]}`} />
+	</label>
 </div>
 
 <style>

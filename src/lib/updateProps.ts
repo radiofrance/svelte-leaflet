@@ -46,6 +46,7 @@ export function updateMapProps(L: typeof import('leaflet'), map: Map, newProps: 
 			case 'fadeAnimation':
 			case 'zoomAnimation':
 			case 'wheelPxPerZoomLevel':
+			case 'crs':
 				// animations could be hacked around by changing style attributes
 				// not a priority
 				throw new Error(`mutation of ${key} option is not supported`);
@@ -61,7 +62,7 @@ export function updateMapProps(L: typeof import('leaflet'), map: Map, newProps: 
 				break;
 			}
 
-			// enable/disable cases (handlers)
+			// enable/disable cases (Handlers)
 			case 'boxZoom':
 			case 'scrollWheelZoom':
 			case 'doubleClickZoom':
@@ -69,7 +70,7 @@ export function updateMapProps(L: typeof import('leaflet'), map: Map, newProps: 
 			case 'keyboard':
 			case 'tapHold':
 			case 'touchZoom': // untested
-				map.options[key as keyof MapOptions] = value;
+				map.options[key] = value;
 				if (value) map[key]?.enable();
 				else map[key]?.disable();
 				break;
@@ -109,6 +110,10 @@ export function updateMapProps(L: typeof import('leaflet'), map: Map, newProps: 
 				break;
 
 			//complex cases
+			case 'center':
+				map.options.center = value;
+				map.setView(value, map.getZoom());
+				break;
 			case 'keyboardPanDelta':
 				// seems fine despite using a private method
 				map.keyboard._setPanDelta(value);
@@ -153,3 +158,6 @@ declare module 'leaflet' {
 		_setPanDelta(delta: number): void;
 	}
 }
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type rest = Exclude<keyof MapOptions, BooleanMapOption | StringMapOption | NumberMapOption>;
