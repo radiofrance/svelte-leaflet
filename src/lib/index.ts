@@ -35,6 +35,7 @@ export type {
 	CircleOptions,
 	DragEndEvent,
 	ErrorEvent,
+	LatLngBoundsLiteral,
 	LatLngExpression,
 	LatLngLiteral,
 	LatLngTuple,
