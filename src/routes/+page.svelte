@@ -77,11 +77,23 @@
 </script>
 
 <Map
+	locateControl={{
+		options: {
+			enableHighAccuracy: true,
+			setView: true
+		},
+		position: 'topleft'
+	}}
+	onload={(e) => console.log('map loaded', e)}
 	focusable={false}
 	bind:options
 	bind:instance={map}
 	oncontextmenu={() => console.log('contextmenu')}
-/>
+>
+	<!-- {#snippet locateButton()}
+		<button>Custom Locate</button>
+	{/snippet} -->
+</Map>
 
 <div class="controls">
 	<Details title="Number">

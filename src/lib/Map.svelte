@@ -1,7 +1,4 @@
 <script lang="ts">
-	import type { MapOptions, Marker, Map, LatLngTuple } from 'leaflet';
-	import type Leaflet from 'leaflet';
-
 	import 'leaflet/dist/leaflet.css';
 	import 'leaflet.markercluster/dist/MarkerCluster.css';
 	import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
@@ -9,41 +6,38 @@
 	import markerIcon from 'leaflet/dist/images/marker-icon.png';
 	import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
-	import { setContext } from 'svelte';
-	import {
-		type MapEvents,
-		// type LocateControlOptions,
-		bindEvents,
-		mapEvents
-	} from './index.js';
-	import { updateMapProps } from './updateProps.js';
-	// import GeolocationButton from './private/GeolocationButton.svelte';
+	import type { MapOptions, Marker, Map as LeafletMap, LatLngTuple } from 'leaflet';
+	import type Leaflet from 'leaflet';
+	import { type MapEvents, type LocateControlOptions, bindEvents, mapEvents } from './index.js';
+	import { setContext, type Snippet } from 'svelte';
+	import GeolocationButton from '../components/GeolocationButton.svelte';
+	import { createLocateOnAdd, updateMapProps } from './map.svelte.js';
 
 	let L: typeof Leaflet;
-	// let locateButtonContainer: HTMLDivElement = $state();
+	let locateButtonContainer: HTMLDivElement;
 
 	type Props = {
 		options?: MapOptions;
 		tilesUrl?: string;
-		attribution?: any;
-		instance?: Map;
-		// locateControl?: LocateControlOptions | undefined;
+		attribution?: string;
+		instance?: LeafletMap;
+		locateControl?: LocateControlOptions;
 		focusable?: boolean;
-		children?: import('svelte').Snippet;
-		// locate_button?: import('svelte').Snippet;
+		children?: Snippet;
+		locateButton?: Snippet;
 	} & Partial<MapEvents>;
 	// } & Partial<LeafletEventsRecord<typeof events>>;
 
 	let {
+		instance = $bindable(undefined),
 		options = $bindable({}),
 		tilesUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
 		attribution = `&copy;<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>`,
-		instance = $bindable(undefined as unknown as Map),
-		// locateControl = undefined,
+		locateControl = undefined,
 		focusable = true,
 		children,
+		locateButton,
 		...restProps
-		// locate_button
 	}: Props = $props();
 
 	const defaultOptions = {
@@ -111,25 +105,16 @@
 			attribution
 		}).addTo(instance);
 
-		// TODO: find out why manually firing the load event is needed
-		// instance.whenReady(async () => {
-		// 	instance.fireEvent('load');
-		// 	await tick();
-		// 	if (locateControl) {
-		// 		const control = L.Control.extend({
-		// 			position: 'topleft',
-		// 			onAdd() {
-		// 				const button = locateButtonContainer.firstChild as HTMLElement;
-		// 				button.onclick = (e: MouseEvent) => {
-		// 					e.stopPropagation();
-		// 					instance.locate(locateControl?.options);
-		// 				};
-		// 				return button;
-		// 			}
-		// 		});
-		// 		instance.addControl(new control(locateControl));
-		// 	}
-		// });
+		instance.whenReady(async () => {
+			if (!locateControl || !instance) return;
+			// TODO: find out why manually firing the load event is needed
+			instance.fireEvent('load');
+			const control = L.Control.extend({
+				position: locateControl.position,
+				onAdd: createLocateOnAdd(instance, locateButtonContainer, locateControl.options)
+			});
+			instance.addControl(new control(locateControl));
+		});
 	}
 
 	function leafletLoader(_node: HTMLElement) {
@@ -149,11 +134,13 @@
 	{/if}
 </div>
 
-<!-- <div class="locate-button-container" bind:this={locateButtonContainer}>
-	{#if locate_button}{@render locate_button()}{:else}
+<div class="locate-button-container" bind:this={locateButtonContainer}>
+	{#if locateButton}
+		{@render locateButton()}
+	{:else}
 		<GeolocationButton />
 	{/if}
-</div> -->
+</div>
 
 <style>
 	.Map {
