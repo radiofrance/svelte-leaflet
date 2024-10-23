@@ -35,7 +35,7 @@
 	// } & Partial<LeafletEventsRecord<typeof events>>;
 
 	let {
-		options = {},
+		options = $bindable({}),
 		tilesUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
 		attribution = `&copy;<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>`,
 		instance = $bindable(undefined as unknown as Map),
