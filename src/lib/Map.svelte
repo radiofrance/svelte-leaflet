@@ -147,7 +147,7 @@
 		z-index: 0;
 	}
 
-	/* .locate-button-container {
+	.locate-button-container {
 		display: none;
-	} */
+	}
 </style>
