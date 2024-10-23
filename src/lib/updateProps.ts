@@ -40,18 +40,20 @@ export function updateMapProps(L: typeof import('leaflet'), map: Map, newProps: 
 	for (const [key, value] of Object.entries(newProps)) {
 		// skip if the option value is unchanged
 		if (map.options[key as keyof MapOptions] === value) continue;
-		// debugger;
 		switch (key) {
 			// TODO : move check of unsupported options before the unchanged check
 			case 'fadeAnimation':
 			case 'zoomAnimation':
 			case 'wheelPxPerZoomLevel':
 			case 'crs':
+			case 'layers':
+			case 'renderer':
 				// animations could be hacked around by changing style attributes
 				// not a priority
 				throw new Error(`mutation of ${key} option is not supported`);
 
 			// setters cases
+			case 'maxBounds':
 			case 'minZoom':
 			case 'maxZoom':
 			case 'zoom': {

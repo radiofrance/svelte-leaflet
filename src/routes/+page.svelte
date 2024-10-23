@@ -1,12 +1,6 @@
 <script lang="ts">
 	import '../global.css';
-	import type {
-		LeafletMap,
-		LatLngExpression,
-		MapOptions,
-		LatLngTuple,
-		LatLngBoundsLiteral
-	} from '$lib/index.js';
+	import type { LeafletMap, LatLngTuple, LatLngBoundsLiteral } from '$lib/index.js';
 	import Map from '$lib/Map.svelte';
 	import type { BooleanMapOption, NumberMapOption } from '$lib/updateProps.js';
 	import Details from '../components/Details.svelte';
@@ -61,14 +55,22 @@
 
 	function changeCenter(event: Event) {
 		const target = event.target as HTMLInputElement;
-		const [lat, lng] = target.value.split(',').map((v) => parseFloat(v));
-		options.center = [lat, lng];
+		const center = JSON.parse(target.value);
+		options.center = center;
 	}
 
+	function changeMaxBounds(event: Event) {
+		const target = event.target as HTMLInputElement;
+		const bounds = JSON.parse(target.value);
+		options.maxBounds = bounds;
+	}
+
+	// svelte-ignore state_referenced_locally
 	const booleanOptions = Object.keys(options).filter(
 		(key) => typeof options[key as keyof typeof options] === 'boolean'
 	) as BooleanMapOption[];
 
+	// svelte-ignore state_referenced_locally
 	const numberOptions = Object.keys(options).filter(
 		(key) => typeof options[key as keyof typeof options] === 'number'
 	) as NumberMapOption[];
@@ -76,7 +78,7 @@
 
 <Map
 	focusable={false}
-	{options}
+	bind:options
 	bind:instance={map}
 	oncontextmenu={() => console.log('contextmenu')}
 />
@@ -97,7 +99,11 @@
 	</Details>
 	<label>
 		center
-		<input type="text" onchange={changeCenter} value={`${initialView[0]},${initialView[1]}`} />
+		<input type="text" onchange={changeCenter} value={JSON.stringify(initialView)} />
+	</label>
+	<label>
+		maxBounds
+		<input type="text" onchange={changeMaxBounds} value={JSON.stringify(options.maxBounds)} />
 	</label>
 </div>
 
