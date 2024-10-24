@@ -1,11 +1,6 @@
 import type { Map as LeafletMap, MapOptions } from 'leaflet';
 import type L from 'leaflet';
-import {
-	capitalize,
-	type UnionContainsBoolean,
-	type UnionContainsNumber,
-	type UnionContainsString
-} from './utils.js';
+import { capitalize } from './utils.js';
 
 // stores the function bound to the event listener so it can be removed later
 let boundInvalidateMapSize: null | (() => void) = null;
@@ -18,11 +13,19 @@ function invalidateMapSize(map: LeafletMap) {
 	});
 }
 
-export function updateMapProps(L: typeof import('leaflet'), map: LeafletMap, newProps: MapOptions) {
+export function updateMapProps(
+	L: typeof import('leaflet'),
+	instance: LeafletMap,
+	newProps: MapOptions
+) {
 	if (!newProps) return;
 	for (const [key, value] of Object.entries(newProps)) {
 		// skip if the option value is unchanged
-		if (map.options[key as keyof MapOptions] === value) continue;
+		if (instance.options[key as keyof MapOptions] === value) continue;
+		// update the option value :
+		// - is needed for future comparison (CF above)
+		// - has actual effect for simple cases
+		instance.options[key as keyof MapOptions] = value;
 		switch (key) {
 			// TODO : move check of unsupported options before the unchanged check
 			case 'fadeAnimation':
@@ -40,9 +43,9 @@ export function updateMapProps(L: typeof import('leaflet'), map: LeafletMap, new
 			case 'minZoom':
 			case 'maxZoom':
 			case 'zoom': {
-				map.options[key] = value;
+				instance.options[key] = value;
 				const setterName = `set${capitalize(key)}` as const;
-				const setter = map[setterName].bind(map);
+				const setter = instance[setterName].bind(instance);
 				setter(value);
 				break;
 			}
@@ -55,9 +58,9 @@ export function updateMapProps(L: typeof import('leaflet'), map: LeafletMap, new
 			case 'keyboard':
 			case 'tapHold':
 			case 'touchZoom': // untested
-				map.options[key] = value;
-				if (value) map[key]?.enable();
-				else map[key]?.disable();
+				instance.options[key] = value;
+				if (value) instance[key]?.enable();
+				else instance[key]?.disable();
 				break;
 
 			// simple cases
@@ -77,40 +80,40 @@ export function updateMapProps(L: typeof import('leaflet'), map: LeafletMap, new
 			case 'zoomAnimationThreshold':
 			case 'zoomDelta':
 			case 'zoomSnap':
-				map.options[key] = value;
+				instance.options[key] = value;
 				break;
 
 			// Control cases
 			case 'zoomControl':
 				if (value) {
-					map.zoomControl = map.zoomControl || L.control.zoom();
-					map.zoomControl.addTo(map);
-				} else map.zoomControl?.remove();
+					instance.zoomControl = instance.zoomControl || L.control.zoom();
+					instance.zoomControl.addTo(instance);
+				} else instance.zoomControl?.remove();
 				break;
 			case 'attributionControl':
 				if (value) {
-					map.attributionControl = map.attributionControl || L.control.attribution();
-					map.attributionControl.addTo(map);
-				} else map.attributionControl?.remove();
+					instance.attributionControl = instance.attributionControl || L.control.attribution();
+					instance.attributionControl.addTo(instance);
+				} else instance.attributionControl?.remove();
 				break;
 
 			//complex cases
 			case 'center':
-				map.options.center = value;
-				map.setView(value, map.getZoom());
+				instance.options.center = value;
+				instance.setView(value, instance.getZoom());
 				break;
 			case 'keyboardPanDelta':
 				// seems fine despite using a private method
-				map.keyboard._setPanDelta(value);
+				instance.keyboard._setPanDelta(value);
 				break;
 			case 'trackResize':
-				map.options.trackResize = value;
+				instance.options.trackResize = value;
 				if (boundInvalidateMapSize === null)
-					boundInvalidateMapSize = invalidateMapSize.bind(null, map);
+					boundInvalidateMapSize = invalidateMapSize.bind(null, instance);
 				window.removeEventListener('resize', boundInvalidateMapSize);
 				if (value) {
 					window.addEventListener('resize', boundInvalidateMapSize);
-					invalidateMapSize(map);
+					invalidateMapSize(instance);
 				}
 				break;
 		}
@@ -144,21 +147,3 @@ function getFirstNonCommentChild(element: HTMLElement) {
 	}
 	return child as HTMLElement | null;
 }
-
-export type BooleanMapOption = keyof {
-	[K in keyof MapOptions as true extends UnionContainsBoolean<MapOptions[K]>
-		? K
-		: never]: MapOptions[K];
-};
-
-export type StringMapOption = keyof {
-	[K in keyof MapOptions as true extends UnionContainsString<MapOptions[K]>
-		? K
-		: never]: MapOptions[K];
-};
-
-export type NumberMapOption = keyof {
-	[K in keyof MapOptions as true extends UnionContainsNumber<MapOptions[K]>
-		? K
-		: never]: MapOptions[K];
-};

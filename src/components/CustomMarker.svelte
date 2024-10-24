@@ -1,7 +1,15 @@
-<button aria-label="Marker" class="MarkerIci">
+<script lang="ts">
+	function onclick() {
+		console.log(
+			'Clicked ! Custom markers can handle interaction, internal state and more, just like any other Svelte component.'
+		);
+	}
+</script>
+
+<button aria-label="Marker" class="MarkerIci" {onclick}>
 	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 73 96" fill="none">
 		<g filter="url(#a)">
-			<path fill="#111827" d="M37 27 20 44l17 17 17-17-17-17Z" />
+			<path fill="currentColor" d="M37 27 20 44l17 17 17-17-17-17Z" />
 			<g filter="url(#b)">
 				<path fill="currentColor" d="M54 44a24 24 0 0 0-34-34 24 24 0 0 0 34 34Z" />
 			</g>
@@ -99,7 +107,11 @@
 	.MarkerIci {
 		display: block;
 		width: 49px;
-		transform: translate(8%, -27%);
+		/* using transform + translate is the simplest way to center the marker */
+		transform: translate(-19px, -33.5px);
+		background: none;
+		border: none;
+		color: blue;
 	}
 
 	.MarkerIci:hover:not(.selected) svg {

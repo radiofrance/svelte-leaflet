@@ -1,7 +1,8 @@
 <script lang="ts">
-	import type { LeafletMap, LatLngTuple, LatLngBoundsLiteral } from '$lib/index.js';
+	import type { LeafletMap, LatLngTuple, LatLngBoundsLiteral, MapOptions } from '$lib/index.js';
 	import Map from '$lib/Map.svelte';
-	import type { BooleanMapOption, NumberMapOption } from '$lib/updateProps.js';
+	import type { PickOptionByType } from '$lib/utils.js';
+	import Controls from '../../components/Controls.svelte';
 	import Details from '../../components/Details.svelte';
 
 	let map: LeafletMap | undefined = $state();
@@ -67,12 +68,12 @@
 	// svelte-ignore state_referenced_locally
 	const booleanOptions = Object.keys(options).filter(
 		(key) => typeof options[key as keyof typeof options] === 'boolean'
-	) as BooleanMapOption[];
+	) as PickOptionByType<MapOptions, boolean>[];
 
 	// svelte-ignore state_referenced_locally
 	const numberOptions = Object.keys(options).filter(
 		(key) => typeof options[key as keyof typeof options] === 'number'
-	) as NumberMapOption[];
+	) as PickOptionByType<MapOptions, number>[];
 </script>
 
 <Map
@@ -94,7 +95,7 @@
 	{/snippet} -->
 </Map>
 
-<div class="controls">
+<Controls>
 	<Details title="Number">
 		{#each numberOptions as key}
 			<label>
@@ -116,29 +117,11 @@
 		maxBounds
 		<input type="text" onchange={changeMaxBounds} value={JSON.stringify(options.maxBounds)} />
 	</label>
-</div>
+</Controls>
 
 <style>
 	input[type='number'] {
 		width: 100px;
-	}
-	.controls {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-		box-sizing: border-box;
-		max-height: 100vh;
-		width: 320px;
-		overflow-y: auto;
-		color: black;
-		font-size: 12px;
-		border: 1px solid grey;
-		position: absolute;
-		top: 0;
-		right: 0;
-		z-index: 1000;
-		background: white;
-		padding: 1rem;
 	}
 
 	label {
