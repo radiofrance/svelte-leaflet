@@ -1,6 +1,11 @@
 import type { Map as LeafletMap, MapOptions } from 'leaflet';
 import type L from 'leaflet';
-import { capitalize } from './utils.js';
+import {
+	capitalize,
+	type UnionContainsBoolean,
+	type UnionContainsNumber,
+	type UnionContainsString
+} from './utils.js';
 
 // stores the function bound to the event listener so it can be removed later
 let boundInvalidateMapSize: null | (() => void) = null;
@@ -139,3 +144,21 @@ function getFirstNonCommentChild(element: HTMLElement) {
 	}
 	return child as HTMLElement | null;
 }
+
+export type BooleanMapOption = keyof {
+	[K in keyof MapOptions as true extends UnionContainsBoolean<MapOptions[K]>
+		? K
+		: never]: MapOptions[K];
+};
+
+export type StringMapOption = keyof {
+	[K in keyof MapOptions as true extends UnionContainsString<MapOptions[K]>
+		? K
+		: never]: MapOptions[K];
+};
+
+export type NumberMapOption = keyof {
+	[K in keyof MapOptions as true extends UnionContainsNumber<MapOptions[K]>
+		? K
+		: never]: MapOptions[K];
+};

@@ -1,4 +1,4 @@
-import type { Map, MapOptions, Marker } from 'leaflet';
+import type { Map, Marker } from 'leaflet';
 import { capitalize } from './utils.js';
 
 export function updateProps<T extends Map | Marker>(instance: T, newProps: AnyLeafletInstance) {
@@ -22,28 +22,6 @@ export function updateProps<T extends Map | Marker>(instance: T, newProps: AnyLe
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyLeafletInstance = { [key: string]: any };
-
-export type BooleanMapOption = keyof {
-	[K in keyof MapOptions as true extends UnionContainsBoolean<MapOptions[K]>
-		? K
-		: never]: MapOptions[K];
-};
-
-export type StringMapOption = keyof {
-	[K in keyof MapOptions as true extends UnionContainsString<MapOptions[K]>
-		? K
-		: never]: MapOptions[K];
-};
-
-export type NumberMapOption = keyof {
-	[K in keyof MapOptions as true extends UnionContainsNumber<MapOptions[K]>
-		? K
-		: never]: MapOptions[K];
-};
-
-type UnionContainsBoolean<T> = T extends boolean ? true : never;
-type UnionContainsString<T> = T extends string ? true : never;
-type UnionContainsNumber<T> = T extends number ? true : never;
 
 declare module 'leaflet' {
 	interface Handler {
