@@ -1,39 +1,56 @@
 <script lang="ts">
 	import { getContext, onMount, type Snippet } from 'svelte';
-	import type { Map as LeafletMap, Marker as LeafletMarker, LayerGroup } from 'leaflet';
-	import type { LatLngExpression } from './index.js';
+	import type {
+		Map as LeafletMap,
+		Marker as LeafletMarker,
+		MarkerOptions,
+		LayerGroup
+	} from 'leaflet';
+	import { bindEvents, markerEvents, type LatLngExpression, type MarkerEvents } from './index.js';
+	import { updateMarkerProps } from './marker.svelte.js';
 
 	type Props = {
 		latlng: LatLngExpression;
-		children?: Snippet;
-		icon?: Snippet;
+		options?: MarkerOptions;
 		instance?: LeafletMarker;
-	};
+		popup?: Snippet;
+		icon?: Snippet;
+	} & Partial<MarkerEvents>;
 
-	let { latlng, children, icon, instance = $bindable() }: Props = $props();
-	// svelte-ignore non_reactive_update
-	let iconContainer: HTMLDivElement;
+	let {
+		latlng,
+		options = $bindable(),
+		instance = $bindable(),
+		popup,
+		icon,
+		...restProps
+	}: Props = $props();
+	let iconContainer: HTMLDivElement | undefined = $state();
 
 	const L = globalThis.window.L;
 	const getMap = getContext<() => LeafletMap>('map');
 	const getLayerGroup = getContext<() => LayerGroup>('layerGroup');
 
+	$effect(() => {
+		if (instance && options) {
+			updateMarkerProps(instance, options);
+		}
+	});
+
 	onMount(() => {
 		const map = getMap?.();
 		const layerGroup = getLayerGroup?.();
 		const mapOrLayerGroup = layerGroup || map;
+		const markerOptions = { ...options };
 		if (icon) {
-			console.log({ iconContainer });
-			const innerHTML = iconContainer.innerHTML;
-			const icon = L.divIcon({ html: innerHTML });
-			instance = L.marker(latlng, { icon });
-			instance.addTo(mapOrLayerGroup);
-
-			debugger;
-		} else {
-			instance = L.marker(latlng);
-			instance.addTo(mapOrLayerGroup);
+			markerOptions.icon = L.divIcon({
+				html: iconContainer,
+				className: ''
+			});
 		}
+		instance = L.marker(latlng, markerOptions);
+		bindEvents(instance, restProps, markerEvents);
+		instance.addTo(mapOrLayerGroup);
 	});
 </script>
 
@@ -42,9 +59,3 @@
 		{@render icon()}
 	</div>
 {/if}
-
-<style>
-	.icon-container {
-		display: none;
-	}
-</style>
