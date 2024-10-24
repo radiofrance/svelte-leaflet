@@ -108,22 +108,6 @@ export function bindEvents(
 	});
 }
 
-// export const leafletEvents = [
-// 	'dragstart',
-// 	'drag',
-// 	'add',
-// 	'remove',
-// 	'loading',
-// 	'error',
-// 	'update',
-// 	'down',
-// 	'predrag'
-// ] as const;
-// export const resizeEvents = ['resize'] as const;
-// export const zoomAnimEvents = ['zoomanim'] as const;
-// export const tileEvents = ['tileunload', 'tileloadstart', 'tileload', 'tileabort'] as const;
-// export const tileErrorEvents = ['tileerror'] as const;
-
 export const interactiveLayerEvents = [
 	'click',
 	'dblclick',
@@ -133,6 +117,8 @@ export const interactiveLayerEvents = [
 	'mouseout',
 	'contextmenu'
 ] as const;
+
+export const draggingEvents = ['dragstart', 'movestart', 'drag', 'dragend', 'moveend'] as const;
 
 export const keyboardEvents = ['keypress', 'keydown', 'keyup'] as const;
 
@@ -189,7 +175,20 @@ export const mapEvents = [
 	'zoomanim'
 ] as const;
 
+export const markerEvents = [
+	'move',
+	...draggingEvents,
+	...interactiveLayerEvents,
+	...layerEvents,
+	...popupEvents,
+	...tooltipEvents
+] as const;
+
 // TODO : create generic type for this
 export type MapEvents = {
 	[K in (typeof mapEvents)[number] as `on${K}`]: LeafletEventHandlerFnMap[K];
+};
+
+export type MarkerEvents = {
+	[K in (typeof markerEvents)[number] as `on${K}`]: LeafletEventHandlerFnMap[K];
 };

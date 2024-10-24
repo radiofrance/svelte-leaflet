@@ -17,20 +17,21 @@
 	let locateButtonContainer: HTMLDivElement;
 
 	type Props = {
+		instance?: LeafletMap;
 		options?: MapOptions;
+		markers?: Marker[];
 		tilesUrl?: string;
 		attribution?: string;
-		instance?: LeafletMap;
 		locateControl?: LocateControlOptions;
 		focusable?: boolean;
 		children?: Snippet;
 		locateButton?: Snippet;
 	} & Partial<MapEvents>;
-	// } & Partial<LeafletEventsRecord<typeof events>>;
 
 	let {
 		instance = $bindable(undefined),
 		options = $bindable({}),
+		markers = $bindable([]),
 		tilesUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
 		attribution = `&copy;<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>`,
 		locateControl = undefined,
@@ -58,28 +59,15 @@
 		return markers;
 	};
 
-	// so the parent has access to the map
-	// export const map = () => instance;
 	setContext('map', () => instance);
 	setContext('focusable', focusable ? null : -1);
 	let container: HTMLElement | null = $state(null);
 
-	// Using Object.assign to avoid losing inherited prototype values
 	$effect(() => {
 		if (instance) {
 			updateMapProps(L, instance, options);
 		}
 	});
-	// run(() => {
-	// 	if (instance) {
-	// 		instance.options = Object.assign(instance.options, options);
-	// 	}
-	// });
-	// $: if (thisMap) thisMap.options = options; // ERROR : this.options.crs is undefined
-	// this doesnt work because a new options object is created and does not
-	// contains default options values (inherited via prototype) required for the map to work properly
-	// Spreading thisMap.options + options in a new object doesnt work either
-	// as spreading only copies the object own enumerable properties (not the inherited ones)
 
 	function onLoad() {
 		if (!container) return;
