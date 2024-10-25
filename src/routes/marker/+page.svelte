@@ -20,7 +20,10 @@
 		zIndexOffset: 0,
 		opacity: 1,
 		riseOffset: 250,
-		autoPanSpeed: 10 // untested
+		autoPanSpeed: 10, // untested
+
+		// string options
+		title: 'marker'
 	});
 
 	// svelte-ignore state_referenced_locally

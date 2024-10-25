@@ -15,6 +15,7 @@ export function updateMarkerProps(instance: Marker, options: MarkerOptions) {
 		// debugger;
 		switch (key) {
 			// setter cases
+			case 'icon': // untested
 			case 'opacity':
 			case 'zIndexOffset': {
 				const setterName = `set${capitalize(key)}` as const;
@@ -23,6 +24,9 @@ export function updateMarkerProps(instance: Marker, options: MarkerOptions) {
 				break;
 			}
 			// complex cases
+			case 'title':
+				instance.getElement()?.setAttribute('title', value);
+				break;
 			case 'draggable':
 				// option and handler are named differently
 				if (value) instance.dragging?.enable();
