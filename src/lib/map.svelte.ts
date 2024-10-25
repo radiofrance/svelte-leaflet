@@ -19,13 +19,25 @@ export function updateMapProps(
 	newProps: MapOptions
 ) {
 	if (!newProps) return;
-	for (const [key, value] of Object.entries(newProps)) {
+	// any is the default type for the Object.entries values anyway
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	for (const [key, value] of Object.entries(newProps) as [keyof MapOptions, any][]) {
 		// skip if the option value is unchanged
-		if (instance.options[key as keyof MapOptions] === value) continue;
+		if (instance.options[key] === value) continue;
 		// update the option value :
-		// - is needed for future comparison (CF above)
-		// - has actual effect for simple cases
-		instance.options[key as keyof MapOptions] = value;
+		// - needed for future comparison (CF above)
+		// - handles simple cases :
+		//		untested :
+		//		  closePopupOnClick	markerZoomAnimation	tapTolerance	worldCopyJump(untested)
+		//		tested :
+		//		  bounceAtZoomLimits	preferCanvas
+		//		  easeLinearity				transform3DLimit
+		//		  inertia							wheelDebounceTime
+		//		  inertiaDeceleration	zoomAnimationThreshold
+		//		  inertiaMaxSpeed			zoomDelta
+		//		  maxBoundsViscosity	zoomSnap
+		instance.options[key] = value;
+
 		switch (key) {
 			// TODO : move check of unsupported options before the unchanged check
 			case 'fadeAnimation':
@@ -43,7 +55,6 @@ export function updateMapProps(
 			case 'minZoom':
 			case 'maxZoom':
 			case 'zoom': {
-				instance.options[key] = value;
 				const setterName = `set${capitalize(key)}` as const;
 				const setter = instance[setterName].bind(instance);
 				setter(value);
@@ -58,29 +69,8 @@ export function updateMapProps(
 			case 'keyboard':
 			case 'tapHold':
 			case 'touchZoom': // untested
-				instance.options[key] = value;
 				if (value) instance[key]?.enable();
 				else instance[key]?.disable();
-				break;
-
-			// simple cases
-			case 'closePopupOnClick': // untested
-			case 'markerZoomAnimation': // untested
-			case 'tapTolerance': // untested
-			case 'worldCopyJump': // untested
-			case 'bounceAtZoomLimits':
-			case 'easeLinearity':
-			case 'inertia':
-			case 'inertiaDeceleration':
-			case 'inertiaMaxSpeed':
-			case 'maxBoundsViscosity':
-			case 'preferCanvas':
-			case 'transform3DLimit':
-			case 'wheelDebounceTime':
-			case 'zoomAnimationThreshold':
-			case 'zoomDelta':
-			case 'zoomSnap':
-				instance.options[key] = value;
 				break;
 
 			// Control cases
@@ -99,7 +89,6 @@ export function updateMapProps(
 
 			//complex cases
 			case 'center':
-				instance.options.center = value;
 				instance.setView(value, instance.getZoom());
 				break;
 			case 'keyboardPanDelta':
@@ -107,7 +96,6 @@ export function updateMapProps(
 				instance.keyboard._setPanDelta(value);
 				break;
 			case 'trackResize':
-				instance.options.trackResize = value;
 				if (boundInvalidateMapSize === null)
 					boundInvalidateMapSize = invalidateMapSize.bind(null, instance);
 				window.removeEventListener('resize', boundInvalidateMapSize);

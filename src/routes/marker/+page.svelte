@@ -1,20 +1,26 @@
 <script lang="ts">
-	import DivIcon from '$lib/DivIcon.svelte';
 	import type { MarkerOptions } from '$lib/index.js';
 	import Map from '$lib/Map.svelte';
 	import Marker from '$lib/Marker.svelte';
 	import type { PickOptionByType } from '$lib/utils.js';
 	import Controls from '../../components/Controls.svelte';
-	import CustomMarker from '../../components/CustomMarker.svelte';
 	import Details from '../../components/Details.svelte';
 
 	let options: MarkerOptions = $state({
+		// boolean options
 		draggable: false,
 		keyboard: true,
 		riseOnHover: true,
 		autoPan: true,
 		autoPanOnFocus: true,
-		interactive: true
+		interactive: true,
+		bubblingMouseEvents: true,
+
+		// number options
+		zIndexOffset: 0,
+		opacity: 1,
+		riseOffset: 250,
+		autoPanSpeed: 10 // untested
 	});
 
 	// svelte-ignore state_referenced_locally
@@ -32,8 +38,9 @@
 	locateControl={{
 		position: 'topleft'
 	}}
+	oncontextmenu={() => console.log('contextmenu from map')}
 >
-	<Marker
+	<!-- <Marker
 		bind:options
 		latlng={[46.788094, 1.703562]}
 		onclick={(e) => {
@@ -43,9 +50,13 @@
 		<DivIcon>
 			<CustomMarker />
 		</DivIcon>
-	</Marker>
+	</Marker> -->
 
-	<Marker bind:options latlng={[46.788094, 1.803562]} />
+	<Marker
+		bind:options
+		latlng={[46.788094, 1.803562]}
+		oncontextmenu={() => console.log('contextmenu from marker')}
+	/>
 </Map>
 
 <Controls>
