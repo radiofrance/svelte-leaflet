@@ -16,7 +16,7 @@ import type {
 	TileErrorEvent,
 	TileEvent,
 	TooltipEvent,
-	ZoomAnimEvent
+	ZoomAnimEvent,
 } from 'leaflet';
 
 // Reexport your entry components here
@@ -52,7 +52,7 @@ export type {
 	PopupEvent,
 	PopupOptions,
 	ResizeEvent,
-	TooltipEvent
+	TooltipEvent,
 } from 'leaflet';
 
 export type Latlngs = LatLngExpression[] | LatLngExpression[][] | LatLngExpression[][][];
@@ -75,7 +75,7 @@ type AllFuncTypes =
 
 type EventsParamsIntersection = UnionToIntersection<Parameters<AllFuncTypes>[0]>;
 type UnionToIntersection<U> = (U extends unknown ? (k: U) => void : never) extends (
-	k: infer I
+	k: infer I,
 ) => void
 	? I
 	: never;
@@ -99,7 +99,7 @@ export type PrefixedLeafletEventHandlerFnMap = {
 export function bindEvents(
 	instance: Evented,
 	eventsProps: PrefixedLeafletEventHandlerFnMap,
-	events: readonly (keyof LeafletEventHandlerFnMap)[]
+	events: readonly (keyof LeafletEventHandlerFnMap)[],
 ) {
 	events.forEach((event) => {
 		const eventCallback = eventsProps[`on${event}`];
@@ -115,7 +115,7 @@ export const interactiveLayerEvents = [
 	'mouseup',
 	'mouseover',
 	'mouseout',
-	'contextmenu'
+	'contextmenu',
 ] as const;
 
 export const draggingEvents = ['dragstart', 'movestart', 'drag', 'dragend', 'moveend'] as const;
@@ -146,7 +146,7 @@ const leafletEvents = [
 	'zoom',
 	'zoomend',
 	'zoomlevelschange',
-	'zoomstart'
+	'zoomstart',
 ] as const;
 
 export const mapStateChangeEvents = [...leafletEvents, 'resize'] as const;
@@ -154,7 +154,7 @@ export const polygonEvents = [
 	...tooltipEvents,
 	...layerEvents,
 	...popupEvents,
-	...interactiveLayerEvents
+	...interactiveLayerEvents,
 ] as const;
 
 export type LocateControlOptions = {
@@ -172,7 +172,7 @@ export const mapEvents = [
 	...popupEvents,
 	...tooltipEvents,
 	'autopanstart',
-	'zoomanim'
+	'zoomanim',
 ] as const;
 
 export const markerEvents = [
@@ -181,7 +181,7 @@ export const markerEvents = [
 	...interactiveLayerEvents,
 	...layerEvents,
 	...popupEvents,
-	...tooltipEvents
+	...tooltipEvents,
 ] as const;
 
 // TODO : create generic type for this

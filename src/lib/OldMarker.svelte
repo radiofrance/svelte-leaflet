@@ -13,7 +13,7 @@
 		LayerGroup,
 		Map,
 		Marker as LeafletMarker,
-		MarkerOptions
+		MarkerOptions,
 	} from 'leaflet';
 
 	import { createEventDispatcher, getContext, onDestroy, setContext, tick } from 'svelte';
@@ -44,7 +44,7 @@
 		size: number,
 		latlng: LatLngExpression,
 		id: string,
-		options: MarkerOptions
+		options: MarkerOptions,
 	) {
 		removeMarker();
 		await tick();
@@ -55,7 +55,7 @@
 		size: number,
 		latlng: LatLngExpression,
 		id: string,
-		options: MarkerOptions
+		options: MarkerOptions,
 	) {
 		await tick(); // waits for next paint so layers and map are done rendering
 		const layerGroup = getLayerGroup?.();
@@ -63,7 +63,7 @@
 		const mapOrLayerGroup = layerGroup || map;
 		marker = L.marker(latlng, {
 			...options,
-			keyboard: tabindex === -1 ? false : true
+			keyboard: tabindex === -1 ? false : true,
 		});
 		marker.id = id;
 		marker
@@ -81,8 +81,8 @@
 				L.divIcon({
 					html: markerElement,
 					className: 'map-marker',
-					iconSize: L.point(size, size)
-				})
+					iconSize: L.point(size, size),
+				}),
 			);
 		}
 	}

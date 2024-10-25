@@ -4,7 +4,7 @@
 		Map as LeafletMap,
 		Marker as LeafletMarker,
 		MarkerOptions,
-		LayerGroup
+		LayerGroup,
 	} from 'leaflet';
 	import { bindEvents, markerEvents, type LatLngExpression, type MarkerEvents } from './index.js';
 	import { updateMarkerProps } from './marker.svelte.js';

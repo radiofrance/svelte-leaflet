@@ -23,23 +23,23 @@
 		autoPanSpeed: 10, // untested
 
 		// string options
-		title: 'marker'
+		title: 'marker',
 	});
 
 	// svelte-ignore state_referenced_locally
 	const booleanOptions = Object.keys(options).filter(
-		(key) => typeof options[key as keyof typeof options] === 'boolean'
+		(key) => typeof options[key as keyof typeof options] === 'boolean',
 	) as PickOptionByType<MarkerOptions, boolean>[];
 
 	// svelte-ignore state_referenced_locally
 	const numberOptions = Object.keys(options).filter(
-		(key) => typeof options[key as keyof typeof options] === 'number'
+		(key) => typeof options[key as keyof typeof options] === 'number',
 	) as PickOptionByType<MarkerOptions, number>[];
 </script>
 
 <Map
 	locateControl={{
-		position: 'topleft'
+		position: 'topleft',
 	}}
 	oncontextmenu={() => console.log('contextmenu from map')}
 >
