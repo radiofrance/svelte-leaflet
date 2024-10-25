@@ -49,8 +49,8 @@
 
 		maxBounds: [
 			[41.22824901518532, -6.525878906250001],
-			[52.37559917665913, 9.843750000000002]
-		] as LatLngBoundsLiteral
+			[52.37559917665913, 9.843750000000002],
+		] as LatLngBoundsLiteral,
 	});
 
 	function changeCenter(event: Event) {
@@ -67,12 +67,12 @@
 
 	// svelte-ignore state_referenced_locally
 	const booleanOptions = Object.keys(options).filter(
-		(key) => typeof options[key as keyof typeof options] === 'boolean'
+		(key) => typeof options[key as keyof typeof options] === 'boolean',
 	) as PickOptionByType<MapOptions, boolean>[];
 
 	// svelte-ignore state_referenced_locally
 	const numberOptions = Object.keys(options).filter(
-		(key) => typeof options[key as keyof typeof options] === 'number'
+		(key) => typeof options[key as keyof typeof options] === 'number',
 	) as PickOptionByType<MapOptions, number>[];
 </script>
 
@@ -80,9 +80,9 @@
 	locateControl={{
 		options: {
 			enableHighAccuracy: true,
-			setView: true
+			setView: true,
 		},
-		position: 'topleft'
+		position: 'topleft',
 	}}
 	onload={(e) => console.log('map loaded', e)}
 	focusable={false}

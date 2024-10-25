@@ -9,14 +9,14 @@ function invalidateMapSize(map: LeafletMap) {
 	map.invalidateSize({
 		// TODO : add a way to customize these default values
 		debounceMoveend: true,
-		pan: true
+		pan: true,
 	});
 }
 
 export function updateMapProps(
 	L: typeof import('leaflet'),
 	instance: LeafletMap,
-	newProps: MapOptions
+	newProps: MapOptions,
 ) {
 	if (!newProps) return;
 	// any is the default type for the Object.entries values anyway
@@ -111,7 +111,7 @@ export function updateMapProps(
 export function createLocateOnAdd(
 	mapInstance: LeafletMap,
 	locateButtonContainer: HTMLElement,
-	locateControlOptions: L.LocateOptions = {}
+	locateControlOptions: L.LocateOptions = {},
 ) {
 	return () => {
 		const locateButtonElement = getFirstNonCommentChild(locateButtonContainer);

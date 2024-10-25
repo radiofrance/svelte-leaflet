@@ -1,7 +1,7 @@
 <script lang="ts">
 	function onclick() {
 		console.log(
-			'Clicked ! Custom markers can handle interaction, internal state and more, just like any other Svelte component.'
+			'Clicked ! Custom markers can handle interaction, internal state and more, just like any other Svelte component.',
 		);
 	}
 </script>

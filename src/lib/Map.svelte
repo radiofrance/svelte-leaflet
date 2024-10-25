@@ -46,7 +46,7 @@
 		trackResize: true,
 		zoom: 7,
 		maxZoom: 18,
-		keyboard: options.keyboard === undefined ? focusable : options.keyboard
+		keyboard: options.keyboard === undefined ? focusable : options.keyboard,
 	};
 	// consider exporting a reference to the markers instead of a getter
 	export const getMarkers: () => Marker[] = () => {
@@ -77,7 +77,7 @@
 		L.Icon.Default.mergeOptions({
 			iconRetinaUrl: markerIcon2x,
 			iconUrl: markerIcon,
-			shadowUrl: markerShadow
+			shadowUrl: markerShadow,
 		});
 		const mergedOptions = { ...defaultOptions, ...options };
 		// trackResize is set to false else the resize callback couldn't be unbined (no reference)
@@ -90,7 +90,7 @@
 
 		// create component for the tile layer ?
 		L.tileLayer(tilesUrl, {
-			attribution
+			attribution,
 		}).addTo(instance);
 
 		instance.whenReady(async () => {
@@ -99,7 +99,7 @@
 			instance.fireEvent('load');
 			const control = L.Control.extend({
 				position: locateControl.position,
-				onAdd: createLocateOnAdd(instance, locateButtonContainer, locateControl.options)
+				onAdd: createLocateOnAdd(instance, locateButtonContainer, locateControl.options),
 			});
 			instance.addControl(new control(locateControl));
 		});

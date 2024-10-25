@@ -15,7 +15,7 @@
 		if (marker) {
 			const divIcon = L.divIcon({
 				html: iconContainer,
-				className: ''
+				className: '',
 			});
 			marker.setIcon(divIcon);
 		}
