@@ -1,4 +1,5 @@
 <script lang="ts">
+	import DivIcon from '$lib/DivIcon.svelte';
 	import type { MarkerOptions } from '$lib/index.js';
 	import Map from '$lib/Map.svelte';
 	import Marker from '$lib/Marker.svelte';
@@ -39,8 +40,12 @@
 			window.alert('You clicked the marker!');
 		}}
 	>
-		{#snippet icon()}<CustomMarker />{/snippet}
+		<DivIcon>
+			<CustomMarker />
+		</DivIcon>
 	</Marker>
+
+	<Marker bind:options latlng={[46.788094, 1.803562]} />
 </Map>
 
 <Controls>

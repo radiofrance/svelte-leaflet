@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getContext, onMount, type Snippet } from 'svelte';
+	import { getContext, onMount, setContext, type Snippet } from 'svelte';
 	import type {
 		Map as LeafletMap,
 		Marker as LeafletMarker,
@@ -13,21 +13,19 @@
 		latlng: LatLngExpression;
 		options?: MarkerOptions;
 		instance?: LeafletMarker;
-		popup?: Snippet;
-		icon?: Snippet;
+		children?: Snippet;
 	} & Partial<MarkerEvents>;
 
 	let {
 		latlng,
 		options = $bindable(),
 		instance = $bindable(),
-		popup,
-		icon,
+		children,
 		...restProps
 	}: Props = $props();
-	let iconContainer: HTMLDivElement | undefined = $state();
 
 	const L = globalThis.window.L;
+	setContext('marker', () => instance);
 	const getMap = getContext<() => LeafletMap>('map');
 	const getLayerGroup = getContext<() => LayerGroup>('layerGroup');
 
@@ -42,20 +40,10 @@
 		const layerGroup = getLayerGroup?.();
 		const mapOrLayerGroup = layerGroup || map;
 		const markerOptions = { ...options };
-		if (icon) {
-			markerOptions.icon = L.divIcon({
-				html: iconContainer,
-				className: ''
-			});
-		}
 		instance = L.marker(latlng, markerOptions);
 		bindEvents(instance, restProps, markerEvents);
 		instance.addTo(mapOrLayerGroup);
 	});
 </script>
 
-{#if icon}
-	<div class="icon-container" bind:this={iconContainer}>
-		{@render icon()}
-	</div>
-{/if}
+{@render children?.()}
