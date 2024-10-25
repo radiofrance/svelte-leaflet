@@ -108,13 +108,13 @@
 		display: block;
 		width: 49px;
 		/* using transform + translate is the simplest way to center the marker */
-		transform: translate(-19px, -33.5px);
+		transform: translate(-40%, -58%);
 		background: none;
 		border: none;
 		color: blue;
 	}
 
-	.MarkerIci:hover:not(.selected) svg {
+	.MarkerIci:hover svg {
 		transform: scale(1.2) translateY(-3.5%);
 	}
 </style>
