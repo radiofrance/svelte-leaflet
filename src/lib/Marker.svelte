@@ -35,6 +35,12 @@
 		}
 	});
 
+	$effect(() => {
+		if (!instance?.getLatLng().equals(latlng)) {
+			instance?.setLatLng(latlng);
+		}
+	});
+
 	onMount(() => {
 		const map = getMap?.();
 		const layerGroup = getLayerGroup?.();
