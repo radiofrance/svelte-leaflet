@@ -105,10 +105,11 @@
 
 <style>
 	.MarkerIci {
+		cursor: pointer;
 		display: block;
 		width: 49px;
 		/* using transform + translate is the simplest way to center the marker */
-		transform: translate(-40%, -58%);
+		transform: translate(-39.5%, -59%);
 		background: none;
 		border: none;
 		color: blue;

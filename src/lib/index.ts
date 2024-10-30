@@ -128,7 +128,7 @@ export const leafletMouseEvents = [...interactiveLayerEvents, 'mousemove', 'prec
 
 export const layerEvents = ['add', 'remove'] as const;
 
-export const popupEvents = ['popupopen', 'popupclose'] as const;
+export const popupSpecificEvents = ['popupopen', 'popupclose'] as const;
 
 export const tooltipEvents = ['tooltipopen', 'tooltipclose'] as const;
 
@@ -153,7 +153,7 @@ export const mapStateChangeEvents = [...leafletEvents, 'resize'] as const;
 export const polygonEvents = [
 	...tooltipEvents,
 	...layerEvents,
-	...popupEvents,
+	...popupSpecificEvents,
 	...interactiveLayerEvents,
 ] as const;
 
@@ -169,7 +169,7 @@ export const mapEvents = [
 	...leafletMouseEvents,
 	...locationEvents,
 	...mapStateChangeEvents,
-	...popupEvents,
+	...popupSpecificEvents,
 	...tooltipEvents,
 	'autopanstart',
 	'zoomanim',
@@ -180,15 +180,22 @@ export const markerEvents = [
 	...draggingEvents,
 	...interactiveLayerEvents,
 	...layerEvents,
-	...popupEvents,
+	...popupSpecificEvents,
 	...tooltipEvents,
 ] as const;
 
-// TODO : create generic type for this
-export type MapEvents = {
-	[K in (typeof mapEvents)[number] as `on${K}`]: LeafletEventHandlerFnMap[K];
-};
+export const popupEvents = [
+	// 'contentupdate', // needs @types/leaflet PR ?
+	...interactiveLayerEvents,
+	...layerEvents,
+	...popupSpecificEvents,
+	...tooltipEvents,
+] as const;
 
-export type MarkerEvents = {
-	[K in (typeof markerEvents)[number] as `on${K}`]: LeafletEventHandlerFnMap[K];
+export type MapEvents = CreateSvelteEventsMap<typeof mapEvents>;
+export type MarkerEvents = CreateSvelteEventsMap<typeof markerEvents>;
+export type PopupEvents = CreateSvelteEventsMap<typeof popupEvents>;
+
+type CreateSvelteEventsMap<EventNames extends readonly (keyof LeafletEventHandlerFnMap)[]> = {
+	[K in EventNames[number] as `on${K}`]: LeafletEventHandlerFnMap[K];
 };

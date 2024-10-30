@@ -1,9 +1,9 @@
-import type { Marker, MarkerOptions } from 'leaflet';
+import type { Marker as LeafletMarker, MarkerOptions } from 'leaflet';
 import { capitalize } from './utils.js';
 
 // const L = globalThis.window.L;
 
-export function updateMarkerProps(instance: Marker, options: MarkerOptions) {
+export function updateMarkerProps(instance: LeafletMarker, options: MarkerOptions) {
 	if (!options) return;
 	for (const [key, value] of Object.entries(options)) {
 		// skip if the option value is unchanged

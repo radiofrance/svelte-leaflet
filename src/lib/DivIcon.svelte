@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { getContext, onMount, tick, type Snippet } from 'svelte';
-	import type { Marker as LeafletMarker } from 'leaflet';
-	type Props = { children: Snippet };
+	import type { Marker as LeafletMarker, DivIcon as LeafletDivIcon, DivIconOptions } from 'leaflet';
+	type Props = { children: Snippet; instance?: LeafletDivIcon; options?: DivIconOptions };
 
-	let { children }: Props = $props();
+	let { children, instance = $bindable(), options = $bindable({}) }: Props = $props();
 	let iconContainer: HTMLDivElement | undefined = $state();
 
 	const getMarker = getContext<() => LeafletMarker>('marker');
@@ -13,11 +13,12 @@
 		await tick();
 		const marker = getMarker?.();
 		if (marker) {
-			const divIcon = L.divIcon({
+			instance = L.divIcon({
 				html: iconContainer,
 				className: '',
+				...options,
 			});
-			marker.setIcon(divIcon);
+			marker.setIcon(instance);
 		}
 	});
 </script>
