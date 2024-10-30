@@ -18,27 +18,38 @@
 		closeOnEscapeKey: true,
 		interactive: true,
 
+		maxWidth: 300,
+		minWidth: 50,
+		maxHeight: 200,
+
+		className: '',
+		content: 'Hello, World!',
+
 		offset: [0, -40],
 	});
 
 	const booleanOptions = Object.keys(options).filter(
 		(key) => typeof options[key as keyof typeof options] === 'boolean',
 	) as PickOptionByType<PopupOptions, boolean>[];
+
+	const numberOptions = Object.keys(options).filter(
+		(key) => typeof options[key as keyof typeof options] === 'number',
+	) as PickOptionByType<PopupOptions, number>[];
+
+	const stringOptions = Object.keys(options).filter(
+		(key) => typeof options[key as keyof typeof options] === 'string',
+	) as PickOptionByType<PopupOptions, string>[];
 </script>
 
 <Map oncontextmenu={() => console.log('contextmenu from map')}>
 	<Marker latlng={[48.8566, 2.3522]}>
-		<Popup {options}>
-			<div>
-				<h1>Paris</h1>
-				<p>Capital of France</p>
-			</div>
-		</Popup>
+		<Popup {options} />
 		<DivIcon>
 			<CustomMarker />
 		</DivIcon>
 	</Marker>
 	<Popup
+		onclick={(e) => {}}
 		latlng={[48.8566, 4.3522]}
 		options={{
 			closeOnClick: false,
@@ -55,6 +66,22 @@
 	<Details title="Boolean">
 		{#each booleanOptions as key}
 			<button onclick={() => (options[key] = !options[key])}>{key}: {options[key]}</button>
+		{/each}
+	</Details>
+	<Details title="Number">
+		{#each numberOptions as key}
+			<label>
+				{key}
+				<input type="number" bind:value={options[key]} />
+			</label>
+		{/each}
+	</Details>
+	<Details title="String">
+		{#each stringOptions as key}
+			<label>
+				{key}
+				<input type="text" bind:value={options[key]} />
+			</label>
 		{/each}
 	</Details>
 </Controls>

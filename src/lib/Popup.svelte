@@ -18,11 +18,11 @@
 		options?: PopupOptions;
 		instance?: LeafletPopup;
 		children?: Snippet;
-	} & Partial<PopupEvents>;
+	} & PopupEvents;
 
 	let {
 		latlng,
-		options = $bindable(),
+		options = $bindable({}),
 		instance = $bindable(),
 		children,
 		...restProps
@@ -47,7 +47,7 @@
 		if (marker) marker.bindPopup(instance);
 		else if (map) instance.openOn(map);
 		else instance.addTo(context);
-		if (popupContent) instance.setContent(popupContent);
+		if (children && popupContent) instance.setContent(popupContent);
 	});
 
 	onDestroy(() => {
