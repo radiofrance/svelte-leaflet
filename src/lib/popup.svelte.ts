@@ -14,8 +14,10 @@ export function updatePopupProps(instance: LeafletPopup, options: PopupOptions) 
 
 		switch (key) {
 			// unhandled
+			case 'className':
 			case 'interactive':
 			case 'closeButton':
+			case 'pane':
 				throw new Error(`mutation of ${key} option is not supported`);
 			// needs reopening the popup
 			case 'keepInView':
@@ -23,11 +25,19 @@ export function updatePopupProps(instance: LeafletPopup, options: PopupOptions) 
 			case 'autoClose':
 			case 'closeOnClick':
 			case 'closeOnEscapeKey':
+			case 'maxWidth':
+			case 'minWidth':
+			case 'maxHeight':
 				if (instance.isOpen()) {
 					const source = instance._source;
 					source.closePopup();
 					source.openPopup();
 				}
+				break;
+
+			case 'content':
+				debugger;
+				instance.setContent(value);
 				break;
 		}
 	}

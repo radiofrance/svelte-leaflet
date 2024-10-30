@@ -26,7 +26,7 @@
 		focusable?: boolean;
 		children?: Snippet;
 		locateButton?: Snippet;
-	} & Partial<MapEvents>;
+	} & MapEvents;
 
 	let {
 		instance = $bindable(),

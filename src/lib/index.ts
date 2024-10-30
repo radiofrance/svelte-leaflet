@@ -197,5 +197,5 @@ export type MarkerEvents = CreateSvelteEventsMap<typeof markerEvents>;
 export type PopupEvents = CreateSvelteEventsMap<typeof popupEvents>;
 
 type CreateSvelteEventsMap<EventNames extends readonly (keyof LeafletEventHandlerFnMap)[]> = {
-	[K in EventNames[number] as `on${K}`]: LeafletEventHandlerFnMap[K];
+	[K in EventNames[number] as `on${K}`]?: LeafletEventHandlerFnMap[K];
 };

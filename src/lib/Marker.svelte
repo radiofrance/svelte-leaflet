@@ -16,7 +16,7 @@
 		options?: MarkerOptions;
 		instance?: LeafletMarker;
 		children?: Snippet;
-	} & Partial<MarkerEvents>;
+	} & MarkerEvents;
 
 	let {
 		latlng,
