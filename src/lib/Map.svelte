@@ -29,7 +29,7 @@
 	} & Partial<MapEvents>;
 
 	let {
-		instance = $bindable(undefined),
+		instance = $bindable(),
 		options = $bindable({}),
 		markers = $bindable([]),
 		tilesUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -92,6 +92,23 @@
 		L.tileLayer(tilesUrl, {
 			attribution,
 		}).addTo(instance);
+
+		instance.on('layeradd', (event) => {
+			const layer = event.layer;
+			if (layer instanceof L.Marker) {
+				markers.push(layer);
+			}
+		});
+
+		instance.on('layerremove', (event) => {
+			const layer = event.layer;
+			if (layer instanceof L.Marker) {
+				const index = markers.indexOf(layer);
+				if (index > -1) {
+					markers.splice(index, 1);
+				}
+			}
+		});
 
 		instance.whenReady(async () => {
 			if (!locateControl || !instance) return;
