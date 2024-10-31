@@ -1,6 +1,6 @@
 import type { Map as LeafletMap, MapOptions } from 'leaflet';
 import type L from 'leaflet';
-import { capitalize } from './utils.js';
+import { capitalize, getFirstNonCommentChild } from './utils.js';
 
 // stores the function bound to the event listener so it can be removed later
 let boundInvalidateMapSize: null | (() => void) = null;
@@ -126,12 +126,4 @@ export function createLocateOnAdd(
 		});
 		return locateButtonElement;
 	};
-}
-
-function getFirstNonCommentChild(element: HTMLElement) {
-	let child = element.firstChild;
-	while (child && child.nodeType !== Node.ELEMENT_NODE) {
-		child = child.nextSibling;
-	}
-	return child as HTMLElement | null;
 }

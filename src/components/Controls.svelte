@@ -14,12 +14,12 @@
 
 <style>
 	.controls {
+		width: 350px;
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
 		box-sizing: border-box;
 		max-height: 100vh;
-		width: 320px;
 		overflow-y: auto;
 		color: black;
 		font-size: 12px;

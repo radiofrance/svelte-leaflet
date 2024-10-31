@@ -10,6 +10,7 @@
 	import { getContext, onDestroy, onMount, tick, type Snippet } from 'svelte';
 	import { bindEvents, popupEvents, type PopupEvents } from './index.js';
 	import { updatePopupProps } from './popup.svelte.js';
+	import { getFirstNonCommentChild } from './utils.js';
 
 	const L = globalThis.window.L;
 
@@ -47,7 +48,11 @@
 		if (marker) marker.bindPopup(instance);
 		else if (map) instance.openOn(map);
 		else instance.addTo(context);
-		if (children && popupContent) instance.setContent(popupContent);
+		if (popupContent) {
+			// popupContent can be bound to an empty div if passed a custom icon
+			const hasActualContent = getFirstNonCommentChild(popupContent);
+			if (hasActualContent) instance.setContent(popupContent);
+		}
 	});
 
 	onDestroy(() => {
@@ -61,6 +66,8 @@
 	});
 </script>
 
-<div bind:this={popupContent}>
-	{@render children?.()}
-</div>
+{#if children}
+	<div bind:this={popupContent} class="PopupChildrenContainer">
+		{@render children()}
+	</div>
+{/if}
