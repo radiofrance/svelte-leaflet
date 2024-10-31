@@ -26,6 +26,9 @@
 		content: 'Hello, World!',
 
 		offset: [0, -40],
+		autoPanPaddingTopLeft: [50, 50],
+		autoPanPaddingBottomRight: [50, 50],
+		autoPanPadding: [5, 5],
 	});
 
 	const booleanOptions = Object.keys(options).filter(
@@ -39,6 +42,10 @@
 	const stringOptions = Object.keys(options).filter(
 		(key) => typeof options[key as keyof typeof options] === 'string',
 	) as PickOptionByType<PopupOptions, string>[];
+
+	const tupleOptions = Object.keys(options).filter((key) =>
+		Array.isArray(options[key as keyof typeof options]),
+	) as PickOptionByType<PopupOptions, [number, number]>[];
 </script>
 
 <Map oncontextmenu={() => console.log('contextmenu from map')}>
