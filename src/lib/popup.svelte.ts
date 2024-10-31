@@ -1,5 +1,4 @@
 import type { Popup as LeafletPopup, PopupOptions } from 'leaflet';
-import type { PickOptionByType } from './utils.js';
 
 export function updatePopupProps(instance: LeafletPopup, options: PopupOptions) {
 	if (!options) return;
@@ -20,7 +19,7 @@ export function updatePopupProps(instance: LeafletPopup, options: PopupOptions) 
 			case 'closeButton':
 			case 'pane':
 				throw new Error(`mutation of ${key} option is not supported`);
-			// needs reopening the popup
+			// needs to reopen the popup
 			case 'keepInView':
 			case 'autoPan':
 			case 'autoClose':
@@ -29,6 +28,7 @@ export function updatePopupProps(instance: LeafletPopup, options: PopupOptions) 
 			case 'maxWidth':
 			case 'minWidth':
 			case 'maxHeight':
+			case 'offset':
 				if (instance.isOpen()) {
 					const source = instance._source;
 					source.closePopup();

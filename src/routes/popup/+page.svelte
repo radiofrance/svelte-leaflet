@@ -28,7 +28,7 @@
 		offset: [0, -40],
 		autoPanPaddingTopLeft: [50, 50],
 		autoPanPaddingBottomRight: [50, 50],
-		autoPanPadding: [5, 5],
+		autoPanPadding: [50, 50],
 	});
 
 	const booleanOptions = Object.keys(options).filter(
@@ -46,14 +46,26 @@
 	const tupleOptions = Object.keys(options).filter((key) =>
 		Array.isArray(options[key as keyof typeof options]),
 	) as PickOptionByType<PopupOptions, [number, number]>[];
+
+	function changeTupleValue(
+		key: PickOptionByType<PopupOptions, [number, number]>,
+		index: 0 | 1,
+		value: number,
+	) {
+		if (!options[key] || !(options[key] instanceof Array)) return;
+		options[key] = index === 0 ? [value, options[key][1]] : [options[key][0], value];
+	}
 </script>
 
 <Map oncontextmenu={() => console.log('contextmenu from map')}>
 	<Marker latlng={[48.8566, 2.3522]}>
-		<Popup {options} />
-		<DivIcon>
-			<CustomMarker />
-		</DivIcon>
+		<Popup {options}>
+			<DivIcon>
+				<CustomMarker />
+			</DivIcon>
+			<h1>Paris</h1>
+			<p>Capital of France</p>
+		</Popup>
 	</Marker>
 	<Popup
 		onclick={(e) => {}}
@@ -91,11 +103,36 @@
 			</label>
 		{/each}
 	</Details>
+	<Details title="Tuple">
+		{#each tupleOptions as key}
+			<label>
+				{key}
+				{#if Array.isArray(options[key])}
+					<span>
+						<input
+							type="number"
+							value={options[key][0]}
+							oninput={(e) => changeTupleValue(key, 0, +e.currentTarget.value)}
+						/>
+						<input
+							type="number"
+							value={options[key][1]}
+							oninput={(e) => changeTupleValue(key, 1, +e.currentTarget.value)}
+						/>
+					</span>
+				{/if}
+			</label>
+		{/each}
+	</Details>
 </Controls>
 
 <style>
 	input[type='number'] {
 		width: 100px;
+	}
+
+	span input[type='number'] {
+		width: 50px;
 	}
 
 	label {
