@@ -1,4 +1,5 @@
 import type { Popup as LeafletPopup, PopupOptions } from 'leaflet';
+import type { PickOptionByType } from './utils.js';
 
 export function updatePopupProps(instance: LeafletPopup, options: PopupOptions) {
 	if (!options) return;
@@ -36,7 +37,6 @@ export function updatePopupProps(instance: LeafletPopup, options: PopupOptions) 
 				break;
 
 			case 'content':
-				debugger;
 				instance.setContent(value);
 				break;
 		}
