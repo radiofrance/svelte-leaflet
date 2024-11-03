@@ -38,6 +38,7 @@
 	onMount(async () => {
 		// wait for parent contexts to have been set
 		await tick();
+		await tick();
 		const map = getMap?.();
 		const layerGroup = getLayerGroup?.();
 		const marker = getMarker?.();

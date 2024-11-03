@@ -7,9 +7,11 @@
 	let iconContainer: HTMLDivElement | undefined = $state();
 
 	const getMarker = getContext<() => LeafletMarker>('marker');
+	console.log('getMarker', getMarker);
 	const L = globalThis.window.L;
 
 	onMount(async () => {
+		await tick(); // wait for parent context to be defined (loop tick ?)
 		await tick();
 		const marker = getMarker?.();
 		if (marker) {
