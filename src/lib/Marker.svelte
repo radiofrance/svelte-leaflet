@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { getContext, onMount, setContext, type Snippet } from 'svelte';
+	import { getContext, onMount, setContext, tick, type Snippet } from 'svelte';
 	import type {
 		Map as LeafletMap,
 		Marker as LeafletMarker,
 		MarkerOptions,
 		LayerGroup,
+		MarkerClusterGroup,
 	} from 'leaflet';
 	import { bindEvents, markerEvents, type LatLngExpression, type MarkerEvents } from './index.js';
 	import { updateMarkerProps } from './marker.svelte.js';
@@ -26,9 +27,9 @@
 		...restProps
 	}: Props = $props();
 
-	setContext('marker', () => instance);
 	const getMap = getContext<() => LeafletMap>('map');
-	const getLayerGroup = getContext<() => LayerGroup>('layerGroup');
+	const getLayerGroup = getContext<() => LayerGroup | MarkerClusterGroup>('layerGroup');
+	setContext('marker', () => instance);
 
 	$effect(() => {
 		if (instance && options) {
@@ -42,13 +43,15 @@
 		}
 	});
 
-	onMount(() => {
-		const map = getMap?.();
-		const layerGroup = getLayerGroup?.();
-		const mapOrLayerGroup = layerGroup || map;
+	onMount(async () => {
+		await tick(); // Attendre que le contexte parent soit défini
 		const markerOptions = { ...options };
 		instance = L.marker(latlng, markerOptions);
 		bindEvents(instance, restProps, markerEvents);
+
+		const map = getMap?.();
+		const layerGroup = getLayerGroup?.();
+		const mapOrLayerGroup = layerGroup || map;
 		instance.addTo(mapOrLayerGroup);
 	});
 </script>
