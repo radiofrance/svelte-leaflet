@@ -23,7 +23,13 @@ import type {
 } from 'leaflet';
 
 // Reexport your entry components here
-export { default as Map } from './Map.svelte';
+import DivIcon from './DivIcon.svelte';
+import Map from './Map.svelte';
+import Marker from './Marker.svelte';
+import MarkerClusterGroup from './MarkerClusterGroup.svelte';
+import Popup from './Popup.svelte';
+
+export { DivIcon, Map, Marker, MarkerClusterGroup, Popup };
 // export { default as Marker } from './Marker.svelte';
 // export { default as MarkerClusterGroup } from './MarkerClusterGroup.svelte';
 // export { default as Polyline } from './Polyline.svelte';

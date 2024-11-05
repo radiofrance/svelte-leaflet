@@ -1,18 +1,21 @@
 <script lang="ts">
 	import { getContext, onDestroy, onMount, setContext, type Snippet } from 'svelte';
-	import type { MarkerClusterGroup, LayerGroup } from 'leaflet';
+	import type {
+		MarkerClusterGroup as LeafletMarkerClusterGroup,
+		LayerGroup as LeafletLayerGroup,
+	} from 'leaflet';
 
 	const L = globalThis.window.L;
 
 	type Props = {
-		instance?: MarkerClusterGroup;
+		instance?: LeafletMarkerClusterGroup;
 		children?: Snippet;
 	};
 
 	let { instance = $bindable(), children }: Props = $props();
 
 	const getMap = getContext<() => L.Map>('map');
-	const getLayerGroup = getContext<() => LayerGroup>('layerGroup');
+	const getLayerGroup = getContext<() => LeafletLayerGroup>('layerGroup');
 
 	setContext('layerGroup', () => instance);
 
