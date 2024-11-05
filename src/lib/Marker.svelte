@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getContext, onDestroy, onMount, setContext, tick, type Snippet } from 'svelte';
+	import { getContext, onDestroy, onMount, setContext, type Snippet } from 'svelte';
 	import type {
 		Map as LeafletMap,
 		Marker as LeafletMarker,
@@ -43,9 +43,7 @@
 		}
 	});
 
-	onMount(async () => {
-		await tick(); // Attendre que le contexte parent soit défini
-		await tick();
+	onMount(() => {
 		const markerOptions = { ...options };
 		instance = L.marker(latlng, markerOptions);
 		bindEvents(instance, restProps, markerEvents);
@@ -72,6 +70,6 @@
 	});
 </script>
 
-{#if children}
+{#if instance && children}
 	{@render children()}
 {/if}

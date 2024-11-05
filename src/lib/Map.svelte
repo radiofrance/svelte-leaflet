@@ -9,7 +9,7 @@
 	import type { MapOptions, Marker, Map as LeafletMap, LatLngTuple } from 'leaflet';
 	import type Leaflet from 'leaflet';
 	import { type MapEvents, type LocateControlOptions, bindEvents, mapEvents } from './index.js';
-	import { setContext, tick, type Snippet } from 'svelte';
+	import { setContext, type Snippet } from 'svelte';
 	import GeolocationButton from '../components/GeolocationButton.svelte';
 	import { createLocateOnAdd, updateMapProps } from './map.svelte.js';
 
