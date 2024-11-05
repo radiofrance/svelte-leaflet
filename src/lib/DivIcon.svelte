@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getContext, onMount, tick, type Snippet } from 'svelte';
+	import { getContext, onDestroy, onMount, tick, type Snippet } from 'svelte';
 	import type { Marker as LeafletMarker, DivIcon as LeafletDivIcon, DivIconOptions } from 'leaflet';
 	type Props = { children: Snippet; instance?: LeafletDivIcon; options?: DivIconOptions };
 
@@ -7,11 +7,11 @@
 	let iconContainer: HTMLDivElement | undefined = $state();
 
 	const getMarker = getContext<() => LeafletMarker>('marker');
-	console.log('getMarker', getMarker);
 	const L = globalThis.window.L;
 
 	onMount(async () => {
 		await tick(); // wait for parent context to be defined (loop tick ?)
+		await tick();
 		await tick();
 		const marker = getMarker?.();
 		if (marker) {
@@ -23,8 +23,22 @@
 			marker.setIcon(instance);
 		}
 	});
+
+	onDestroy(() => {
+		if (instance) {
+			instance.remove?.();
+		}
+	});
 </script>
 
-<div class="DivIcon" bind:this={iconContainer}>
-	{@render children()}
+<div class="container">
+	<div class="DivIcon" bind:this={iconContainer}>
+		{@render children()}
+	</div>
 </div>
+
+<style>
+	.container {
+		display: none;
+	}
+</style>

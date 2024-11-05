@@ -11,7 +11,10 @@ import type {
 	LeafletMouseEvent,
 	LocateOptions,
 	LocationEvent,
+	Map as LeafletMap,
+	Marker as LeafletMarker,
 	MarkerClusterSpiderfyEvent,
+	Popup as LeafletPopup,
 	ResizeEvent,
 	TileErrorEvent,
 	TileEvent,
@@ -79,18 +82,6 @@ type UnionToIntersection<U> = (U extends unknown ? (k: U) => void : never) exten
 ) => void
 	? I
 	: never;
-
-// export function bindEvents(
-// 	instance: Evented,
-// 	eventsProps: Record<string, AllFuncTypes>,
-// 	events: readonly string[]
-// ) {
-// 	events.forEach((event) => {
-// 		const eventCallback = eventsProps[`on${event}`];
-// 		if (typeof eventCallback !== 'function') return;
-// 		instance.on(event, (e) => eventCallback(e as EventsParamsIntersection));
-// 	});
-// }
 
 export type PrefixedLeafletEventHandlerFnMap = {
 	[K in keyof LeafletEventHandlerFnMap as `on${K}`]: LeafletEventHandlerFnMap[K];
@@ -192,10 +183,19 @@ export const popupEvents = [
 	...tooltipEvents,
 ] as const;
 
-export type MapEvents = CreateSvelteEventsMap<typeof mapEvents>;
-export type MarkerEvents = CreateSvelteEventsMap<typeof markerEvents>;
-export type PopupEvents = CreateSvelteEventsMap<typeof popupEvents>;
+export type MapEvents = CreateSvelteEventsMap<typeof mapEvents, LeafletMap>;
+export type MarkerEvents = CreateSvelteEventsMap<typeof markerEvents, LeafletMarker>;
+export type PopupEvents = CreateSvelteEventsMap<typeof popupEvents, LeafletPopup>;
 
-type CreateSvelteEventsMap<EventNames extends readonly (keyof LeafletEventHandlerFnMap)[]> = {
-	[K in EventNames[number] as `on${K}`]?: LeafletEventHandlerFnMap[K];
+type CreateSvelteEventsMap<
+	EventNames extends readonly (keyof LeafletEventHandlerFnMap)[],
+	SourceTarget = null,
+> = {
+	[K in EventNames[number] as `on${K}`]?: SourceTarget extends null
+		? LeafletEventHandlerFnMap[K]
+		: (
+				e: Omit<Parameters<Exclude<LeafletEventHandlerFnMap[K], undefined>>[0], 'sourceTarget'> & {
+					sourceTarget: SourceTarget;
+				},
+			) => void;
 };

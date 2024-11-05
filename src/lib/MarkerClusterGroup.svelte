@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getContext, onMount, setContext, tick, type Snippet } from 'svelte';
+	import { getContext, onDestroy, onMount, setContext, tick, type Snippet } from 'svelte';
 	import type { MarkerClusterGroup, LayerGroup } from 'leaflet';
 
 	const L = globalThis.window.L;
@@ -24,6 +24,10 @@
 
 		instance = L.markerClusterGroup();
 		context.addLayer(instance);
+	});
+
+	onDestroy(() => {
+		instance?.clearLayers();
 	});
 </script>
 

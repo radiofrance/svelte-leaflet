@@ -1,4 +1,8 @@
 <script lang="ts">
+	type Props = {
+		active?: boolean;
+	};
+	let { active = false }: Props = $props();
 	function onclick() {
 		console.log(
 			'Clicked ! Custom markers can handle interaction, internal state and more, just like any other Svelte component.',
@@ -6,7 +10,7 @@
 	}
 </script>
 
-<button aria-label="Marker" class="MarkerIci" {onclick}>
+<button aria-label="Marker" class="MarkerIci" class:active {onclick}>
 	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 73 96" fill="none">
 		<g filter="url(#a)">
 			<path fill="currentColor" d="M37 27 20 44l17 17 17-17-17-17Z" />
@@ -115,7 +119,9 @@
 		color: blue;
 	}
 
-	.MarkerIci:hover svg {
+	.MarkerIci:hover svg,
+	.MarkerIci.active svg {
 		transform: scale(1.2) translateY(-3.5%);
+		color: darkblue;
 	}
 </style>

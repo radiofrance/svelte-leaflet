@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getContext, onMount, setContext, tick, type Snippet } from 'svelte';
+	import { getContext, onDestroy, onMount, setContext, tick, type Snippet } from 'svelte';
 	import type {
 		Map as LeafletMap,
 		Marker as LeafletMarker,
@@ -45,15 +45,33 @@
 
 	onMount(async () => {
 		await tick(); // Attendre que le contexte parent soit défini
+		await tick();
 		const markerOptions = { ...options };
 		instance = L.marker(latlng, markerOptions);
 		bindEvents(instance, restProps, markerEvents);
 
-		const map = getMap?.();
+		const map = getMap();
 		const layerGroup = getLayerGroup?.();
 		const mapOrLayerGroup = layerGroup || map;
 		instance.addTo(mapOrLayerGroup);
+		mapOrLayerGroup.remove;
+	});
+
+	onDestroy(() => {
+		const layerGroup = getLayerGroup?.();
+		const map = getMap();
+		// debugger;
+		if (instance) {
+			// debugger;
+			if (layerGroup) {
+				layerGroup.removeLayer(instance);
+			} else {
+				map.removeLayer(instance);
+			}
+		}
 	});
 </script>
 
-{@render children?.()}
+{#if children}
+	{@render children()}
+{/if}

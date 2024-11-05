@@ -39,6 +39,7 @@
 		// wait for parent contexts to have been set
 		await tick();
 		await tick();
+		await tick();
 		const map = getMap?.();
 		const layerGroup = getLayerGroup?.();
 		const marker = getMarker?.();
@@ -67,8 +68,16 @@
 	});
 </script>
 
-{#if children}
-	<div bind:this={popupContent} class="PopupChildrenContainer">
-		{@render children()}
-	</div>
-{/if}
+<div class="container">
+	{#if children}
+		<div bind:this={popupContent} class="PopupChildrenContainer">
+			{@render children()}
+		</div>
+	{/if}
+</div>
+
+<style>
+	.container {
+		display: none;
+	}
+</style>
