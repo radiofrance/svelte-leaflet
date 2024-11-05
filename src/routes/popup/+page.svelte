@@ -59,10 +59,10 @@
 
 <Map oncontextmenu={() => console.log('contextmenu from map')}>
 	<Marker latlng={[48.8566, 2.3522]}>
+		<DivIcon>
+			<CustomMarker />
+		</DivIcon>
 		<Popup {options}>
-			<DivIcon>
-				<CustomMarker />
-			</DivIcon>
 			<h1>Paris</h1>
 			<p>Capital of France</p>
 		</Popup>

@@ -9,7 +9,7 @@
 	import type { MapOptions, Marker, Map as LeafletMap, LatLngTuple } from 'leaflet';
 	import type Leaflet from 'leaflet';
 	import { type MapEvents, type LocateControlOptions, bindEvents, mapEvents } from './index.js';
-	import { setContext, type Snippet } from 'svelte';
+	import { setContext, tick, type Snippet } from 'svelte';
 	import GeolocationButton from '../components/GeolocationButton.svelte';
 	import { createLocateOnAdd, updateMapProps } from './map.svelte.js';
 
@@ -110,10 +110,11 @@
 			}
 		});
 
-		instance.whenReady(async () => {
-			if (!locateControl || !instance) return;
+		instance.whenReady(() => {
+			if (!instance) return;
 			// TODO: find out why manually firing the load event is needed
 			instance.fireEvent('load');
+			if (!locateControl) return;
 			const control = L.Control.extend({
 				position: locateControl.position,
 				onAdd: createLocateOnAdd(instance, locateButtonContainer, locateControl.options),
