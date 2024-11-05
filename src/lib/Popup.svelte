@@ -7,7 +7,7 @@
 		Map as LeafletMap,
 		Marker as LeafletMarker,
 	} from 'leaflet';
-	import { getContext, onDestroy, onMount, tick, type Snippet } from 'svelte';
+	import { getContext, onDestroy, onMount, type Snippet } from 'svelte';
 	import { bindEvents, popupEvents, type PopupEvents } from './index.js';
 	import { updatePopupProps } from './popup.svelte.js';
 	import { getFirstNonCommentChild } from './utils.js';
@@ -35,11 +35,7 @@
 	const getLayerGroup = getContext<() => LayerGroup>('layerGroup');
 	const getMarker = getContext<() => LeafletMarker>('marker');
 
-	onMount(async () => {
-		// wait for parent contexts to have been set
-		await tick();
-		await tick();
-		await tick();
+	onMount(() => {
 		const map = getMap?.();
 		const layerGroup = getLayerGroup?.();
 		const marker = getMarker?.();
@@ -50,11 +46,7 @@
 		if (marker) marker.bindPopup(instance);
 		else if (map) instance.openOn(map);
 		else instance.addTo(context);
-		if (popupContent) {
-			// popupContent can be bound to an empty div if passed a custom icon
-			const hasActualContent = getFirstNonCommentChild(popupContent);
-			if (hasActualContent) instance.setContent(popupContent);
-		}
+		instance.setContent(popupContent);
 	});
 
 	onDestroy(() => {

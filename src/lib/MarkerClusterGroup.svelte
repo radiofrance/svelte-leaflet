@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getContext, onDestroy, onMount, setContext, tick, type Snippet } from 'svelte';
+	import { getContext, onDestroy, onMount, setContext, type Snippet } from 'svelte';
 	import type { MarkerClusterGroup, LayerGroup } from 'leaflet';
 
 	const L = globalThis.window.L;
@@ -16,8 +16,7 @@
 
 	setContext('layerGroup', () => instance);
 
-	onMount(async () => {
-		await tick(); // Attendre que le contexte soit défini
+	onMount(() => {
 		const map = getMap?.();
 		const layerGroup = getLayerGroup?.();
 		const context = layerGroup || map;
@@ -31,6 +30,6 @@
 	});
 </script>
 
-{#if children}
+{#if instance && children}
 	{@render children()}
 {/if}
