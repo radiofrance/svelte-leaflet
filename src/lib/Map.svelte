@@ -10,7 +10,7 @@
 	import type Leaflet from 'leaflet';
 	import { type MapEvents, type LocateControlOptions, bindEvents, mapEvents } from './index.js';
 	import { setContext, type Snippet } from 'svelte';
-	import GeolocationButton from '../components/GeolocationButton.svelte';
+	import GeolocationButton from './private/GeolocationButton.svelte';
 	import { createLocateOnAdd, updateMapProps } from './map.svelte.js';
 
 	let L: typeof Leaflet;
@@ -42,9 +42,9 @@
 	}: Props = $props();
 
 	const defaultOptions = {
-		center: [46.6188459, 1.7262114] as LatLngTuple,
+		center: [48.852, 2.278] as LatLngTuple,
 		trackResize: true,
-		zoom: 7,
+		zoom: 3,
 		maxZoom: 18,
 		keyboard: options.keyboard === undefined ? focusable : options.keyboard,
 	};
@@ -126,6 +126,9 @@
 	function leafletLoader(_node: HTMLElement) {
 		(async function () {
 			await import('leaflet');
+			// leaflet.markercluster is loaded by default. It's 34ko (12ko gzipped).
+			// A single tile is around 30ko gzipped.
+			// TODO: consider making it optional (handle loading in MarkerClusterGroup.svelte ?)
 			await import('leaflet.markercluster');
 			onLoad();
 		})();
