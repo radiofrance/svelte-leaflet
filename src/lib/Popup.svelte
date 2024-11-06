@@ -1,61 +1,75 @@
 <script lang="ts">
-	import type { Layer, Popup, PopupOptions } from 'leaflet';
+	import type {
+		LatLngExpression,
+		PopupOptions,
+		LayerGroup,
+		Popup as LeafletPopup,
+		Map as LeafletMap,
+		Marker as LeafletMarker,
+	} from 'leaflet';
+	import { getContext, onDestroy, onMount, type Snippet } from 'svelte';
+	import { bindEvents, popupEvents, type PopupEvents } from './index.js';
+	import { updatePopupProps } from './popup.svelte.js';
+	import { LAYERGROUP, MAP, MARKER } from './contexts.js';
 
-	import { getContext, onDestroy, onMount, tick } from 'svelte';
 	const L = globalThis.window.L;
 
-	export let options: PopupOptions = {
-		autoPan: false
-	};
+	type Props = {
+		latlng?: LatLngExpression;
+		options?: PopupOptions;
+		instance?: LeafletPopup;
+		children?: Snippet;
+	} & PopupEvents;
 
-	let popup: Popup | undefined = undefined;
+	let {
+		latlng,
+		options = $bindable({}),
+		instance = $bindable(),
+		children,
+		...restProps
+	}: Props = $props();
 
-	let popupElement: HTMLElement;
+	let popupContent: HTMLElement | undefined = $state();
 
-	let showContents = false;
-	let popupOpen = false;
+	const getMap = getContext<() => LeafletMap>(MAP);
+	const getLayerGroup = getContext<() => LayerGroup>(LAYERGROUP);
+	const getMarker = getContext<() => LeafletMarker>(MARKER);
 
-	const getLayer = getContext<() => Layer>('layer');
-	let layer: Layer;
-
-	function removePopup() {
-		if (!popup) return;
-		layer.unbindPopup();
-		popup.remove();
-	}
-
-	async function createPopup() {
-		await tick();
-		layer = getLayer();
-		popup = L.popup().setContent(popupElement);
-		layer.bindPopup(popup, options);
-		layer.on('popupopen', async () => {
-			popupOpen = true;
-			showContents = true;
-			await tick();
-			// TODO : configurable autoupdate ?
-			popup?.update();
-		});
-		layer.on('popupclose', async () => {
-			popupOpen = false;
-			// change the state after the CSS transition
-			setTimeout(() => {
-				if (!popupOpen) {
-					showContents = false;
-				}
-			}, 200);
-		});
-	}
-
-	onMount(createPopup);
+	onMount(() => {
+		const map = getMap?.();
+		const layerGroup = getLayerGroup?.();
+		const marker = getMarker?.();
+		const context = layerGroup || map;
+		instance = L.popup(options);
+		if (latlng) instance.setLatLng(latlng);
+		bindEvents(instance, restProps, popupEvents);
+		if (marker) marker.bindPopup(instance);
+		else if (map) instance.openOn(map);
+		else instance.addTo(context);
+		if (popupContent) instance.setContent(popupContent);
+	});
 
 	onDestroy(() => {
-		removePopup();
+		instance?.remove();
+	});
+
+	$effect(() => {
+		if (instance && options) {
+			updatePopupProps(instance, options);
+		}
 	});
 </script>
 
-<div bind:this={popupElement}>
-	{#if showContents}
-		<slot />
+<div class="container">
+	{#if children}
+		<div bind:this={popupContent} class="PopupChildrenContainer">
+			{@render children()}
+		</div>
 	{/if}
 </div>
+
+<style>
+	.container {
+		display: none;
+	}
+</style>

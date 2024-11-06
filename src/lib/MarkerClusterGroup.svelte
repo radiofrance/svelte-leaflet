@@ -1,54 +1,41 @@
 <script lang="ts">
-	import type { Map, MarkerClusterGroup, MarkerClusterGroupOptions } from 'leaflet';
-
-	import { getContext, onMount, setContext, tick } from 'svelte';
-
-	export let options: MarkerClusterGroupOptions = {};
-	export let icon: any = null;
-
-	let markerElement: HTMLElement;
+	import { getContext, onDestroy, onMount, setContext, type Snippet } from 'svelte';
+	import type {
+		MarkerClusterGroup as LeafletMarkerClusterGroup,
+		LayerGroup as LeafletLayerGroup,
+		MarkerClusterGroupOptions,
+	} from 'leaflet';
+	import { LAYERGROUP, MAP } from './contexts.js';
 
 	const L = globalThis.window.L;
 
-	const getMap = getContext<() => Map>('map');
-	let clusterGroup: MarkerClusterGroup;
+	type Props = {
+		instance?: LeafletMarkerClusterGroup;
+		options?: MarkerClusterGroupOptions;
+		children?: Snippet;
+	};
 
-	setContext('layerGroup', () => clusterGroup);
-	onMount(async () => {
-		const map = getMap();
-		// using the "icon" prop API
-		if (icon) {
-			options.iconCreateFunction = function (cluster) {
-				const html = document.createElement('div');
-				new icon({ target: html, props: { count: cluster.getChildCount() } });
-				return L.divIcon({ html });
-			};
-		}
-		// using the "icon" slot API
-		if (markerElement.childElementCount > 0) {
-			options.iconCreateFunction = function (cluster) {
-				const html = markerElement.innerHTML.replace('%count%', cluster.getChildCount().toString());
-				return L.divIcon({ html });
-			};
-		}
-		clusterGroup = L.markerClusterGroup(options);
-		map.addLayer(clusterGroup);
+	let { instance = $bindable(), options, children }: Props = $props();
+
+	const getMap = getContext<() => L.Map>(MAP);
+	const getLayerGroup = getContext<() => LeafletLayerGroup>(LAYERGROUP);
+
+	setContext(LAYERGROUP, () => instance);
+
+	onMount(() => {
+		const map = getMap?.();
+		const layerGroup = getLayerGroup?.();
+		const context = layerGroup || map;
+
+		instance = L.markerClusterGroup(options);
+		context.addLayer(instance);
+	});
+
+	onDestroy(() => {
+		instance?.clearLayers();
 	});
 </script>
 
-<slot />
-<template>
-	<div bind:this={markerElement} class="leaflet-markercluster">
-		<slot name="icon" />
-	</div>
-</template>
-
-<style>
-	/* .leaflet-markercluster {
-		display: none;
-	}
-
-	:global(.map-marker .leaflet-markercluster) {
-		display: inherit;
-	} */
-</style>
+{#if instance && children}
+	{@render children()}
+{/if}

@@ -1,7 +1,4 @@
 <script lang="ts">
-	import type { MapOptions, Marker, Map, LatLngTuple } from 'leaflet';
-	import type Leaflet from 'leaflet';
-
 	import 'leaflet/dist/leaflet.css';
 	import 'leaflet.markercluster/dist/MarkerCluster.css';
 	import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
@@ -9,39 +6,49 @@
 	import markerIcon from 'leaflet/dist/images/marker-icon.png';
 	import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
-	import { createEventDispatcher, setContext, tick } from 'svelte';
-	import {
-		type LeafletEventsRecord,
-		type LocateControlOptions,
-		bindEvents,
-		keyboardEvents,
-		layerGroupEvents,
-		layersControlEvents,
-		leafletMouseEvents,
-		locationEvents,
-		mapStateChangeEvents,
-		popupEvents,
-		tooltipEvents
-	} from './index.js';
+	import type { MapOptions, Marker, Map as LeafletMap, LatLngTuple } from 'leaflet';
+	import type Leaflet from 'leaflet';
+	import { type MapEvents, type LocateControlOptions, bindEvents, mapEvents } from './index.js';
+	import { setContext, type Snippet } from 'svelte';
 	import GeolocationButton from './private/GeolocationButton.svelte';
+	import { createLocateOnAdd, updateMapProps } from './map.svelte.js';
+	import { FOCUSABLE, MAP } from './contexts.js';
 
 	let L: typeof Leaflet;
 	let locateButtonContainer: HTMLDivElement;
 
-	export let options: MapOptions = {};
-	export let tilesUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
-	export let attribution = `&copy;<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>`;
-	export let instance: Map = null as unknown as Map;
-	export let locateControl: LocateControlOptions | undefined = undefined;
-	export let focusable = true;
+	type Props = {
+		instance?: LeafletMap;
+		options?: MapOptions;
+		markers?: Marker[];
+		tilesUrl?: string;
+		attribution?: string;
+		locateControl?: LocateControlOptions;
+		focusable?: boolean;
+		children?: Snippet;
+		locateButton?: Snippet;
+	} & MapEvents;
+
+	let {
+		instance = $bindable(),
+		options = $bindable({}),
+		markers = $bindable([]),
+		tilesUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+		attribution = `&copy;<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>`,
+		locateControl = undefined,
+		focusable = true,
+		children,
+		locateButton,
+		...restProps
+	}: Props = $props();
 
 	const defaultOptions = {
-		center: [46.6188459, 1.7262114] as LatLngTuple,
-		zoom: 7,
+		center: [48.852, 2.278] as LatLngTuple,
+		trackResize: true,
+		zoom: 3,
 		maxZoom: 18,
-		keyboard: options.keyboard === undefined ? focusable : options.keyboard
+		keyboard: options.keyboard === undefined ? focusable : options.keyboard,
 	};
-	const dispatch = createEventDispatcher<LeafletEventsRecord<typeof events>>();
 	// consider exporting a reference to the markers instead of a getter
 	export const getMarkers: () => Marker[] = () => {
 		const markers: Marker[] = [];
@@ -53,108 +60,96 @@
 		return markers;
 	};
 
-	// so the parent has access to the map
-	// export const map = () => instance;
-	setContext('map', () => instance);
-	setContext('focusable', focusable ? null : -1);
-	let container: HTMLElement;
+	setContext(MAP, () => instance);
+	setContext(FOCUSABLE, focusable ? null : -1);
+	let container: HTMLElement | null = $state(null);
 
-	// Using Object.assign to avoid losing inherited prototype values
-	$: if (instance) {
-		instance.options = Object.assign(instance.options, options);
-	}
-	// $: if (thisMap) thisMap.options = options; // ERROR : this.options.crs is undefined
-	// this doesnt work because a new options object is created and does not
-	// contains default options values (inherited via prototype) required for the map to work properly
-	// Spreading thisMap.options + options in a new object doesnt work either
-	// as spreading only copies the object own enumerable properties (not the inherited ones)
-
-	function resizeMap() {
-		instance?.invalidateSize();
-	}
-
-	const events = [
-		...keyboardEvents,
-		...layerGroupEvents,
-		...layersControlEvents,
-		...leafletMouseEvents,
-		...locationEvents,
-		...mapStateChangeEvents,
-		...popupEvents,
-		...tooltipEvents,
-		'autopanstart',
-		'zoomanim'
-	] as const;
+	$effect(() => {
+		if (instance) {
+			updateMapProps(L, instance, options);
+		}
+	});
 
 	function onLoad() {
+		if (!container) return;
 		L = window.L;
 		// @ts-ignore
 		delete L.Icon.Default.prototype._getIconUrl;
 		L.Icon.Default.mergeOptions({
 			iconRetinaUrl: markerIcon2x,
 			iconUrl: markerIcon,
-			shadowUrl: markerShadow
+			shadowUrl: markerShadow,
 		});
-		instance = L.map(container, { ...defaultOptions, ...options, zoomControl: false });
-
-		if (options.zoomControl !== false) {
-			const zoomControl = L.control.zoom({
-				position: 'topleft'
-			});
-			zoomControl.addTo(instance);
-			zoomControl.getContainer()!.childNodes.forEach((child) => {
-				(child as HTMLElement).setAttribute('tabindex', focusable ? '0' : '-1');
-			});
+		const mergedOptions = { ...defaultOptions, ...options };
+		// trackResize is set to false else the resize callback couldn't be unbined (no reference)
+		instance = L.map(container, { ...mergedOptions, trackResize: false });
+		if (mergedOptions.trackResize) {
+			// this triggers updateMapProps and binds the custom resize callback
+			options.trackResize = true;
 		}
-
-		bindEvents(instance, dispatch, events);
+		bindEvents(instance, restProps, mapEvents);
 
 		// create component for the tile layer ?
 		L.tileLayer(tilesUrl, {
-			attribution
+			attribution,
 		}).addTo(instance);
 
-		// TODO: find out why manually firing the load event is needed
-		instance.whenReady(async () => {
-			instance.fireEvent('load');
-			await tick();
-			if (locateControl) {
-				const control = L.Control.extend({
-					position: 'topleft',
-					onAdd() {
-						const button = locateButtonContainer.firstChild as HTMLElement;
-						button.onclick = (e: MouseEvent) => {
-							e.stopPropagation();
-							instance.locate(locateControl?.options);
-						};
-						return button;
-					}
-				});
-				instance.addControl(new control(locateControl));
+		instance.on('layeradd', (event) => {
+			const layer = event.layer;
+			if (layer instanceof L.Marker) {
+				markers.push(layer);
 			}
+		});
+
+		instance.on('layerremove', (event) => {
+			const layer = event.layer;
+			if (layer instanceof L.Marker) {
+				const index = markers.indexOf(layer);
+				if (index > -1) {
+					markers.splice(index, 1);
+				}
+			}
+		});
+
+		instance.whenReady(() => {
+			if (!instance) return;
+			// TODO: find out why manually firing the load event is needed
+			instance.fireEvent('load');
+			if (!locateControl) return;
+			const control = L.Control.extend({
+				position: locateControl.position,
+				onAdd: createLocateOnAdd(instance, locateButtonContainer, locateControl.options),
+			});
+			instance.addControl(new control(locateControl));
 		});
 	}
 
 	function leafletLoader(_node: HTMLElement) {
 		(async function () {
 			await import('leaflet');
+			// leaflet.markercluster is loaded by default. It's 34ko (12ko gzipped).
+			// A single tile is around 30ko gzipped.
+			// TODO: consider making it optional (handle loading in MarkerClusterGroup.svelte ?)
 			await import('leaflet.markercluster');
 			onLoad();
 		})();
 	}
 </script>
 
-<svelte:window on:resize={resizeMap} use:leafletLoader />
+<svelte:window use:leafletLoader />
 
 <div class="Map" bind:this={container} style="height: 100%; width: 100%">
 	{#if instance}
-		<slot />
+		{@render children?.()}
 	{/if}
 </div>
+
 <div class="locate-button-container" bind:this={locateButtonContainer}>
-	<slot name="locate-button">
+	{#if locateButton}
+		{@render locateButton()}
+	{:else}
 		<GeolocationButton />
-	</slot>
+	{/if}
 </div>
 
 <style>

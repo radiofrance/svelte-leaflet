@@ -4,34 +4,47 @@ import type {
 	ErrorEvent,
 	Evented,
 	LatLngExpression,
-	LayerEvent,
 	LayersControlEvent,
 	LeafletEvent,
+	LeafletEventHandlerFnMap,
 	LeafletKeyboardEvent,
 	LeafletMouseEvent,
 	LocateOptions,
 	LocationEvent,
-	PopupEvent,
+	Map as LeafletMap,
+	Marker as LeafletMarker,
+	MarkerClusterSpiderfyEvent,
+	Popup as LeafletPopup,
 	ResizeEvent,
-	TooltipEvent
+	TileErrorEvent,
+	TileEvent,
+	TooltipEvent,
+	ZoomAnimEvent,
 } from 'leaflet';
-import type { EventDispatcher } from 'svelte';
 
 // Reexport your entry components here
-export { default as Map } from './Map.svelte';
-export { default as Marker } from './Marker.svelte';
-export { default as MarkerClusterGroup } from './MarkerClusterGroup.svelte';
-export { default as Polyline } from './Polyline.svelte';
-export { default as Popup } from './Popup.svelte';
-export { default as Circle } from './Circle.svelte';
-export { default as Polygon } from './Polygon.svelte';
+import DivIcon from './DivIcon.svelte';
+import Map from './Map.svelte';
+import Marker from './Marker.svelte';
+import MarkerClusterGroup from './MarkerClusterGroup.svelte';
+import Popup from './Popup.svelte';
 
-export type { Marker as LeafletMarker } from './Marker.svelte';
+export { DivIcon, Map, Marker, MarkerClusterGroup, Popup };
+// export { default as Marker } from './Marker.svelte';
+// export { default as MarkerClusterGroup } from './MarkerClusterGroup.svelte';
+// export { default as Polyline } from './Polyline.svelte';
+// export { default as Popup } from './Popup.svelte';
+// export { default as Circle } from './Circle.svelte';
+// export { default as Polygon } from './Polygon.svelte';
+
+// export type { Marker as LeafletMarker } from './Marker.svelte';
+
 export type {
 	Circle as LeafletCircle,
 	CircleOptions,
 	DragEndEvent,
 	ErrorEvent,
+	LatLngBoundsLiteral,
 	LatLngExpression,
 	LatLngLiteral,
 	LatLngTuple,
@@ -48,36 +61,49 @@ export type {
 	PopupEvent,
 	PopupOptions,
 	ResizeEvent,
-	TooltipEvent
+	TooltipEvent,
 } from 'leaflet';
 
 export type Latlngs = LatLngExpression[] | LatLngExpression[][] | LatLngExpression[][][];
 
+// type FuncType<T> = (e: T) => void;
+type AllFuncTypes =
+	| ((e: LeafletEvent) => void)
+	| ((e: LeafletKeyboardEvent) => void)
+	| ((e: LayersControlEvent) => void)
+	| ((e: LeafletMouseEvent) => void)
+	| ((e: LocationEvent) => void)
+	| ((e: ErrorEvent) => void)
+	| ((e: ResizeEvent) => void)
+	| ((e: TooltipEvent) => void)
+	| ((e: ZoomAnimEvent) => void)
+	| ((e: DragEndEvent) => void)
+	| ((e: TileEvent) => void)
+	| ((e: TileErrorEvent) => void)
+	| ((e: MarkerClusterSpiderfyEvent) => void);
+
+type EventsParamsIntersection = UnionToIntersection<Parameters<AllFuncTypes>[0]>;
+type UnionToIntersection<U> = (U extends unknown ? (k: U) => void : never) extends (
+	k: infer I,
+) => void
+	? I
+	: never;
+
+export type PrefixedLeafletEventHandlerFnMap = {
+	[K in keyof LeafletEventHandlerFnMap as `on${K}`]: LeafletEventHandlerFnMap[K];
+};
+
 export function bindEvents(
 	instance: Evented,
-	dispatch: EventDispatcher<Record<string, unknown>>,
-	events: readonly string[]
+	eventsProps: PrefixedLeafletEventHandlerFnMap,
+	events: readonly (keyof LeafletEventHandlerFnMap)[],
 ) {
 	events.forEach((event) => {
-		instance.on(event, (e) => dispatch(event, e));
+		const eventCallback = eventsProps[`on${event}`];
+		if (typeof eventCallback !== 'function') return;
+		instance.on(event, (e) => eventCallback(e as EventsParamsIntersection));
 	});
 }
-
-// export const leafletEvents = [
-// 	'dragstart',
-// 	'drag',
-// 	'add',
-// 	'remove',
-// 	'loading',
-// 	'error',
-// 	'update',
-// 	'down',
-// 	'predrag'
-// ] as const;
-// export const resizeEvents = ['resize'] as const;
-// export const zoomAnimEvents = ['zoomanim'] as const;
-// export const tileEvents = ['tileunload', 'tileloadstart', 'tileload', 'tileabort'] as const;
-// export const tileErrorEvents = ['tileerror'] as const;
 
 export const interactiveLayerEvents = [
 	'click',
@@ -86,8 +112,10 @@ export const interactiveLayerEvents = [
 	'mouseup',
 	'mouseover',
 	'mouseout',
-	'contextmenu'
+	'contextmenu',
 ] as const;
+
+export const draggingEvents = ['dragstart', 'movestart', 'drag', 'dragend', 'moveend'] as const;
 
 export const keyboardEvents = ['keypress', 'keydown', 'keyup'] as const;
 
@@ -97,7 +125,7 @@ export const leafletMouseEvents = [...interactiveLayerEvents, 'mousemove', 'prec
 
 export const layerEvents = ['add', 'remove'] as const;
 
-export const popupEvents = ['popupopen', 'popupclose'] as const;
+export const popupSpecificEvents = ['popupopen', 'popupclose'] as const;
 
 export const tooltipEvents = ['tooltipopen', 'tooltipclose'] as const;
 
@@ -115,65 +143,65 @@ const leafletEvents = [
 	'zoom',
 	'zoomend',
 	'zoomlevelschange',
-	'zoomstart'
+	'zoomstart',
 ] as const;
 
 export const mapStateChangeEvents = [...leafletEvents, 'resize'] as const;
 export const polygonEvents = [
 	...tooltipEvents,
 	...layerEvents,
-	...popupEvents,
-	...interactiveLayerEvents
+	...popupSpecificEvents,
+	...interactiveLayerEvents,
 ] as const;
-
-type LeafletEventTypes = {
-	resize: ResizeEvent;
-	locationerror: ErrorEvent;
-	locationfound: LocationEvent;
-	add: LeafletEvent;
-	remove: LeafletEvent;
-	dragend: DragEndEvent;
-} & LeafletEvents &
-	LayersControlEvents &
-	MouseEvents &
-	PopupEvents &
-	TooltipEvents &
-	LayerGroupEvents &
-	KeyboardEvents;
-
-type LeafletEvents = {
-	[K in (typeof leafletEvents)[number]]: LeafletEvent;
-};
-
-type LayersControlEvents = {
-	[K in (typeof layersControlEvents)[number]]: LayersControlEvent;
-};
-
-type MouseEvents = {
-	[K in (typeof leafletMouseEvents)[number]]: LeafletMouseEvent;
-};
-
-type PopupEvents = {
-	[K in (typeof popupEvents)[number]]: PopupEvent;
-};
-
-type TooltipEvents = {
-	[K in (typeof tooltipEvents)[number]]: TooltipEvent;
-};
-
-type LayerGroupEvents = {
-	[K in (typeof layerGroupEvents)[number]]: LayerEvent;
-};
-
-type KeyboardEvents = {
-	[K in (typeof keyboardEvents)[number]]: LeafletKeyboardEvent;
-};
-
-export type LeafletEventsRecord<T extends readonly string[]> = {
-	[K in T[number]]: K extends keyof LeafletEventTypes ? LeafletEventTypes[K] : LeafletEvent;
-};
 
 export type LocateControlOptions = {
 	position?: ControlPosition;
 	options?: LocateOptions;
+};
+
+export const mapEvents = [
+	...keyboardEvents,
+	...layerGroupEvents,
+	...layersControlEvents,
+	...leafletMouseEvents,
+	...locationEvents,
+	...mapStateChangeEvents,
+	...popupSpecificEvents,
+	...tooltipEvents,
+	'autopanstart',
+	'zoomanim',
+] as const;
+
+export const markerEvents = [
+	'move',
+	...draggingEvents,
+	...interactiveLayerEvents,
+	...layerEvents,
+	...popupSpecificEvents,
+	...tooltipEvents,
+] as const;
+
+export const popupEvents = [
+	// 'contentupdate', // needs @types/leaflet PR ?
+	...interactiveLayerEvents,
+	...layerEvents,
+	...popupSpecificEvents,
+	...tooltipEvents,
+] as const;
+
+export type MapEvents = CreateSvelteEventsMap<typeof mapEvents, LeafletMap>;
+export type MarkerEvents = CreateSvelteEventsMap<typeof markerEvents, LeafletMarker>;
+export type PopupEvents = CreateSvelteEventsMap<typeof popupEvents, LeafletPopup>;
+
+type CreateSvelteEventsMap<
+	EventNames extends readonly (keyof LeafletEventHandlerFnMap)[],
+	SourceTarget = null,
+> = {
+	[K in EventNames[number] as `on${K}`]?: SourceTarget extends null
+		? LeafletEventHandlerFnMap[K]
+		: (
+				e: Omit<Parameters<Exclude<LeafletEventHandlerFnMap[K], undefined>>[0], 'sourceTarget'> & {
+					sourceTarget: SourceTarget;
+				},
+			) => void;
 };

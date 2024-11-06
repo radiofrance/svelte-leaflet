@@ -1,114 +1,76 @@
-<script context="module" lang="ts">
-	type MarkerContext = {
-		id?: string;
-	};
-	export type Marker = LeafletMarker & MarkerContext;
-</script>
-
 <script lang="ts">
+	import { getContext, onDestroy, onMount, setContext, type Snippet } from 'svelte';
 	import type {
-		LatLngExpression,
-		LayerGroup,
-		Map,
+		Map as LeafletMap,
 		Marker as LeafletMarker,
-		MarkerOptions
+		MarkerOptions,
+		LayerGroup,
+		MarkerClusterGroup,
 	} from 'leaflet';
+	import { bindEvents, markerEvents, type LatLngExpression, type MarkerEvents } from './index.js';
+	import { updateMarkerProps } from './marker.svelte.js';
+	import { LAYERGROUP, MAP, MARKER } from './contexts.js';
 
-	import { createEventDispatcher, getContext, onDestroy, setContext, tick } from 'svelte';
-
-	const dispatch = createEventDispatcher();
 	const L = globalThis.window.L;
 
-	export let size = 25;
-	export let latlng: LatLngExpression;
-	export let id: string = '';
-	export let options: MarkerOptions = {};
+	type Props = {
+		latlng: LatLngExpression;
+		options?: MarkerOptions;
+		instance?: LeafletMarker;
+		children?: Snippet;
+	} & MarkerEvents;
 
-	let markerElement: HTMLElement;
-	let marker: Marker;
-	const tabindex = getContext('focusable');
+	let {
+		latlng,
+		options = $bindable(),
+		instance = $bindable(),
+		children,
+		...restProps
+	}: Props = $props();
 
-	const getMap = getContext<() => Map>('map');
-	const getLayerGroup = getContext<() => LayerGroup>('layerGroup');
-	setContext('layer', () => marker);
+	const getMap = getContext<() => LeafletMap>(MAP);
+	const getLayerGroup = getContext<() => LayerGroup | MarkerClusterGroup>(LAYERGROUP);
+	setContext(MARKER, () => instance);
 
-	$: recreateMarker(size, latlng, id, options);
-
-	async function recreateMarker(
-		size: number,
-		latlng: LatLngExpression,
-		id: string,
-		options: MarkerOptions
-	) {
-		removeMarker();
-		await tick();
-		createMarker(size, latlng, id, options);
-	}
-
-	async function createMarker(
-		size: number,
-		latlng: LatLngExpression,
-		id: string,
-		options: MarkerOptions
-	) {
-		await tick(); // waits for next paint so layers and map are done rendering
-		const layerGroup = getLayerGroup?.();
-		const map = getMap();
-		const mapOrLayerGroup = layerGroup || map;
-		marker = L.marker(latlng, {
-			...options,
-			keyboard: tabindex === -1 ? false : true
-		});
-		marker.id = id;
-		marker
-			.on('click', (e) => dispatch('click', e))
-			.on('dblclick', (e) => dispatch('dblclick', e))
-			.on('contextmenu', (e) => dispatch('contextmenu', e))
-			.on('dragstart', (e) => dispatch('dragstart', e))
-			.on('drag', (e) => dispatch('drag', e))
-			.on('dragend', (e) => dispatch('dragend', e));
-		mapOrLayerGroup.addLayer(marker);
-		await tick(); // waits for next paint so marker is done rendering
-		if (markerElement.childElementCount > 0) {
-			// if the marker has children, use them as the marker icon
-			marker.setIcon(
-				L.divIcon({
-					html: markerElement,
-					className: 'map-marker',
-					iconSize: L.point(size, size)
-				})
-			);
+	$effect(() => {
+		if (instance && options) {
+			updateMarkerProps(instance, options);
 		}
-	}
+	});
 
-	function removeMarker() {
-		if (!marker) return;
-		const layerGroup = getLayerGroup?.();
+	$effect(() => {
+		if (!instance?.getLatLng().equals(latlng)) {
+			instance?.setLatLng(latlng);
+		}
+	});
+
+	onMount(() => {
+		const markerOptions = { ...options };
+		instance = L.marker(latlng, markerOptions);
+		bindEvents(instance, restProps, markerEvents);
+
 		const map = getMap();
+		const layerGroup = getLayerGroup?.();
 		const mapOrLayerGroup = layerGroup || map;
-		mapOrLayerGroup.removeLayer(marker);
-	}
+		instance.addTo(mapOrLayerGroup);
+		mapOrLayerGroup.remove;
+	});
 
 	onDestroy(() => {
-		removeMarker();
+		const layerGroup = getLayerGroup?.();
+		const map = getMap();
+		// debugger;
+		if (instance) {
+			// debugger;
+			if (layerGroup) {
+				layerGroup.removeLayer(instance);
+			} else {
+				map.removeLayer(instance);
+			}
+		}
 	});
 </script>
 
-{#key marker}
-	{#if marker}
-		<div bind:this={markerElement} class="leaflet-marker">
-			<slot name="icon" />
-		</div>
-		<slot />
-	{/if}
-{/key}
-
-<style>
-	.leaflet-marker {
-		display: none;
-	}
-
-	:global(.map-marker .leaflet-marker) {
-		display: inherit;
-	}
-</style>
+{#if instance && children}
+	{@render children()}
+{/if}
