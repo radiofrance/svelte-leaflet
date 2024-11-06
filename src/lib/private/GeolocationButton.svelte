@@ -1,9 +1,9 @@
-<script>
+<script lang="ts">
 	import { getContext } from 'svelte';
 	import GeolocationIcon from './GeolocationIcon.svelte';
-	// import { FOCUSABLE } from '../contexts.js';
+	import { FOCUSABLE } from '../contexts.js';
 
-	const tabindex = getContext('FOCUSABLE');
+	const tabindex = getContext<-1 | null>(FOCUSABLE);
 </script>
 
 <div>

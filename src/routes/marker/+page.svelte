@@ -1,5 +1,6 @@
 <script lang="ts">
 	import DivIcon from '$lib/DivIcon.svelte';
+	import Icon from '$lib/Icon.svelte';
 	import type { LatLngExpression, MarkerOptions } from '$lib/index.js';
 	import Map from '$lib/Map.svelte';
 	import Marker from '$lib/Marker.svelte';
@@ -7,8 +8,9 @@
 	import Controls from '../../components/Controls.svelte';
 	import CustomMarker from '../../components/CustomMarker.svelte';
 	import Details from '../../components/Details.svelte';
+	import eiffelPng from './eiffel.png';
 
-	let latlng: LatLngExpression = $state([48.86750658335676, 2.3638381549875467]);
+	let latlng: LatLngExpression = $state([49.86750658335676, 2.3638381549875467]);
 	let options: MarkerOptions & { autoPanPadding: [number, number] } = $state({
 		// boolean options
 		draggable: false,
@@ -60,6 +62,7 @@
 </script>
 
 <Map
+	options={{ zoom: 7 }}
 	locateControl={{
 		position: 'topleft',
 	}}
@@ -75,6 +78,19 @@
 		latlng={[46.788094, 1.803562]}
 		oncontextmenu={() => console.log('contextmenu from marker')}
 	/>
+
+	<Marker latlng={[48.85827416790019, 2.2945229891990397]}>
+		<Icon
+			options={{
+				iconUrl: eiffelPng,
+				// the image is 363x671px and I want it to appear 5 times smaller
+				iconSize: [363 / 5, 671 / 5],
+				// [180, 550] is the coordinate on the image I want to pin to the map
+				// I need to divide it by 5 because of the resizing
+				iconAnchor: [180 / 5, 550 / 5],
+			}}
+		/>
+	</Marker>
 </Map>
 
 <Controls>
