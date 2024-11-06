@@ -10,7 +10,7 @@
 	import { getContext, onDestroy, onMount, type Snippet } from 'svelte';
 	import { bindEvents, popupEvents, type PopupEvents } from './index.js';
 	import { updatePopupProps } from './popup.svelte.js';
-	import { getFirstNonCommentChild } from './utils.js';
+	import { LAYERGROUP, MAP, MARKER } from './contexts.js';
 
 	const L = globalThis.window.L;
 
@@ -31,9 +31,9 @@
 
 	let popupContent: HTMLElement | undefined = $state();
 
-	const getMap = getContext<() => LeafletMap>('map');
-	const getLayerGroup = getContext<() => LayerGroup>('layerGroup');
-	const getMarker = getContext<() => LeafletMarker>('marker');
+	const getMap = getContext<() => LeafletMap>(MAP);
+	const getLayerGroup = getContext<() => LayerGroup>(LAYERGROUP);
+	const getMarker = getContext<() => LeafletMarker>(MARKER);
 
 	onMount(() => {
 		const map = getMap?.();
@@ -46,7 +46,7 @@
 		if (marker) marker.bindPopup(instance);
 		else if (map) instance.openOn(map);
 		else instance.addTo(context);
-		instance.setContent(popupContent);
+		if (popupContent) instance.setContent(popupContent);
 	});
 
 	onDestroy(() => {

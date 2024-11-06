@@ -9,6 +9,7 @@
 	} from 'leaflet';
 	import { bindEvents, markerEvents, type LatLngExpression, type MarkerEvents } from './index.js';
 	import { updateMarkerProps } from './marker.svelte.js';
+	import { LAYERGROUP, MAP, MARKER } from './contexts.js';
 
 	const L = globalThis.window.L;
 
@@ -27,9 +28,9 @@
 		...restProps
 	}: Props = $props();
 
-	const getMap = getContext<() => LeafletMap>('map');
-	const getLayerGroup = getContext<() => LayerGroup | MarkerClusterGroup>('layerGroup');
-	setContext('marker', () => instance);
+	const getMap = getContext<() => LeafletMap>(MAP);
+	const getLayerGroup = getContext<() => LayerGroup | MarkerClusterGroup>(LAYERGROUP);
+	setContext(MARKER, () => instance);
 
 	$effect(() => {
 		if (instance && options) {

@@ -12,6 +12,7 @@
 	import { setContext, type Snippet } from 'svelte';
 	import GeolocationButton from './private/GeolocationButton.svelte';
 	import { createLocateOnAdd, updateMapProps } from './map.svelte.js';
+	import { FOCUSABLE, MAP } from './contexts.js';
 
 	let L: typeof Leaflet;
 	let locateButtonContainer: HTMLDivElement;
@@ -59,8 +60,8 @@
 		return markers;
 	};
 
-	setContext('map', () => instance);
-	setContext('focusable', focusable ? null : -1);
+	setContext(MAP, () => instance);
+	setContext(FOCUSABLE, focusable ? null : -1);
 	let container: HTMLElement | null = $state(null);
 
 	$effect(() => {
