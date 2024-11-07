@@ -31,4 +31,10 @@
 		background: white;
 		padding: 1rem;
 	}
+
+	:global(.controls label) {
+		display: flex;
+		gap: 0.5rem;
+		justify-content: space-between;
+	}
 </style>

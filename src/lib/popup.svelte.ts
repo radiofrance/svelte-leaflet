@@ -1,4 +1,11 @@
 import type { Popup as LeafletPopup, PopupOptions } from 'leaflet';
+import type { CreateSvelteEventsMap } from './utils.js';
+import {
+	interactiveLayerEvents,
+	layerEvents,
+	popupSpecificEvents,
+	tooltipEvents,
+} from './events.js';
 
 export function updatePopupProps(instance: LeafletPopup, options: PopupOptions) {
 	if (!options) return;
@@ -42,6 +49,16 @@ export function updatePopupProps(instance: LeafletPopup, options: PopupOptions) 
 		}
 	}
 }
+
+export const popupEvents = [
+	// 'contentupdate', // needs @types/leaflet PR ?
+	...interactiveLayerEvents,
+	...layerEvents,
+	...popupSpecificEvents,
+	...tooltipEvents,
+] as const;
+
+export type PopupEvents = CreateSvelteEventsMap<typeof popupEvents, LeafletPopup>;
 
 declare module 'leaflet' {
 	interface Popup {

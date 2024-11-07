@@ -8,8 +8,8 @@
 		Marker as LeafletMarker,
 	} from 'leaflet';
 	import { getContext, onDestroy, onMount, type Snippet } from 'svelte';
-	import { bindEvents, popupEvents, type PopupEvents } from './index.js';
-	import { updatePopupProps } from './popup.svelte.js';
+	import { bindEvents } from './index.js';
+	import { popupEvents, updatePopupProps, type PopupEvents } from './popup.svelte.js';
 	import { LAYERGROUP, MAP, MARKER } from './contexts.js';
 
 	type Props = {

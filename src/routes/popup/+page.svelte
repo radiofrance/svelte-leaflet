@@ -125,19 +125,3 @@
 		{/each}
 	</Details>
 </Controls>
-
-<style>
-	input[type='number'] {
-		width: 100px;
-	}
-
-	span input[type='number'] {
-		width: 50px;
-	}
-
-	label {
-		display: flex;
-		gap: 0.5rem;
-		justify-content: space-between;
-	}
-</style>

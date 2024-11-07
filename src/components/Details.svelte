@@ -28,4 +28,18 @@
 		gap: 0.5rem;
 		margin: 1rem 0;
 	}
+
+	:global(.details-content label) {
+		display: flex;
+		gap: 0.5rem;
+		justify-content: space-between;
+	}
+
+	:global(.details-content input[type='number']) {
+		width: 100px;
+	}
+
+	:global(.details-content span input[type='number']) {
+		width: 50px;
+	}
 </style>

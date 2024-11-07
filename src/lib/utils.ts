@@ -1,3 +1,5 @@
+import type { LeafletEventHandlerFnMap } from 'leaflet';
+
 export function capitalize<T extends string>(str: T): Capitalize<T> {
 	return (str[0].toUpperCase() + str.slice(1)) as Capitalize<T>;
 }
@@ -15,3 +17,16 @@ export type PickOptionByType<Options, Type> = keyof {
 };
 
 export type UnionContainsType<Union, Type> = Union extends Type ? true : never;
+
+export type CreateSvelteEventsMap<
+	EventNames extends readonly (keyof LeafletEventHandlerFnMap)[],
+	SourceTarget = null,
+> = {
+	[K in EventNames[number] as `on${K}`]?: SourceTarget extends null
+		? LeafletEventHandlerFnMap[K]
+		: (
+				e: Omit<Parameters<Exclude<LeafletEventHandlerFnMap[K], undefined>>[0], 'sourceTarget'> & {
+					sourceTarget: SourceTarget;
+				},
+			) => void;
+};
