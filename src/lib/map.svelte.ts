@@ -1,5 +1,4 @@
 import type { Map as LeafletMap, MapOptions } from 'leaflet';
-import type L from 'leaflet';
 import { capitalize, getFirstNonCommentChild } from './utils.js';
 
 // stores the function bound to the event listener so it can be removed later
@@ -13,11 +12,7 @@ function invalidateMapSize(map: LeafletMap) {
 	});
 }
 
-export function updateMapProps(
-	L: typeof import('leaflet'),
-	instance: LeafletMap,
-	newProps: MapOptions,
-) {
+export function updateMapProps(instance: LeafletMap, newProps: MapOptions) {
 	if (!newProps) return;
 	// any is the default type for the Object.entries values anyway
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -76,13 +71,14 @@ export function updateMapProps(
 			// Control cases
 			case 'zoomControl':
 				if (value) {
-					instance.zoomControl = instance.zoomControl || L.control.zoom();
+					instance.zoomControl = instance.zoomControl || window.L.control.zoom();
 					instance.zoomControl.addTo(instance);
 				} else instance.zoomControl?.remove();
 				break;
 			case 'attributionControl':
 				if (value) {
-					instance.attributionControl = instance.attributionControl || L.control.attribution();
+					instance.attributionControl =
+						instance.attributionControl || window.L.control.attribution();
 					instance.attributionControl.addTo(instance);
 				} else instance.attributionControl?.remove();
 				break;

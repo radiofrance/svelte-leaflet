@@ -12,8 +12,6 @@
 	import { updatePopupProps } from './popup.svelte.js';
 	import { LAYERGROUP, MAP, MARKER } from './contexts.js';
 
-	const L = globalThis.window.L;
-
 	type Props = {
 		latlng?: LatLngExpression;
 		options?: PopupOptions;
@@ -40,7 +38,7 @@
 		const layerGroup = getLayerGroup?.();
 		const marker = getMarker?.();
 		const context = layerGroup || map;
-		instance = L.popup(options);
+		instance = window.L.popup(options);
 		if (latlng) instance.setLatLng(latlng);
 		bindEvents(instance, restProps, popupEvents);
 		if (marker) marker.bindPopup(instance);

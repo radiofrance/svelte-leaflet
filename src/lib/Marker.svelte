@@ -11,8 +11,6 @@
 	import { updateMarkerProps } from './marker.svelte.js';
 	import { LAYERGROUP, MAP, MARKER } from './contexts.js';
 
-	const L = globalThis.window.L;
-
 	type Props = {
 		latlng: LatLngExpression;
 		options?: MarkerOptions;
@@ -46,7 +44,7 @@
 
 	onMount(() => {
 		const markerOptions = { ...options };
-		instance = L.marker(latlng, markerOptions);
+		instance = window.L.marker(latlng, markerOptions);
 		bindEvents(instance, restProps, markerEvents);
 
 		const map = getMap();
@@ -59,9 +57,7 @@
 	onDestroy(() => {
 		const layerGroup = getLayerGroup?.();
 		const map = getMap();
-		// debugger;
 		if (instance) {
-			// debugger;
 			if (layerGroup) {
 				layerGroup.removeLayer(instance);
 			} else {

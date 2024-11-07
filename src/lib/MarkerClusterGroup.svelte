@@ -7,8 +7,6 @@
 	} from 'leaflet';
 	import { LAYERGROUP, MAP } from './contexts.js';
 
-	const L = globalThis.window.L;
-
 	type Props = {
 		instance?: LeafletMarkerClusterGroup;
 		options?: MarkerClusterGroupOptions;
@@ -27,7 +25,7 @@
 		const layerGroup = getLayerGroup?.();
 		const context = layerGroup || map;
 
-		instance = L.markerClusterGroup(options);
+		instance = window.L.markerClusterGroup(options);
 		context.addLayer(instance);
 	});
 

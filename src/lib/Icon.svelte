@@ -9,12 +9,11 @@
 	let { instance = $bindable(), options }: Props = $props();
 
 	const getMarker = getContext<() => LeafletMarker>(MARKER);
-	const L = globalThis.window.L;
 
 	onMount(() => {
 		const marker = getMarker?.();
 		if (marker) {
-			instance = L.icon(options);
+			instance = window.L.icon(options);
 			marker.setIcon(instance);
 		}
 	});
