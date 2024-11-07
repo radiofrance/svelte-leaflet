@@ -10,12 +10,11 @@
 	let iconContainer: HTMLDivElement | undefined = $state();
 
 	const getMarker = getContext<() => LeafletMarker>(MARKER);
-	const L = globalThis.window.L;
 
 	onMount(() => {
 		const marker = getMarker?.();
 		if (marker) {
-			instance = L.divIcon({
+			instance = window.L.divIcon({
 				html: iconContainer,
 				className: '',
 				...options,

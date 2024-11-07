@@ -7,14 +7,12 @@
 	import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
 	import type { MapOptions, Marker, Map as LeafletMap, LatLngTuple } from 'leaflet';
-	import type Leaflet from 'leaflet';
 	import { type MapEvents, type LocateControlOptions, bindEvents, mapEvents } from './index.js';
 	import { setContext, type Snippet } from 'svelte';
 	import GeolocationButton from './private/GeolocationButton.svelte';
 	import { createLocateOnAdd, updateMapProps } from './map.svelte.js';
 	import { FOCUSABLE, MAP } from './contexts.js';
 
-	let L: typeof Leaflet;
 	let locateButtonContainer: HTMLDivElement;
 
 	type Props = {
@@ -53,7 +51,7 @@
 	export const getMarkers: () => Marker[] = () => {
 		const markers: Marker[] = [];
 		instance?.eachLayer((layer) => {
-			if (layer instanceof L.Marker) {
+			if (layer instanceof window.L.Marker) {
 				markers.push(layer);
 			}
 		});
@@ -66,23 +64,22 @@
 
 	$effect(() => {
 		if (instance) {
-			updateMapProps(L, instance, options);
+			updateMapProps(instance, options);
 		}
 	});
 
 	function onLoad() {
 		if (!container) return;
-		L = window.L;
 		// @ts-ignore
-		delete L.Icon.Default.prototype._getIconUrl;
-		L.Icon.Default.mergeOptions({
+		delete window.L.Icon.Default.prototype._getIconUrl;
+		window.L.Icon.Default.mergeOptions({
 			iconRetinaUrl: markerIcon2x,
 			iconUrl: markerIcon,
 			shadowUrl: markerShadow,
 		});
 		const mergedOptions = { ...defaultOptions, ...options };
 		// trackResize is set to false else the resize callback couldn't be unbined (no reference)
-		instance = L.map(container, { ...mergedOptions, trackResize: false });
+		instance = window.L.map(container, { ...mergedOptions, trackResize: false });
 		if (mergedOptions.trackResize) {
 			// this triggers updateMapProps and binds the custom resize callback
 			options.trackResize = true;
@@ -90,20 +87,20 @@
 		bindEvents(instance, restProps, mapEvents);
 
 		// create component for the tile layer ?
-		L.tileLayer(tilesUrl, {
+		window.L.tileLayer(tilesUrl, {
 			attribution,
 		}).addTo(instance);
 
 		instance.on('layeradd', (event) => {
 			const layer = event.layer;
-			if (layer instanceof L.Marker) {
+			if (layer instanceof window.L.Marker) {
 				markers.push(layer);
 			}
 		});
 
 		instance.on('layerremove', (event) => {
 			const layer = event.layer;
-			if (layer instanceof L.Marker) {
+			if (layer instanceof window.L.Marker) {
 				const index = markers.indexOf(layer);
 				if (index > -1) {
 					markers.splice(index, 1);
@@ -116,7 +113,7 @@
 			// TODO: find out why manually firing the load event is needed
 			instance.fireEvent('load');
 			if (!locateControl) return;
-			const control = L.Control.extend({
+			const control = window.L.Control.extend({
 				position: locateControl.position,
 				onAdd: createLocateOnAdd(instance, locateButtonContainer, locateControl.options),
 			});
