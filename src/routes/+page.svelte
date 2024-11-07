@@ -3,6 +3,7 @@
 	<a href="/marker">Marker</a>
 	<a href="/popup">Popup</a>
 	<a href="/cluster">Cluster</a>
+	<a href="/polygon">Polygon</a>
 	<a href="/list">List</a>
 </main>
 

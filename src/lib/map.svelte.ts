@@ -1,5 +1,15 @@
 import type { Map as LeafletMap, MapOptions } from 'leaflet';
-import { capitalize, getFirstNonCommentChild } from './utils.js';
+import { capitalize, getFirstNonCommentChild, type CreateSvelteEventsMap } from './utils.js';
+import {
+	keyboardEvents,
+	layerGroupEvents,
+	layersControlEvents,
+	leafletMouseEvents,
+	locationEvents,
+	mapStateChangeEvents,
+	popupSpecificEvents,
+	tooltipEvents,
+} from './events.js';
 
 // stores the function bound to the event listener so it can be removed later
 let boundInvalidateMapSize: null | (() => void) = null;
@@ -123,3 +133,18 @@ export function createLocateOnAdd(
 		return locateButtonElement;
 	};
 }
+
+export const mapEvents = [
+	...keyboardEvents,
+	...layerGroupEvents,
+	...layersControlEvents,
+	...leafletMouseEvents,
+	...locationEvents,
+	...mapStateChangeEvents,
+	...popupSpecificEvents,
+	...tooltipEvents,
+	'autopanstart',
+	'zoomanim',
+] as const;
+
+export type MapEvents = CreateSvelteEventsMap<typeof mapEvents, LeafletMap>;

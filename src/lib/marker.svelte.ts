@@ -1,5 +1,12 @@
 import type { Marker as LeafletMarker, MarkerOptions } from 'leaflet';
-import { capitalize } from './utils.js';
+import { capitalize, type CreateSvelteEventsMap } from './utils.js';
+import {
+	draggingEvents,
+	interactiveLayerEvents,
+	layerEvents,
+	popupSpecificEvents,
+	tooltipEvents,
+} from './events.js';
 
 // const L = globalThis.window.L;
 
@@ -50,3 +57,14 @@ export function updateMarkerProps(instance: LeafletMarker, options: MarkerOption
 		}
 	}
 }
+
+export const markerEvents = [
+	'move',
+	...draggingEvents,
+	...interactiveLayerEvents,
+	...layerEvents,
+	...popupSpecificEvents,
+	...tooltipEvents,
+] as const;
+
+export type MarkerEvents = CreateSvelteEventsMap<typeof markerEvents, LeafletMarker>;

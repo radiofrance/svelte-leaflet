@@ -7,10 +7,10 @@
 	import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
 	import type { MapOptions, Marker, Map as LeafletMap, LatLngTuple } from 'leaflet';
-	import { type MapEvents, type LocateControlOptions, bindEvents, mapEvents } from './index.js';
+	import { type LocateControlOptions, bindEvents } from './index.js';
 	import { setContext, type Snippet } from 'svelte';
 	import GeolocationButton from './private/GeolocationButton.svelte';
-	import { createLocateOnAdd, updateMapProps } from './map.svelte.js';
+	import { createLocateOnAdd, mapEvents, updateMapProps, type MapEvents } from './map.svelte.js';
 	import { FOCUSABLE, MAP } from './contexts.js';
 
 	let locateButtonContainer: HTMLDivElement;
