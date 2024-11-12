@@ -7,13 +7,10 @@
 	import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
 	import type { MapOptions, Marker, Map as LeafletMap, LatLngTuple } from 'leaflet';
-	import { type LocateControlOptions, bindEvents } from './index.js';
+	import { bindEvents } from './index.js';
 	import { setContext, type Snippet } from 'svelte';
-	import GeolocationButton from './private/GeolocationButton.svelte';
-	import { createLocateOnAdd, mapEvents, updateMapProps, type MapEvents } from './map.svelte.js';
+	import { mapEvents, updateMapProps, type MapEvents } from './map.svelte.js';
 	import { FOCUSABLE, MAP } from './contexts.js';
-
-	let locateButtonContainer: HTMLDivElement;
 
 	type Props = {
 		instance?: LeafletMap;
@@ -21,10 +18,8 @@
 		markers?: Marker[];
 		tilesUrl?: string;
 		attribution?: string;
-		locateControl?: LocateControlOptions;
 		focusable?: boolean;
 		children?: Snippet;
-		locateButton?: Snippet;
 	} & MapEvents;
 
 	let {
@@ -33,10 +28,8 @@
 		markers = $bindable([]),
 		tilesUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
 		attribution = `&copy;<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>`,
-		locateControl = undefined,
 		focusable = true,
 		children,
-		locateButton,
 		...restProps
 	}: Props = $props();
 
@@ -107,18 +100,6 @@
 				}
 			}
 		});
-
-		instance.whenReady(() => {
-			if (!instance) return;
-			// TODO: find out why manually firing the load event is needed
-			instance.fireEvent('load');
-			if (!locateControl) return;
-			const control = window.L.Control.extend({
-				position: locateControl.position,
-				onAdd: createLocateOnAdd(instance, locateButtonContainer, locateControl.options),
-			});
-			instance.addControl(new control(locateControl));
-		});
 	}
 
 	function leafletLoader(_node: HTMLElement) {
@@ -141,20 +122,8 @@
 	{/if}
 </div>
 
-<div class="locate-button-container" bind:this={locateButtonContainer}>
-	{#if locateButton}
-		{@render locateButton()}
-	{:else}
-		<GeolocationButton />
-	{/if}
-</div>
-
 <style>
 	.Map {
 		z-index: 0;
-	}
-
-	.locate-button-container {
-		display: none;
 	}
 </style>

@@ -5,15 +5,13 @@
 	import { bindEvents, type Latlngs, type LeafletMap } from './index.js';
 	import { LAYERGROUP, MAP } from './contexts.js';
 
-	// const L = globalThis.window.L;
-
 	type Props = {
 		latlngs: Latlngs;
 		instance?: LeafletPolygon;
 		options?: PolylineOptions;
 	} & PolygonEvents;
 
-	let { latlngs, instance = $bindable(), options, ...restProps }: Props = $props();
+	let { latlngs, instance = $bindable(), options = {}, ...restProps }: Props = $props();
 
 	const getMap = getContext<() => LeafletMap>(MAP);
 	const getLayerGroup = getContext<() => LayerGroup>(LAYERGROUP);
