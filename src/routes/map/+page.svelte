@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { LeafletMap, LatLngTuple, LatLngBoundsLiteral, MapOptions } from '$lib/index.js';
+	import LocateControl from '$lib/LocateControl.svelte';
 	import Map from '$lib/Map.svelte';
 	import type { PickOptionByType } from '$lib/utils.js';
 	import Controls from '../../components/Controls.svelte';
@@ -77,22 +78,19 @@
 </script>
 
 <Map
-	locateControl={{
-		options: {
-			enableHighAccuracy: true,
-			setView: true,
-		},
-		position: 'topleft',
-	}}
 	onload={(e) => console.log('map loaded', e)}
 	focusable={false}
 	bind:options
 	bind:instance={map}
 	oncontextmenu={() => console.log('contextmenu')}
 >
-	<!-- {#snippet locateButton()}
-		<button>Custom Locate</button>
-	{/snippet} -->
+	<LocateControl
+		position="topleft"
+		options={{
+			enableHighAccuracy: true,
+			setView: true,
+		}}
+	/>
 </Map>
 
 <Controls>

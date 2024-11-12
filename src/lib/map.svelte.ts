@@ -1,5 +1,5 @@
 import type { Map as LeafletMap, MapOptions } from 'leaflet';
-import { capitalize, getFirstNonCommentChild, type CreateSvelteEventsMap } from './utils.js';
+import { capitalize, type CreateSvelteEventsMap } from './utils.js';
 import {
 	keyboardEvents,
 	layerGroupEvents,
@@ -112,26 +112,6 @@ export function updateMapProps(instance: LeafletMap, newProps: MapOptions) {
 				break;
 		}
 	}
-}
-
-export function createLocateOnAdd(
-	mapInstance: LeafletMap,
-	locateButtonContainer: HTMLElement,
-	locateControlOptions: L.LocateOptions = {},
-) {
-	return () => {
-		const locateButtonElement = getFirstNonCommentChild(locateButtonContainer);
-		if (!locateButtonElement) return;
-		// prevent zoom on locate button double click
-		locateButtonElement.addEventListener('dblclick', (e: MouseEvent) => {
-			e.preventDefault();
-			e.stopPropagation();
-		});
-		locateButtonElement.addEventListener('click', () => {
-			mapInstance?.locate(locateControlOptions);
-		});
-		return locateButtonElement;
-	};
 }
 
 export const mapEvents = [

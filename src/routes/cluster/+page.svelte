@@ -7,6 +7,8 @@
 	import CustomMarker from '../../components/CustomMarker.svelte';
 	import Popup from '$lib/Popup.svelte';
 	import type { LeafletMap } from '$lib/index.js';
+	import Controls from '../../components/Controls.svelte';
+	import Details from '../../components/Details.svelte';
 
 	let stations = $state<Station[]>([]);
 	let map: LeafletMap | undefined = $state();
@@ -23,11 +25,6 @@
 		longitude: string;
 		adresse: string;
 		ville: string;
-	}
-
-	interface Geom {
-		lon: number;
-		lat: number;
 	}
 
 	const BaseURLPetrolPrince =
@@ -90,3 +87,9 @@
 		{/each}
 	</MarkerClusterGroup>
 </Map>
+
+<Controls>
+	<Details title="test">
+		<p>test</p>
+	</Details>
+</Controls>

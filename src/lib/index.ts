@@ -26,8 +26,9 @@ import Marker from './Marker.svelte';
 import MarkerClusterGroup from './MarkerClusterGroup.svelte';
 import Popup from './Popup.svelte';
 import Polygon from './Polygon.svelte';
+import LocateControl from './LocateControl.svelte';
 
-export { DivIcon, Map, Marker, MarkerClusterGroup, Popup, Polygon };
+export { DivIcon, Map, Marker, MarkerClusterGroup, Popup, Polygon, LocateControl };
 
 export type {
 	Circle as LeafletCircle,
