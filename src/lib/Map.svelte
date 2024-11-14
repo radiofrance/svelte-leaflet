@@ -100,6 +100,12 @@
 				}
 			}
 		});
+
+		instance.whenReady(() => {
+			if (!instance) return;
+			// TODO: find out why manually firing the load event is needed
+			instance.fireEvent('load');
+		});
 	}
 
 	function leafletLoader(_node: HTMLElement) {
