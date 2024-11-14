@@ -1,10 +1,19 @@
 <script lang="ts">
-	import { getContext, onDestroy, onMount, setContext, type Snippet } from 'svelte';
+	import {
+		getContext,
+		mount,
+		onDestroy,
+		onMount,
+		setContext,
+		type Component,
+		type Snippet,
+	} from 'svelte';
 	import type {
 		MarkerClusterGroup as LeafletMarkerClusterGroup,
 		LayerGroup as LeafletLayerGroup,
 		MarkerClusterGroupOptions,
 		LeafletEventHandlerFnMap,
+		MarkerCluster,
 	} from 'leaflet';
 	import { LAYERGROUP, MAP } from './contexts.js';
 	import {
@@ -14,12 +23,13 @@
 	import { bindEvents } from './index.js';
 
 	type Props = {
+		icon?: Component<{ count: number }>;
 		instance?: LeafletMarkerClusterGroup;
 		options?: MarkerClusterGroupOptions;
 		children?: Snippet;
 	} & MarkerClusterGroupEvents;
 
-	let { instance = $bindable(), options, children, ...restProps }: Props = $props();
+	let { instance = $bindable(), options, children, icon, ...restProps }: Props = $props();
 
 	const getMap = getContext<() => L.Map>(MAP);
 	const getLayerGroup = getContext<() => LeafletLayerGroup>(LAYERGROUP);
@@ -31,12 +41,26 @@
 		const layerGroup = getLayerGroup?.();
 		const context = layerGroup || map;
 
-		instance = window.L.markerClusterGroup(options);
+		const mergedOptions = { ...options };
+		if (icon) {
+			mergedOptions.iconCreateFunction = (cluster: MarkerCluster) => {
+				const mountTarget = document.createElement('div');
+				mountTarget.classList.add('MOUNTTARGET');
+				mount(icon, {
+					target: mountTarget,
+					props: { count: cluster.getChildCount() },
+				});
+				const html = mountTarget.innerHTML;
+				return window.L.divIcon({ html });
+			};
+		}
+
+		instance = window.L.markerClusterGroup(mergedOptions);
 		context.addLayer(instance);
 		bindEvents(
 			instance,
 			restProps,
-			// TODO : find
+			// TODO : find a better way to type this
 			markerClusterGroupEvents as unknown as readonly (keyof LeafletEventHandlerFnMap)[],
 		);
 	});

@@ -117,6 +117,10 @@
 		background: none;
 		border: none;
 		color: blue;
+
+		& svg {
+			transition: all 0.15s ease-in-out;
+		}
 	}
 
 	.MarkerIci:hover svg,

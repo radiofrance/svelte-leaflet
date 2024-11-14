@@ -9,6 +9,7 @@
 	import type { LeafletMap } from '$lib/index.js';
 	import Controls from '../../components/Controls.svelte';
 	import Details from '../../components/Details.svelte';
+	import CustomClusterMarker from '../../components/CustomClusterMarker.svelte';
 
 	let stations = $state<Station[]>([]);
 	let map: LeafletMap | undefined = $state();
@@ -73,7 +74,7 @@
 	}}
 	bind:instance={map}
 >
-	<MarkerClusterGroup>
+	<MarkerClusterGroup icon={CustomClusterMarker}>
 		{#each stations as station (station.id)}
 			<Marker latlng={[+station.latitude / 100000, +station.longitude / 100000]}>
 				<DivIcon>

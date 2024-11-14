@@ -2,6 +2,12 @@
 
 A library that wraps leaflet classes in domless/renderless svelte components.
 
+## Compatibility
+
+Version 1.0.0 and above are compatible with Svelte 5.
+
+For svelte 3 and 4, use version 0.1.x (not actively maintained).
+
 ## Install
 
 `npm i -D @radiofrance/svelte-leaflet`
@@ -29,7 +35,7 @@ All events are forwarded from the Map class, see the leaflet documentation for m
 Example:
 
 ```svelte
-<Map {options} on:click={(e) => console.log(e.detail.latlng)} />
+<Map {options} onclick={(e) => console.log(e.detail.latlng)} />
 ```
 
 ### Marker
@@ -38,15 +44,14 @@ Add a marker to the map.
 
 - Can be used as a child of `<Map>` or `<MarkerClusterGroup>`
 - A `<Popup>` component can be passed as the Marker child to display a popup when the marker is clicked.
-- A component with `slot="icon"` attribute can be passed as the Marker child to display a custom icon.
+- To use a custom icon, pass a `Icon` or a `DivIcon` component as the marker child.
 
 #### Attributes
 
-| Name     | Type                                                  | Default    | Notes                                         |
-| -------- | ----------------------------------------------------- | ---------- | --------------------------------------------- |
-| `latlng` | [LatLng](https://leafletjs.com/reference.html#latlng) | _required_ | position of the marker                        |
-| `size`   | number                                                | `25`       | icon size (only used with a custom icon)      |
-| `id`     | string                                                | `''`       | an identifier to link the maker with you data |
+| Name      | Type                                                                | Default    | Notes                                 |
+| --------- | ------------------------------------------------------------------- | ---------- | ------------------------------------- |
+| `latlng`  | [LatLng](https://leafletjs.com/reference.html#latlng)               | _required_ | position of the marker                |
+| `options` | [MarkerOptions](https://leafletjs.com/reference.html#marker-option) | `{}`       | options to pass to the leaflet marker |
 
 #### Events
 

@@ -2,6 +2,7 @@
 	import DivIcon from '$lib/DivIcon.svelte';
 	import Icon from '$lib/Icon.svelte';
 	import type { LatLngExpression, MarkerOptions } from '$lib/index.js';
+	import LocateControl from '$lib/LocateControl.svelte';
 	import Map from '$lib/Map.svelte';
 	import Marker from '$lib/Marker.svelte';
 	import type { PickOptionByType } from '$lib/utils.js';
@@ -61,14 +62,9 @@
 	) as PickOptionByType<MarkerOptions, string>[];
 </script>
 
-<Map
-	options={{ zoom: 7 }}
-	locateControl={{
-		position: 'topleft',
-	}}
-	oncontextmenu={() => console.log('contextmenu from map')}
->
-	<Marker bind:options {latlng} onclick={() => window.alert('onclick from marker')}>
+<Map options={{ zoom: 7 }} oncontextmenu={() => console.log('contextmenu from map')}>
+	<LocateControl />
+	<Marker bind:options {latlng} onclick={() => console.log('onclick from marker')}>
 		<DivIcon>
 			<CustomMarker />
 		</DivIcon>
