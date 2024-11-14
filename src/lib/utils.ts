@@ -30,3 +30,9 @@ export type CreateSvelteEventsMap<
 				},
 			) => void;
 };
+
+export type Simplify<T> = T extends object
+	? T extends infer O
+		? { [K in keyof O]: Simplify<O[K]> }
+		: never
+	: T;
