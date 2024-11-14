@@ -128,3 +128,10 @@ export const mapEvents = [
 ] as const;
 
 export type MapEvents = CreateSvelteEventsMap<typeof mapEvents, LeafletMap>;
+
+declare module 'leaflet' {
+	interface Handler {
+		// private apis are not documented
+		_setPanDelta(delta: number): void;
+	}
+}
