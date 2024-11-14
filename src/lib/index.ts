@@ -55,7 +55,12 @@ export type {
 	TooltipEvent,
 } from 'leaflet';
 
-export type Latlngs = LatLngExpression[] | LatLngExpression[][] | LatLngExpression[][][];
+// TODO : use recursive approach to support 2D and 3D latlngs
+export type Latlngs<D = 2> = 2 extends D
+	? LatLngExpression[] | LatLngExpression[][]
+	: 3 extends D
+		? LatLngExpression[] | LatLngExpression[][] | LatLngExpression[][][]
+		: never;
 
 // type FuncType<T> = (e: T) => void;
 type AllFuncTypes =

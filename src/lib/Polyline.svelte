@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { getContext, onDestroy, onMount } from 'svelte';
-	import type { Polygon as LeafletPolygon, PolylineOptions, LayerGroup } from 'leaflet';
+	import type { Polyline as LeafletPolyline, PolylineOptions, LayerGroup } from 'leaflet';
 	import { polygonEvents, updatePolylineProps, type PolygonEvents } from './polyline.svelte.js';
 	import { bindEvents, type Latlngs, type LeafletMap } from './index.js';
 	import { LAYERGROUP, MAP } from './contexts.js';
 
 	type Props = {
-		latlngs: Latlngs<3>;
-		instance?: LeafletPolygon;
+		latlngs: Latlngs;
+		instance?: LeafletPolyline;
 		options?: PolylineOptions;
 	} & PolygonEvents;
 
@@ -20,7 +20,7 @@
 		const map = getMap?.();
 		const layerGroup = getLayerGroup?.();
 		const context = layerGroup || map;
-		instance = window.L.polygon(latlngs, options);
+		instance = window.L.polyline(latlngs, options);
 		instance.addTo(context);
 		bindEvents(instance, restProps, polygonEvents);
 	});
