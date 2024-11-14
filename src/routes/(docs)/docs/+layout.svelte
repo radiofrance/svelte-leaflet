@@ -9,8 +9,8 @@
 	import IconSettings from 'lucide-svelte/icons/settings';
 
 	let navOpen = $state(false);
-
 	let hrefExample = '#';
+	let { children } = $props();
 </script>
 
 <div class="card grid h-[640px] w-full grid-cols-[auto_1fr] border-[1px] border-surface-100-900">
@@ -43,6 +43,6 @@
 	</Navigation.Rail>
 	<!-- Content -->
 	<div class="flex items-center justify-center">
-		<p class="opacity-20">(Content)</p>
+		<p class="opacity-20">{@render children()}</p>
 	</div>
 </div>

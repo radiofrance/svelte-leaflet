@@ -5,7 +5,7 @@ import type {
 	Evented,
 	LatLngExpression,
 	LayersControlEvent,
-	LeafletEvent,
+	LeafletEvent as OriginalLeafletEvent,
 	LeafletEventHandlerFnMap,
 	LeafletKeyboardEvent,
 	LeafletMouseEvent,
@@ -21,14 +21,15 @@ import type {
 
 // Reexport your entry components here
 import DivIcon from './DivIcon.svelte';
+import LocateControl from './LocateControl.svelte';
 import Map from './Map.svelte';
 import Marker from './Marker.svelte';
 import MarkerClusterGroup from './MarkerClusterGroup.svelte';
-import Popup from './Popup.svelte';
 import Polygon from './Polygon.svelte';
-import LocateControl from './LocateControl.svelte';
+import Polyline from './Polyline.svelte';
+import Popup from './Popup.svelte';
 
-export { DivIcon, Map, Marker, MarkerClusterGroup, Popup, Polygon, LocateControl };
+export { DivIcon, Map, Marker, MarkerClusterGroup, Popup, Polyline, Polygon, LocateControl };
 
 export type {
 	Circle as LeafletCircle,
@@ -41,11 +42,11 @@ export type {
 	LatLngTuple,
 	LayerEvent,
 	LayersControlEvent,
-	LeafletEvent,
 	LeafletKeyboardEvent,
 	LeafletMouseEvent,
 	LocationEvent,
 	Map as LeafletMap,
+	Marker as LeafletMarker,
 	MapOptions,
 	MarkerOptions,
 	PathOptions,
@@ -104,4 +105,9 @@ export function bindEvents(
 export type LocateControlOptions = {
 	position?: ControlPosition;
 	options?: LocateOptions;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type LeafletEvent<SourceTarget = any> = Omit<OriginalLeafletEvent, 'sourceTarget'> & {
+	sourceTarget: SourceTarget;
 };
