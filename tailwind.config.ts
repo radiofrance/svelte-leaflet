@@ -15,7 +15,7 @@ const config = {
 	},
 	plugins: [
 		skeleton({
-			themes: [themes.legacy],
+			themes: [themes.mint],
 		}),
 	],
 } satisfies Config;
