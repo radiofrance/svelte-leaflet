@@ -20,7 +20,7 @@ export const layerEvents = ['add', 'remove'] as const;
 
 export const popupSpecificEvents = ['popupopen', 'popupclose'] as const;
 
-export const tooltipEvents = ['tooltipopen', 'tooltipclose'] as const;
+export const tooltipSpecificEvents = ['tooltipopen', 'tooltipclose'] as const;
 
 export const layerGroupEvents = ['layeradd', 'layerremove'] as const;
 

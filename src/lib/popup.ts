@@ -4,7 +4,7 @@ import {
 	interactiveLayerEvents,
 	layerEvents,
 	popupSpecificEvents,
-	tooltipEvents,
+	tooltipSpecificEvents,
 } from './events.js';
 
 export function updatePopupProps(instance: LeafletPopup, options: PopupOptions) {
@@ -55,7 +55,7 @@ export const popupEvents = [
 	...interactiveLayerEvents,
 	...layerEvents,
 	...popupSpecificEvents,
-	...tooltipEvents,
+	...tooltipSpecificEvents,
 ] as const;
 
 export type PopupEvents = CreateSvelteEventsMap<typeof popupEvents, LeafletPopup>;
