@@ -9,7 +9,7 @@
 	} from 'leaflet';
 	import { getContext, onDestroy, onMount, type Snippet } from 'svelte';
 	import { bindEvents } from './index.js';
-	import { popupEvents, updatePopupProps, type PopupEvents } from './popup.svelte.js';
+	import { popupEvents, updatePopupProps, type PopupEvents } from './popup.js';
 	import { LAYERGROUP, MAP, MARKER } from './contexts.js';
 
 	type Props = {

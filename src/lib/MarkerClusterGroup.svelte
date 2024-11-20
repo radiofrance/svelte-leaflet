@@ -16,10 +16,7 @@
 		MarkerCluster,
 	} from 'leaflet';
 	import { LAYERGROUP, MAP } from './contexts.js';
-	import {
-		markerClusterGroupEvents,
-		type MarkerClusterGroupEvents,
-	} from './markerClusterGroup.svelte.js';
+	import { markerClusterGroupEvents, type MarkerClusterGroupEvents } from './markerClusterGroup.js';
 	import { bindEvents } from './index.js';
 
 	type Props = {

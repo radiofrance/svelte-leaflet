@@ -9,7 +9,7 @@
 	import type { MapOptions, Marker, Map as LeafletMap, LatLngTuple } from 'leaflet';
 	import { bindEvents } from './index.js';
 	import { setContext, type Snippet } from 'svelte';
-	import { mapEvents, updateMapProps, type MapEvents } from './map.svelte.js';
+	import { mapEvents, updateMapProps, type MapEvents } from './map.js';
 	import { FOCUSABLE, MAP } from './contexts.js';
 
 	type Props = {
@@ -33,6 +33,10 @@
 		...restProps
 	}: Props = $props();
 
+	setContext(MAP, () => instance);
+	setContext(FOCUSABLE, focusable ? null : -1);
+	let container: HTMLElement | null = $state(null);
+
 	const defaultOptions = {
 		center: [48.852, 2.278] as LatLngTuple,
 		trackResize: true,
@@ -40,20 +44,6 @@
 		maxZoom: 18,
 		keyboard: options.keyboard === undefined ? focusable : options.keyboard,
 	};
-	// consider exporting a reference to the markers instead of a getter
-	export const getMarkers: () => Marker[] = () => {
-		const markers: Marker[] = [];
-		instance?.eachLayer((layer) => {
-			if (layer instanceof window.L.Marker) {
-				markers.push(layer);
-			}
-		});
-		return markers;
-	};
-
-	setContext(MAP, () => instance);
-	setContext(FOCUSABLE, focusable ? null : -1);
-	let container: HTMLElement | null = $state(null);
 
 	$effect(() => {
 		if (instance) {

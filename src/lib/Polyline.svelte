@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import type { Polyline as LeafletPolyline, PolylineOptions, LayerGroup } from 'leaflet';
-	import { polygonEvents, updatePolylineProps, type PolygonEvents } from './polyline.svelte.js';
+	import { polygonEvents, updatePolylineProps, type PolygonEvents } from './polyline.js';
 	import { bindEvents, type Latlngs, type LeafletMap } from './index.js';
 	import { LAYERGROUP, MAP } from './contexts.js';
 

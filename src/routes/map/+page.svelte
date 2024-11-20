@@ -3,6 +3,7 @@
 	import LocateControl from '$lib/LocateControl.svelte';
 	import Map from '$lib/Map.svelte';
 	import type { PickOptionByType } from '$lib/utils.js';
+	import ZoomControl from '$lib/ZoomControl.svelte';
 	import Controls from '../../components/Controls.svelte';
 	import Details from '../../components/Details.svelte';
 
@@ -12,7 +13,7 @@
 		// boolean options
 		preferCanvas: false,
 		attributionControl: false,
-		zoomControl: true,
+		zoomControl: false,
 		closePopupOnClick: true,
 		trackResize: true,
 		boxZoom: true,
@@ -78,17 +79,24 @@
 </script>
 
 <Map
-	onload={(e) => console.log('map loaded', e)}
+	onload={(e) => {
+		console.log(e.sourceTarget);
+	}}
 	focusable={false}
 	bind:options
 	bind:instance={map}
 	oncontextmenu={() => console.log('contextmenu')}
 >
 	<LocateControl
-		position="topleft"
+		position="bottomright"
 		options={{
 			enableHighAccuracy: true,
 			setView: true,
+		}}
+	/>
+	<ZoomControl
+		options={{
+			position: 'bottomright',
 		}}
 	/>
 </Map>

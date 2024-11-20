@@ -8,7 +8,7 @@
 		MarkerClusterGroup,
 	} from 'leaflet';
 	import { bindEvents, type LatLngExpression } from './index.js';
-	import { markerEvents, updateMarkerProps, type MarkerEvents } from './marker.svelte.js';
+	import { markerEvents, updateMarkerProps, type MarkerEvents } from './marker.js';
 	import { LAYERGROUP, MAP, MARKER } from './contexts.js';
 
 	type Props = {

@@ -1,4 +1,4 @@
-import { markerEvents, type MarkerEvents } from './marker.svelte.js';
+import { markerEvents, type MarkerEvents } from './marker.js';
 import type { CreateSvelteEventsMap } from './utils.js';
 
 type ClusterifyMarkerEvent<E> = E extends `on${infer N}` ? `oncluster${N}` : never;
