@@ -2,7 +2,7 @@ import {
 	interactiveLayerEvents,
 	layerEvents,
 	popupSpecificEvents,
-	tooltipEvents,
+	tooltipSpecificEvents,
 } from './events.js';
 import type { CreateSvelteEventsMap } from './utils.js';
 import type {
@@ -66,7 +66,7 @@ export const polygonEvents = [
 	...interactiveLayerEvents,
 	...layerEvents,
 	...popupSpecificEvents,
-	...tooltipEvents,
+	...tooltipSpecificEvents,
 ] as const;
 
 export type PolygonEvents = CreateSvelteEventsMap<typeof polygonEvents, LeafletPolygon>;

@@ -5,7 +5,7 @@ import {
 	interactiveLayerEvents,
 	layerEvents,
 	popupSpecificEvents,
-	tooltipEvents,
+	tooltipSpecificEvents,
 } from './events.js';
 
 // const L = globalThis.window.L;
@@ -64,7 +64,7 @@ export const markerEvents = [
 	...interactiveLayerEvents,
 	...layerEvents,
 	...popupSpecificEvents,
-	...tooltipEvents,
+	...tooltipSpecificEvents,
 ] as const;
 
 export type MarkerEvents = CreateSvelteEventsMap<typeof markerEvents, LeafletMarker>;

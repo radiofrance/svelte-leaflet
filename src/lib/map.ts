@@ -8,7 +8,7 @@ import {
 	locationEvents,
 	mapStateChangeEvents,
 	popupSpecificEvents,
-	tooltipEvents,
+	tooltipSpecificEvents,
 } from './events.js';
 
 // stores the function bound to the event listener so it can be removed later
@@ -122,7 +122,7 @@ export const mapEvents = [
 	...locationEvents,
 	...mapStateChangeEvents,
 	...popupSpecificEvents,
-	...tooltipEvents,
+	...tooltipSpecificEvents,
 	'autopanstart',
 	'zoomanim',
 ] as const;
