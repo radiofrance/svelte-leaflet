@@ -112,7 +112,9 @@
 	</Details>
 	<Details title="Boolean">
 		{#each booleanOptions as key}
-			<button onclick={() => (options[key] = !options[key])}>{key}: {options[key]}</button>
+			<button class="btn preset-filled-primary-500" onclick={() => (options[key] = !options[key])}
+				>{key}: {options[key]}</button
+			>
 		{/each}
 	</Details>
 	<label>
