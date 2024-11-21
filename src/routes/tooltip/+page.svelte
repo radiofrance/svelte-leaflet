@@ -7,6 +7,7 @@
 	import Controls from '../../components/Controls.svelte';
 	import Details from '../../components/Details.svelte';
 	import type { PickOptionByType } from '$lib/utils.js';
+	import TileLayer from '$lib/TileLayer.svelte';
 
 	const options: TooltipOptions = $state({
 		permanent: false,
@@ -46,7 +47,8 @@
 	}
 </script>
 
-<Map>
+<Map onload={(e) => e.sourceTarget.attributionControl.setPrefix('🍁')}>
+	<TileLayer url={'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'} />
 	<Marker latlng={[51.505, -0.09]}>
 		<Tooltip {options}>
 			<div>🤓 Hello</div>

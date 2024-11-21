@@ -8,7 +8,7 @@
 
 	import type { MapOptions, Marker, Map as LeafletMap, LatLngTuple } from 'leaflet';
 	import { bindEvents } from './index.js';
-	import { setContext, type Snippet } from 'svelte';
+	import { setContext, tick, type Snippet } from 'svelte';
 	import { mapEvents, updateMapProps, type MapEvents } from './map.js';
 	import { FOCUSABLE, MAP } from './contexts.js';
 
@@ -27,7 +27,7 @@
 		options = $bindable({}),
 		markers = $bindable([]),
 		tilesUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-		attribution = `&copy;<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>`,
+		attribution = `&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors`,
 		focusable = true,
 		children,
 		...restProps
@@ -51,7 +51,7 @@
 		}
 	});
 
-	function onLoad() {
+	async function onLoad() {
 		if (!container) return;
 		// @ts-ignore
 		delete window.L.Icon.Default.prototype._getIconUrl;
@@ -68,11 +68,6 @@
 			options.trackResize = true;
 		}
 		bindEvents(instance, restProps, mapEvents);
-
-		// create component for the tile layer ?
-		window.L.tileLayer(tilesUrl, {
-			attribution,
-		}).addTo(instance);
 
 		instance.on('layeradd', (event) => {
 			const layer = event.layer;
@@ -91,11 +86,29 @@
 			}
 		});
 
+		// waits for the user layers before adding a default layer
+		await tick();
+		if (!hasTileLayer(instance)) {
+			window.L.tileLayer(tilesUrl, {
+				attribution,
+			}).addTo(instance);
+		}
+
 		instance.whenReady(() => {
 			if (!instance) return;
 			// TODO: find out why manually firing the load event is needed
 			instance.fireEvent('load');
 		});
+	}
+
+	function hasTileLayer(map: LeafletMap) {
+		let hasTileLayer = false;
+		map.eachLayer(function (layer) {
+			if (layer instanceof window.L.TileLayer) {
+				hasTileLayer = true;
+			}
+		});
+		return hasTileLayer;
 	}
 
 	function leafletLoader(_node: HTMLElement) {
