@@ -34,8 +34,8 @@ Simple Leaflet maps for your Svelte projects.
 
 - ✅ TileLayer
 - ✅ TileLayer.WMS
-- ImageOverlay
-- VideoOverlay
+- ✅ ImageOverlay
+- ✅ VideoOverlay
 
 ### Vector Layers
 
