@@ -16,6 +16,7 @@
 	onMount(() => {
 		const map = getMap();
 		instance = window.L.tileLayer(url, options);
+		// TODO : add the layer to a store context as a base layer so LayersControl can list it
 		instance.addTo(map);
 	});
 
