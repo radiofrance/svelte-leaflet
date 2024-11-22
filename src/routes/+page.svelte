@@ -65,6 +65,12 @@
 			<li><a href="/tooltip">Tooltip</a></li>
 			<li><a href="/attribution-prefix">Attribution prefix</a></li>
 			<li><a href="/tilelayer">TileLayer</a></li>
+			<li><a href="/imageoverlay">ImageOverlay</a></li>
+			<li><a href="/videooverlay">VideoOPverlay</a></li>
+			<li><a href="/circle">Circle</a></li>
+			<li><a href="/circlemarker">CircleMarker</a></li>
+			<li><a href="/rectangle">Rectangle</a></li>
+			<li><a href="/svgoverlay">SVGOverlay</a></li>
 		</ul>
 	</nav>
 </main>

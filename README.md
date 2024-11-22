@@ -42,12 +42,12 @@ Simple Leaflet maps for your Svelte projects.
 - Path
 - ✅ Polyline
 - ✅ Polygon
-- Rectangle
-- Circle
-- CircleMarker
-- SVGOverlay
-- SVG
-- Canvas
+- ✅ Rectangle
+- ✅ Circle
+- ✅ CircleMarker
+- ✅ SVGOverlay
+- SVG _(this is a Renderer, won't be implemented)_
+- Canvas _(this is a Renderer, won't be implemented)_
 
 ### Other Layers
 
