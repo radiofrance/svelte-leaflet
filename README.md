@@ -27,6 +27,7 @@ Simple Leaflet maps for your Svelte projects.
 ### UI Layers
 
 - ✅ Marker
+- DivOverlay _(abstract class)_
 - ✅ Popup
 - ✅ Tooltip
 

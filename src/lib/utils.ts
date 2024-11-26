@@ -3,6 +3,13 @@ import type { LeafletEventHandlerFnMap } from 'leaflet';
 export function capitalize<T extends string>(str: T): Capitalize<T> {
 	return (str[0].toUpperCase() + str.slice(1)) as Capitalize<T>;
 }
+const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+function getRandomChar() {
+	return chars[Math.floor(Math.random() * chars.length)];
+}
+export function getRandomString(length: number) {
+	return Array.from({ length }, getRandomChar).join('');
+}
 
 export function getFirstNonCommentChild(element: HTMLElement) {
 	let child = element.firstChild;

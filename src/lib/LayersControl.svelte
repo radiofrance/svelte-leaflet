@@ -1,23 +1,23 @@
 <script lang="ts">
 	import { getContext, onMount, tick } from 'svelte';
-	import { MAP } from './contexts.js';
-	import type { Map as LeafletMap } from 'leaflet';
+	import { getBaseLayersStore, getOverlaysStore, MAP } from './contexts.js';
+	import type { Control, Map as LeafletMap } from 'leaflet';
 
 	type Props = {
-		baseLayers: string[];
-		overlays: string[];
+		instance?: Control;
+		options?: Control.LayersOptions;
 	};
-	let { baseLayers, overlays }: Props = $props();
+	let { instance = $bindable(), options }: Props = $props();
 
 	const getMap = getContext<() => LeafletMap>(MAP);
+	const baseLayersStore = getBaseLayersStore();
+	const overlaysStore = getOverlaysStore();
 
 	onMount(async () => {
 		const map = getMap();
+		// wait for layers to be initialized
 		await tick();
-		map.eachLayer((layer) => {
-			console.log(layer);
-			debugger;
-		});
-		// const layersControl = window.L.control.layers().addTo(map);
+		instance = window.L.control.layers($baseLayersStore, $overlaysStore, options);
+		instance.addTo(map);
 	});
 </script>
