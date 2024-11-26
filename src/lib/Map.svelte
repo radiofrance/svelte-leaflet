@@ -10,7 +10,7 @@
 	import { bindEvents } from './index.js';
 	import { setContext, tick, type Snippet } from 'svelte';
 	import { mapEvents, updateMapProps, type MapEvents } from './map.js';
-	import { FOCUSABLE, MAP } from './contexts.js';
+	import { FOCUSABLE, getBaseLayersStore, initBaseLayersStore, MAP } from './contexts.js';
 
 	type Props = {
 		instance?: LeafletMap;
@@ -35,6 +35,9 @@
 
 	setContext(MAP, () => instance);
 	setContext(FOCUSABLE, focusable ? null : -1);
+	initBaseLayersStore();
+	const baseLayersStore = getBaseLayersStore();
+
 	let container: HTMLElement | null = $state(null);
 
 	const defaultOptions = {
@@ -89,9 +92,11 @@
 		// waits for the user layers before adding a default layer
 		await tick();
 		if (!hasTileLayer(instance)) {
-			window.L.tileLayer(tilesUrl, {
+			const defaultBaseLayer = window.L.tileLayer(tilesUrl, {
 				attribution,
-			}).addTo(instance);
+			});
+			defaultBaseLayer.addTo(instance);
+			$baseLayersStore['Default Layer'] = defaultBaseLayer;
 		}
 
 		instance.whenReady(() => {
