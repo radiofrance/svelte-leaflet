@@ -10,7 +10,13 @@
 	import { bindEvents } from './index.js';
 	import { setContext, tick, type Snippet } from 'svelte';
 	import { mapEvents, updateMapProps, type MapEvents } from './map.js';
-	import { FOCUSABLE, getBaseLayersStore, initBaseLayersStore, MAP } from './contexts.js';
+	import {
+		FOCUSABLE,
+		getBaseLayersStore,
+		initBaseLayersStore,
+		initOverlaysStore,
+		MAP,
+	} from './contexts.js';
 
 	type Props = {
 		instance?: LeafletMap;
@@ -36,6 +42,7 @@
 	setContext(MAP, () => instance);
 	setContext(FOCUSABLE, focusable ? null : -1);
 	initBaseLayersStore();
+	initOverlaysStore();
 	const baseLayersStore = getBaseLayersStore();
 
 	let container: HTMLElement | null = $state(null);

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ImageOverlay from '$lib/ImageOverlay.svelte';
+	import LayersControl from '$lib/LayersControl.svelte';
 	import Map from '$lib/Map.svelte';
 	import type { ImageOverlay as LeafletImageOverlay } from 'leaflet';
 
@@ -12,6 +13,7 @@
 		zoom: 13,
 	}}
 >
+	<LayersControl />
 	<ImageOverlay
 		bind:instance={imageOverlay}
 		onadd={() => {

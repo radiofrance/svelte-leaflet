@@ -13,25 +13,36 @@
 		type ImageOverlayEvents,
 	} from './imageOverlay.js';
 	import { bindEvents } from './index.js';
-	import { LAYERGROUP, MAP } from './contexts.js';
+	import { getOverlaysStore, LAYERGROUP, MAP } from './contexts.js';
+	import { getRandomString } from './utils.js';
 
 	type Props = {
+		name?: string;
 		url: string;
 		bounds: LatLngBoundsLiteral;
 		options?: ImageOverlayOptions;
 		instance?: LeafletImageOverlay;
 	} & ImageOverlayEvents;
 
-	let { url, bounds, options = {}, instance = $bindable(), ...restProps }: Props = $props();
+	let {
+		name = `overlay-${getRandomString(5)}`,
+		url,
+		bounds,
+		options = {},
+		instance = $bindable(),
+		...restProps
+	}: Props = $props();
 
 	const getMap = getContext<() => LeafletMap>(MAP);
 	const getLayerGroup = getContext<() => LayerGroup>(LAYERGROUP);
+	const overlaysStore = getOverlaysStore();
 
 	onMount(() => {
 		const map = getMap?.();
 		const layerGroup = getLayerGroup?.();
 		const context = layerGroup || map;
 		instance = window.L.imageOverlay(url, bounds, options);
+		$overlaysStore[name] = instance;
 		bindEvents(instance, restProps, imageOverlayEvents);
 		instance.addTo(context);
 	});
