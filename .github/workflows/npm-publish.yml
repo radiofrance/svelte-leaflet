@@ -4,8 +4,9 @@
 name: Publish @radiofrance/svelte-leaflet
 
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 jobs:
   build:
     runs-on: ubuntu-latest
