@@ -2,6 +2,7 @@
 	import Logo from '../components/Logo.svelte';
 	import Map from '$lib/Map.svelte';
 	import SunMoon from 'lucide-svelte/icons/sun-moon';
+	import { toggleDarkMode } from '../utils.js';
 </script>
 
 <div class="hero relative h-96 overflow-hidden">
@@ -25,13 +26,7 @@
 
 	<button
 		class="absolute right-0 top-0 m-4 rounded-full p-2 bg-surface-50-950 hover:bg-surface-950-50 hover:text-surface-50-950"
-		onclick={() => {
-			const element = document.documentElement;
-			element.classList.toggle('dark');
-
-			const isDark = element.classList.contains('dark');
-			localStorage.setItem('darkMode', isDark ? 'dark' : 'light');
-		}}
+		onclick={toggleDarkMode}
 	>
 		<SunMoon />
 	</button>
