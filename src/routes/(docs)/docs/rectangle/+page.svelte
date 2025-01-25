@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Rectangle from '$lib/Rectangle.svelte';
 	import Map from '$lib/Map.svelte';
-	import Controls from '../../components/Controls.svelte';
-	import Details from '../../components/Details.svelte';
+	import Controls from '$components/Controls.svelte';
+	import Details from '$components/Details.svelte';
 	import type { LatLngBoundsExpression, PolylineOptions } from 'leaflet';
 
 	let bounds: LatLngBoundsExpression = $state([

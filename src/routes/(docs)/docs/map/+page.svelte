@@ -3,8 +3,8 @@
 	import LocateControl from '$lib/LocateControl.svelte';
 	import Map from '$lib/Map.svelte';
 	import type { PickOptionByType } from '$lib/utils.js';
-	import Controls from '../../components/Controls.svelte';
-	import Details from '../../components/Details.svelte';
+	import Controls from '$components/Controls.svelte';
+	import Details from '$components/Details.svelte';
 
 	let map: LeafletMap | undefined = $state();
 	const initialView: LatLngTuple = [48.86750658335676, 2.3638381549875467];

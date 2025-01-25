@@ -2,10 +2,10 @@
 	import type { PolylineOptions } from 'leaflet';
 	import Map from '$lib/Map.svelte';
 	import Polygon from '$lib/Polygon.svelte';
-	import Controls from '../../components/Controls.svelte';
+	import Controls from '$components/Controls.svelte';
 	import type { PickOptionByType } from '$lib/utils.js';
 	import type { Latlngs } from '$lib/index.js';
-	import Details from '../../components/Details.svelte';
+	import Details from '$components/Details.svelte';
 
 	let latlngs: Latlngs = $state([
 		[51, 2],

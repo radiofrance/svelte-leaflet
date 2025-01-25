@@ -4,12 +4,12 @@
 	import Map from '$lib/Map.svelte';
 	import Marker from '$lib/Marker.svelte';
 	import MarkerClusterGroup from '$lib/MarkerClusterGroup.svelte';
-	import CustomMarker from '../../components/CustomMarker.svelte';
+	import CustomMarker from '$components/CustomMarker.svelte';
 	import Popup from '$lib/Popup.svelte';
 	import type { LeafletMap } from '$lib/index.js';
-	import Controls from '../../components/Controls.svelte';
-	import Details from '../../components/Details.svelte';
-	import CustomClusterMarker from '../../components/CustomClusterMarker.svelte';
+	import Controls from '$components/Controls.svelte';
+	import Details from '$components/Details.svelte';
+	import CustomClusterMarker from '$components/CustomClusterMarker.svelte';
 
 	let stations = $state<Station[]>([]);
 	let map: LeafletMap | undefined = $state();

@@ -1,18 +1,17 @@
 <script lang="ts">
-	import Circle from '$lib/Circle.svelte';
+	import CircleMarker from '$lib/CircleMarker.svelte';
 	import Map from '$lib/Map.svelte';
-	import Controls from '../../components/Controls.svelte';
-	import Details from '../../components/Details.svelte';
-	import type { LatLngExpression, CircleOptions } from 'leaflet';
+	import Controls from '$components/Controls.svelte';
+	import Details from '$components/Details.svelte';
+	import type { LatLngExpression, CircleMarkerOptions } from 'leaflet';
 
 	let latlng: LatLngExpression = $state([51, -0.1]);
-	let options: CircleOptions = $state({
-		radius: 50000,
+	let options: CircleMarkerOptions = $state({
+		radius: 10,
 		color: '#0000ff',
 		weight: 2,
+		// TODO : handle all options
 	});
-
-	// TODO : handle all options
 
 	function changeLatlng(event: Event) {
 		const target = event.target as HTMLInputElement;
@@ -20,13 +19,8 @@
 	}
 </script>
 
-<Map
-	options={{
-		center: latlng,
-		zoom: 8,
-	}}
->
-	<Circle {latlng} {options} />
+<Map options={{ center: latlng }}>
+	<CircleMarker {latlng} {options} />
 </Map>
 
 <Controls>

@@ -1,44 +1,54 @@
 <script lang="ts">
+	import type { PopupOptions } from 'leaflet';
 	import Map from '$lib/Map.svelte';
 	import Marker from '$lib/Marker.svelte';
 	import Popup from '$lib/Popup.svelte';
-	import Tooltip from '$lib/Tooltip.svelte';
-	import type { TooltipOptions } from 'leaflet';
-	import Controls from '../../components/Controls.svelte';
-	import Details from '../../components/Details.svelte';
 	import type { PickOptionByType } from '$lib/utils.js';
-	import TileLayer from '$lib/TileLayer.svelte';
+	import Controls from '$components/Controls.svelte';
+	import Details from '$components/Details.svelte';
+	import DivIcon from '$lib/DivIcon.svelte';
+	import CustomMarker from '$components/CustomMarker.svelte';
 
-	const options: TooltipOptions = $state({
-		permanent: false,
-		sticky: false,
+	const options: PopupOptions = $state({
+		keepInView: false,
+		closeButton: true,
+		autoPan: true,
+		autoClose: true,
+		closeOnClick: true,
+		closeOnEscapeKey: true,
 		interactive: true,
+
+		maxWidth: 300,
+		minWidth: 50,
+		maxHeight: 200,
+
 		className: '',
-		content: '',
-		direction: 'auto',
-		pane: 'tooltipPane',
-		opacity: 0.9,
-		offset: [0, 0],
+		content: 'Hello, World!',
+
+		offset: [0, -40],
+		autoPanPaddingTopLeft: [50, 50],
+		autoPanPaddingBottomRight: [50, 50],
+		autoPanPadding: [50, 50],
 	});
 
 	const booleanOptions = Object.keys(options).filter(
 		(key) => typeof options[key as keyof typeof options] === 'boolean',
-	) as PickOptionByType<TooltipOptions, boolean>[];
+	) as PickOptionByType<PopupOptions, boolean>[];
 
 	const numberOptions = Object.keys(options).filter(
 		(key) => typeof options[key as keyof typeof options] === 'number',
-	) as PickOptionByType<TooltipOptions, number>[];
+	) as PickOptionByType<PopupOptions, number>[];
 
 	const stringOptions = Object.keys(options).filter(
 		(key) => typeof options[key as keyof typeof options] === 'string',
-	) as PickOptionByType<TooltipOptions, string>[];
+	) as PickOptionByType<PopupOptions, string>[];
 
 	const tupleOptions = Object.keys(options).filter((key) =>
 		Array.isArray(options[key as keyof typeof options]),
-	) as PickOptionByType<TooltipOptions, [number, number]>[];
+	) as PickOptionByType<PopupOptions, [number, number]>[];
 
 	function changeTupleValue(
-		key: PickOptionByType<TooltipOptions, [number, number]>,
+		key: PickOptionByType<PopupOptions, [number, number]>,
 		index: 0 | 1,
 		value: number,
 	) {
@@ -47,49 +57,41 @@
 	}
 </script>
 
-<Map onload={(e) => e.sourceTarget.attributionControl.setPrefix('🍁')}>
-	<TileLayer url={'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'} />
-	<Marker latlng={[51.505, -0.09]}>
-		<Tooltip {options}>
-			<div>🤓 Hello</div>
-		</Tooltip>
-		<Popup>
-			<div>👋 Hi</div>
+<Map oncontextmenu={() => console.log('contextmenu from map')}>
+	<Marker latlng={[48.8566, 2.3522]}>
+		<DivIcon>
+			<CustomMarker />
+		</DivIcon>
+		<Popup {options}>
+			<h1>Paris</h1>
+			<p>Capital of France</p>
 		</Popup>
 	</Marker>
-
-	<Tooltip
-		latlng={[40.4168, -3.7038]}
+	<Popup
+		onclick={(e) => {}}
+		latlng={[48.8566, 4.3522]}
 		options={{
-			...options,
-			className: 'custom-tooltip',
-			permanent: true,
-			opacity: 1,
+			closeOnClick: false,
+			autoClose: false,
+			closeButton: false,
+			closeOnEscapeKey: false,
 		}}
 	>
-		<div>🇪🇸 Holà</div>
-	</Tooltip>
+		<span>I'm floating popup and you can't close me 😎</span>
+	</Popup>
 </Map>
 
 <Controls>
 	<Details title="Boolean">
 		{#each booleanOptions as key}
-			<button
-				type="button"
-				class="btn preset-filled-primary-500"
-				onclick={() => (options[key] = !options[key])}
-			>
-				<span>
-					{key}: {options[key]}
-				</span>
-			</button>
+			<button onclick={() => (options[key] = !options[key])}>{key}: {options[key]}</button>
 		{/each}
 	</Details>
 	<Details title="Number">
 		{#each numberOptions as key}
-			<label class="label">
+			<label>
 				{key}
-				<input class="input p-1 text-center" type="number" bind:value={options[key]} />
+				<input type="number" bind:value={options[key]} />
 			</label>
 		{/each}
 	</Details>
@@ -97,7 +99,7 @@
 		{#each stringOptions as key}
 			<label>
 				{key}
-				<input class="input w-auto p-1 text-center" type="text" bind:value={options[key]} />
+				<input type="text" bind:value={options[key]} />
 			</label>
 		{/each}
 	</Details>
@@ -109,13 +111,11 @@
 					<span>
 						<input
 							type="number"
-							class="input inline w-auto p-1 text-center"
 							value={options[key][0]}
 							oninput={(e) => changeTupleValue(key, 0, +e.currentTarget.value)}
 						/>
 						<input
 							type="number"
-							class="input inline w-auto p-1 text-center"
 							value={options[key][1]}
 							oninput={(e) => changeTupleValue(key, 1, +e.currentTarget.value)}
 						/>
@@ -125,12 +125,3 @@
 		{/each}
 	</Details>
 </Controls>
-
-<style>
-	:global(.custom-tooltip) {
-		padding: 30px;
-		border: 3px solid red;
-		opacity: 1;
-		border-radius: 25%;
-	}
-</style>

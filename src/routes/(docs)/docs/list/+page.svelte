@@ -2,7 +2,7 @@
 	import DivIcon from '$lib/DivIcon.svelte';
 	import Map from '$lib/Map.svelte';
 	import Marker from '$lib/Marker.svelte';
-	import CustomMarker from '../../components/CustomMarker.svelte';
+	import CustomMarker from '$components/CustomMarker.svelte';
 	import { markers } from './cities.js';
 
 	let selectedMarkerId: number | null = $state(null);

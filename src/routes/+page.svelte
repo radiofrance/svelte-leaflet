@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Logo from '../components/Logo.svelte';
+	import Logo from '$components/Logo.svelte';
 	import Map from '$lib/Map.svelte';
 	import SunMoon from 'lucide-svelte/icons/sun-moon';
 	import { toggleDarkMode } from '../utils.js';
@@ -35,37 +35,39 @@
 <main class="relative h-[calc(100%-24rem)] p-5">
 	<div class="mt-5 flex flex-col justify-center gap-4 sm:flex-row">
 		<a href="docs/getting-started" class="btn preset-filled-surface-700-300"> Getting started </a>
-		<a href="docs/documentation" class="btn preset-filled-surface-700-300">Documentation</a>
+		<a href="docs/map" class="btn preset-filled-surface-700-300">Documentation</a>
 	</div>
 
-	<div class="mt-5">
+	<div class="mt-5 xl:px-40">
+		<h2 class="text-2xl">Features</h2>
 		<ul class="ml-5 list-disc">
 			<li>Written with Svelte 5</li>
 			<li>Fully typed props/events</li>
 			<li>Subscribe to Leaflet events</li>
 			<li>Markers clustering</li>
 			<li>Customize markers, clusters and popups with Svelte components</li>
-			<li>SSR compatible</li>
+			<li>SSR compatible (SvelteKit)</li>
 		</ul>
 	</div>
 
-	<nav class="absolute bottom-4">
+	<nav class="mt-5 xl:px-40">
+		<h2 class="text-2xl">Available components</h2>
 		<ul>
-			<li><a href="/map">Map</a></li>
-			<li><a href="/marker">Marker</a></li>
-			<li><a href="/popup">Popup</a></li>
-			<li><a href="/cluster">Cluster</a></li>
-			<li><a href="/polygon">Polygon</a></li>
-			<li><a href="/list">List</a></li>
-			<li><a href="/tooltip">Tooltip</a></li>
-			<li><a href="/attribution-prefix">Attribution prefix</a></li>
-			<li><a href="/tilelayer">TileLayer</a></li>
-			<li><a href="/imageoverlay">ImageOverlay</a></li>
-			<li><a href="/videooverlay">VideoOPverlay</a></li>
-			<li><a href="/circle">Circle</a></li>
-			<li><a href="/circlemarker">CircleMarker</a></li>
-			<li><a href="/rectangle">Rectangle</a></li>
-			<li><a href="/svgoverlay">SVGOverlay</a></li>
+			<li class="underline"><a href="/docs/map">Map</a></li>
+			<li class="underline"><a href="/docs/marker">Marker</a></li>
+			<li class="underline"><a href="/docs/popup">Popup</a></li>
+			<li class="underline"><a href="/docs/cluster">Cluster</a></li>
+			<li class="underline"><a href="/docs/polygon">Polygon</a></li>
+			<li class="underline"><a href="/docs/list">List</a></li>
+			<li class="underline"><a href="/docs/tooltip">Tooltip</a></li>
+			<li class="underline"><a href="/docs/attribution-prefix">Attribution prefix</a></li>
+			<li class="underline"><a href="/docs/tilelayer">TileLayer</a></li>
+			<li class="underline"><a href="/docs/imageoverlay">ImageOverlay</a></li>
+			<li class="underline"><a href="/docs/videooverlay">VideoOPverlay</a></li>
+			<li class="underline"><a href="/docs/circle">Circle</a></li>
+			<li class="underline"><a href="/docs/circlemarker">CircleMarker</a></li>
+			<li class="underline"><a href="/docs/rectangle">Rectangle</a></li>
+			<li class="underline"><a href="/docs/svgoverlay">SVGOverlay</a></li>
 		</ul>
 	</nav>
 </main>

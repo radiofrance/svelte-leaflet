@@ -1,9 +1,9 @@
 <script lang="ts">
 	import SVGOverlay from '$lib/SVGOverlay.svelte';
 	import Map from '$lib/Map.svelte';
-	import Controls from '../../components/Controls.svelte';
+	import Controls from '$components/Controls.svelte';
 	import type { LatLngBoundsLiteral } from 'leaflet';
-	import Logo from '../../components/Logo.svelte';
+	import Logo from '$components/Logo.svelte';
 	import LayersControl from '$lib/LayersControl.svelte';
 
 	let bounds: LatLngBoundsLiteral = $state([
