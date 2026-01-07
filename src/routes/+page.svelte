@@ -1,161 +1,73 @@
 <script lang="ts">
-	import '../global.css';
+	import Logo from '$components/Logo.svelte';
 	import Map from '$lib/Map.svelte';
-	import Logo from '../components/Logo.svelte';
-	import TsIcon from '../components/TSIcon.svelte';
-	import EventsIcon from '../components/EventsIcon.svelte';
-	import ClusterIcon from '../components/ClusterIcon.svelte';
-	import CustomizeIcon from '../components/CustomizeIcon.svelte';
-	import SsrIcon from '../components/SSRIcon.svelte';
+	import SunMoon from 'lucide-svelte/icons/sun-moon';
+	import { toggleDarkMode } from '../utils.js';
 </script>
 
-<div class="container">
-	<div class="hero">
-		<Map
-			options={{
-				center: [46.92025531537454, 2.04],
-				zoom: 5.5,
-				zoomSnap: 0.5,
-				zoomControl: false,
-				dragging: false,
-				scrollWheelZoom: false,
-				attributionControl: false
-			}}
-		/>
-		<div class="overlay">
-			<Logo width={'200'} />
-			<h1>@radiofrance/svelte-leaflet</h1>
-			<p class="baseline">Create Leaflet maps the Svelte way</p>
-		</div>
+<div class="hero relative h-96 overflow-hidden">
+	<Map
+		options={{
+			center: [46.92025531537454, 2.04],
+			zoom: 5.5,
+			zoomSnap: 0.5,
+			zoomControl: false,
+			attributionControl: false,
+		}}
+	/>
+
+	<div
+		class="overlay absolute top-0 h-full w-full border-b-2 border-solid border-surface-500 bg-surface-950/70 pt-10 text-center"
+	>
+		<Logo width={'200'} />
+		<h1 class="text-[clamp(1.3rem,5vw,2.5rem)] text-primary-200">@radiofrance/svelte-leaflet</h1>
+		<p class="text-surface-50">Create Leaflet maps the Svelte way</p>
 	</div>
 
-	<main>
-		<div class="action-buttons">
-			<a href="/docs/getting-started" class="getting-started">Getting started</a>
-			<a href="/docs" class="documentation">Documentation</a>
-		</div>
-		<div class="features">
-			<ul>
-				<li><TsIcon /> Fully typed components</li>
-				<li>
-					<EventsIcon />
-					<span>Subscribe to all Leaflet events using <code>on:event_name</code></span>
-				</li>
-				<li><ClusterIcon /> Markers clustering</li>
-				<li><CustomizeIcon /> Customize markers and clusters with Svelte components</li>
-				<li><SsrIcon /> Compatible with SvelteKit SSR projects/pages</li>
-			</ul>
-		</div>
-	</main>
-
-	<footer>
-		Made with 💚 by <a href="https://github.com/radiofrance" target="_blank">Radio France</a>
-	</footer>
+	<button
+		class="absolute right-0 top-0 m-4 rounded-full p-2 bg-surface-50-950 hover:bg-surface-950-50 hover:text-surface-50-950"
+		onclick={toggleDarkMode}
+	>
+		<SunMoon />
+	</button>
 </div>
 
-<style lang="postcss">
-	.container {
-		height: 100vh;
-	}
-	.hero {
-		position: relative;
-		height: 400px;
-		overflow: hidden;
-		border-bottom: 2px solid var(--color-primary);
-	}
+<main class="relative h-[calc(100%-24rem)] p-5">
+	<div class="mt-5 flex flex-col justify-center gap-4 sm:flex-row">
+		<a href="docs/getting-started" class="btn preset-filled-surface-700-300"> Getting started </a>
+		<a href="docs/map" class="btn preset-filled-surface-700-300">Documentation</a>
+	</div>
 
-	.overlay {
-		position: absolute;
-		width: calc(100% + 2px);
-		height: 100%;
-		left: calc(50% - 1px);
-		transform: translateX(-50%);
-		background-color: rgba(0, 0, 0, 0.6);
-		text-align: center;
-		top: 0;
-		padding-top: 2rem;
-	}
-	h1 {
-		color: white;
-		font-size: 2rem;
-		font-size: clamp(1rem, 5vw, 2rem);
-		margin-bottom: 0.25em;
-	}
+	<div class="mt-5 xl:px-40">
+		<h2 class="text-2xl">Features</h2>
+		<ul class="ml-5 list-disc">
+			<li>Written with Svelte 5</li>
+			<li>Fully typed props/events</li>
+			<li>Subscribe to Leaflet events</li>
+			<li>Markers clustering</li>
+			<li>Customize markers, clusters and popups with Svelte components</li>
+			<li>SSR compatible (SvelteKit)</li>
+		</ul>
+	</div>
 
-	.baseline {
-		font-weight: bold;
-		font-size: 1.5em;
-		font-size: clamp(1rem, 5vw, 1.5rem);
-		color: var(--color-primary);
-		text-shadow: 0 0 3px #000000;
-	}
-
-	main {
-		padding: 1rem;
-
-		ul {
-			display: flex;
-			flex-direction: column;
-			gap: 1rem;
-		}
-		li {
-			font-size: 1.25rem;
-			display: flex;
-			align-items: center;
-			gap: 1rem;
-			& :global(svg) {
-				flex-shrink: 0;
-				color: var(--color-primary);
-			}
-		}
-	}
-
-	.features {
-		margin-top: 2rem;
-		margin-bottom: 5rem;
-		display: flex;
-		justify-content: center;
-	}
-
-	code {
-		background-color: lightgray;
-		color: black;
-		padding: 0.125rem 0.25rem;
-		border-radius: 0.25rem;
-	}
-
-	.action-buttons {
-		display: flex;
-		justify-content: center;
-		gap: 2rem;
-		padding: 1rem;
-		margin-top: 2rem;
-	}
-
-	.getting-started,
-	.documentation {
-		background-color: var(--color-primary);
-		/* border: 2px solid green; */
-		padding: 0.5rem 1rem;
-		border-radius: 0.25rem;
-		cursor: pointer;
-
-		a& {
-			text-decoration: none;
-			color: black;
-		}
-	}
-
-	footer {
-		background-color: #222;
-		text-align: center;
-		padding: 1rem;
-		border-top: 2px solid var(--color-primary);
-		color: white;
-		font-size: 1rem;
-		bottom: 0;
-		position: fixed;
-		width: 100%;
-		box-sizing: border-box;
-	}
-</style>
+	<nav class="mt-5 xl:px-40">
+		<h2 class="text-2xl">Available components</h2>
+		<ul>
+			<li class="underline"><a href="/docs/map">Map</a></li>
+			<li class="underline"><a href="/docs/marker">Marker</a></li>
+			<li class="underline"><a href="/docs/popup">Popup</a></li>
+			<li class="underline"><a href="/docs/cluster">Cluster</a></li>
+			<li class="underline"><a href="/docs/polygon">Polygon</a></li>
+			<li class="underline"><a href="/docs/list">List</a></li>
+			<li class="underline"><a href="/docs/tooltip">Tooltip</a></li>
+			<li class="underline"><a href="/docs/attribution-prefix">Attribution prefix</a></li>
+			<li class="underline"><a href="/docs/tilelayer">TileLayer</a></li>
+			<li class="underline"><a href="/docs/imageoverlay">ImageOverlay</a></li>
+			<li class="underline"><a href="/docs/videooverlay">VideoOverlay</a></li>
+			<li class="underline"><a href="/docs/circle">Circle</a></li>
+			<li class="underline"><a href="/docs/circlemarker">CircleMarker</a></li>
+			<li class="underline"><a href="/docs/rectangle">Rectangle</a></li>
+			<li class="underline"><a href="/docs/svgoverlay">SVGOverlay</a></li>
+		</ul>
+	</nav>
+</main>

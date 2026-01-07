@@ -1,49 +1,45 @@
 <script lang="ts">
-	import type { Circle as LeafletCircle, CircleOptions, LatLngExpression, Map } from 'leaflet';
-	import { createEventDispatcher, getContext, onDestroy, onMount } from 'svelte';
-	import {
-		bindEvents,
-		interactiveLayerEvents,
-		layerEvents,
-		popupEvents,
-		tooltipEvents,
-		type LeafletEventsRecord
-	} from './index.js';
+	import { getContext, onDestroy, onMount } from 'svelte';
+	import type {
+		Circle as LeafletCircle,
+		LatLngExpression,
+		CircleMarkerOptions,
+		LayerGroup,
+	} from 'leaflet';
+	import { polygonEvents, updatePolylineProps, type PolygonEvents } from './polyline.js';
+	import { bindEvents, type LeafletMap } from './index.js';
+	import { LAYERGROUP, MAP } from './contexts.js';
+	import { circleMarkerEvents, type CircleMarkerEvents } from './circleMarker.js';
 
-	export let center: LatLngExpression;
-	export let options: CircleOptions = { radius: 100 };
-	export let instance: LeafletCircle | undefined = undefined;
-	const events = [
-		'move',
-		...interactiveLayerEvents,
-		...layerEvents,
-		...popupEvents,
-		...tooltipEvents
-	] as const;
+	type Props = {
+		latlng: LatLngExpression;
+		instance?: LeafletCircle;
+		options?: CircleMarkerOptions;
+	} & CircleMarkerEvents;
 
-	let map: Map = getContext<() => Map>('map')();
-	const dispatch = createEventDispatcher<LeafletEventsRecord<typeof events>>();
+	let { latlng, instance = $bindable(), options = { radius: 50 }, ...restProps }: Props = $props();
 
-	$: updateCircle(center, options);
+	const getMap = getContext<() => LeafletMap>(MAP);
+	const getLayerGroup = getContext<() => LayerGroup>(LAYERGROUP);
 
-	function updateCircle(center: LatLngExpression, options: CircleOptions) {
-		if (instance) {
-			instance.setLatLng(center);
-			instance.setStyle(options);
-			instance.setRadius(options.radius);
-		}
-	}
-
-	onMount(async () => {
-		const L = window.L;
-		instance = new L.Circle(center, options);
-		bindEvents(instance, dispatch, events);
-		instance.addTo(map);
+	onMount(() => {
+		const map = getMap?.();
+		const layerGroup = getLayerGroup?.();
+		const context = layerGroup || map;
+		instance = window.L.circle(latlng, { ...options });
+		instance.addTo(context);
+		bindEvents(instance, restProps, circleMarkerEvents);
 	});
 
 	onDestroy(() => {
 		instance?.remove();
 	});
-</script>
 
-<slot />
+	$effect(() => {
+		if (instance && latlng) {
+			instance.setLatLng(latlng);
+		}
+	});
+
+	// TODO : implement reactivity
+</script>

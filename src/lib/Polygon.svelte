@@ -1,34 +1,43 @@
 <script lang="ts">
-	import type { Polygon as LeafletPolygon, PolylineOptions, LatLngExpression, Map } from 'leaflet';
-	import { createEventDispatcher, getContext, onDestroy, onMount } from 'svelte';
-	import { bindEvents, polygonEvents, type Latlngs, type LeafletEventsRecord } from './index.js';
+	import { getContext, onDestroy, onMount } from 'svelte';
+	import type { Polygon as LeafletPolygon, PolylineOptions, LayerGroup } from 'leaflet';
+	import { polygonEvents, updatePolylineProps, type PolygonEvents } from './polyline.js';
+	import { bindEvents, type Latlngs, type LeafletMap } from './index.js';
+	import { LAYERGROUP, MAP } from './contexts.js';
 
-	export let latlngs: Latlngs;
-	export let options: PolylineOptions = {};
-	export let instance: LeafletPolygon | undefined = undefined;
+	type Props = {
+		latlngs: Latlngs<3>;
+		instance?: LeafletPolygon;
+		options?: PolylineOptions;
+	} & PolygonEvents;
 
-	let map: Map = getContext<() => Map>('map')();
-	const dispatch = createEventDispatcher<LeafletEventsRecord<typeof polygonEvents>>();
+	let { latlngs, instance = $bindable(), options = {}, ...restProps }: Props = $props();
 
-	$: update(latlngs, options);
+	const getMap = getContext<() => LeafletMap>(MAP);
+	const getLayerGroup = getContext<() => LayerGroup>(LAYERGROUP);
 
-	function update(latlngs: Latlngs, options: PolylineOptions) {
-		if (instance) {
-			instance.setLatLngs(latlngs);
-			instance.setStyle(options);
-		}
-	}
-
-	onMount(async () => {
-		const L = window.L;
-		instance = new L.Polygon(latlngs, options);
-		bindEvents(instance, dispatch, polygonEvents);
-		instance.addTo(map);
+	onMount(() => {
+		const map = getMap?.();
+		const layerGroup = getLayerGroup?.();
+		const context = layerGroup || map;
+		instance = window.L.polygon(latlngs, options);
+		instance.addTo(context);
+		bindEvents(instance, restProps, polygonEvents);
 	});
 
 	onDestroy(() => {
 		instance?.remove();
 	});
-</script>
 
-<slot />
+	$effect(() => {
+		if (instance && latlngs) {
+			instance.setLatLngs(latlngs);
+		}
+	});
+
+	$effect(() => {
+		if (instance && options) {
+			updatePolylineProps(instance, options);
+		}
+	});
+</script>

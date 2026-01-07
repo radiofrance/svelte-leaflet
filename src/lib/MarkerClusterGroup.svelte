@@ -1,54 +1,72 @@
 <script lang="ts">
-	import type { Map, MarkerClusterGroup, MarkerClusterGroupOptions } from 'leaflet';
+	import {
+		getContext,
+		mount,
+		onDestroy,
+		onMount,
+		setContext,
+		type Component,
+		type Snippet,
+	} from 'svelte';
+	import type {
+		MarkerClusterGroup as LeafletMarkerClusterGroup,
+		LayerGroup as LeafletLayerGroup,
+		MarkerClusterGroupOptions,
+		LeafletEventHandlerFnMap,
+		MarkerCluster,
+	} from 'leaflet';
+	import { LAYERGROUP, MAP } from './contexts.js';
+	import { markerClusterGroupEvents, type MarkerClusterGroupEvents } from './markerClusterGroup.js';
+	import { bindEvents } from './index.js';
 
-	import { getContext, onMount, setContext, tick } from 'svelte';
+	type Props = {
+		icon?: Component<{ count: number }>;
+		instance?: LeafletMarkerClusterGroup;
+		options?: MarkerClusterGroupOptions;
+		children?: Snippet;
+	} & MarkerClusterGroupEvents;
 
-	export let options: MarkerClusterGroupOptions = {};
-	export let icon: any = null;
+	let { instance = $bindable(), options, children, icon, ...restProps }: Props = $props();
 
-	let markerElement: HTMLElement;
+	const getMap = getContext<() => L.Map>(MAP);
+	const getLayerGroup = getContext<() => LeafletLayerGroup>(LAYERGROUP);
 
-	const L = globalThis.window.L;
+	setContext(LAYERGROUP, () => instance);
 
-	const getMap = getContext<() => Map>('map');
-	let clusterGroup: MarkerClusterGroup;
+	onMount(() => {
+		const map = getMap?.();
+		const layerGroup = getLayerGroup?.();
+		const context = layerGroup || map;
 
-	setContext('layerGroup', () => clusterGroup);
-	onMount(async () => {
-		const map = getMap();
-		// using the "icon" prop API
+		const mergedOptions = { ...options };
 		if (icon) {
-			options.iconCreateFunction = function (cluster) {
-				const html = document.createElement('div');
-				new icon({ target: html, props: { count: cluster.getChildCount() } });
-				return L.divIcon({ html });
+			mergedOptions.iconCreateFunction = (cluster: MarkerCluster) => {
+				const mountTarget = document.createElement('div');
+				mountTarget.classList.add('MOUNTTARGET');
+				mount(icon, {
+					target: mountTarget,
+					props: { count: cluster.getChildCount() },
+				});
+				const html = mountTarget.innerHTML;
+				return window.L.divIcon({ html });
 			};
 		}
-		// using the "icon" slot API
-		if (markerElement.childElementCount > 0) {
-			options.iconCreateFunction = function (cluster) {
-				const html = markerElement.innerHTML.replace('%count%', cluster.getChildCount().toString());
-				return L.divIcon({ html });
-			};
-		}
-		clusterGroup = L.markerClusterGroup(options);
-		map.addLayer(clusterGroup);
+
+		instance = window.L.markerClusterGroup(mergedOptions);
+		context.addLayer(instance);
+		bindEvents(
+			instance,
+			restProps,
+			// TODO : find a better way to type this
+			markerClusterGroupEvents as unknown as readonly (keyof LeafletEventHandlerFnMap)[],
+		);
+	});
+
+	onDestroy(() => {
+		instance?.clearLayers();
 	});
 </script>
 
-<slot />
-<template>
-	<div bind:this={markerElement} class="leaflet-markercluster">
-		<slot name="icon" />
-	</div>
-</template>
-
-<style>
-	/* .leaflet-markercluster {
-		display: none;
-	}
-
-	:global(.map-marker .leaflet-markercluster) {
-		display: inherit;
-	} */
-</style>
+{#if instance && children}
+	{@render children()}
+{/if}

@@ -1,35 +1,43 @@
 <script lang="ts">
-	import type { LatLngExpression, Map, PathOptions, Polyline } from 'leaflet';
+	import { getContext, onDestroy, onMount } from 'svelte';
+	import type { Polyline as LeafletPolyline, PolylineOptions, LayerGroup } from 'leaflet';
+	import { polygonEvents, updatePolylineProps, type PolygonEvents } from './polyline.js';
+	import { bindEvents, type Latlngs, type LeafletMap } from './index.js';
+	import { LAYERGROUP, MAP } from './contexts.js';
 
-	import { createEventDispatcher, getContext, onDestroy, onMount } from 'svelte';
+	type Props = {
+		latlngs: Latlngs;
+		instance?: LeafletPolyline;
+		options?: PolylineOptions;
+	} & PolygonEvents;
 
-	export let latlngs: LatLngExpression[];
-	export let options: PathOptions = {};
+	let { latlngs, instance = $bindable(), options = {}, ...restProps }: Props = $props();
 
-	let line: Polyline;
-	let map: Map = getContext<() => Map>('map')();
+	const getMap = getContext<() => LeafletMap>(MAP);
+	const getLayerGroup = getContext<() => LayerGroup>(LAYERGROUP);
 
-	const dispatch = createEventDispatcher();
-
-	$: updateLine(latlngs, options);
-
-	function updateLine(latLngs: LatLngExpression[], lineStyle: PathOptions) {
-		if (line) {
-			line.setLatLngs(latLngs);
-			line.setStyle(lineStyle);
-		}
-	}
-
-	onMount(async () => {
-		const L = window.L;
-		line = new L.Polyline(latlngs, options);
-		line.on('click', (e) => dispatch('click', e));
-		line.addTo(map);
+	onMount(() => {
+		const map = getMap?.();
+		const layerGroup = getLayerGroup?.();
+		const context = layerGroup || map;
+		instance = window.L.polyline(latlngs, options);
+		instance.addTo(context);
+		bindEvents(instance, restProps, polygonEvents);
 	});
 
 	onDestroy(() => {
-		line?.remove();
+		instance?.remove();
+	});
+
+	$effect(() => {
+		if (instance && latlngs) {
+			instance.setLatLngs(latlngs);
+		}
+	});
+
+	$effect(() => {
+		if (instance && options) {
+			updatePolylineProps(instance, options);
+		}
 	});
 </script>
-
-<slot />
