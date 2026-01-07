@@ -63,7 +63,7 @@
 			<li class="underline"><a href="/docs/attribution-prefix">Attribution prefix</a></li>
 			<li class="underline"><a href="/docs/tilelayer">TileLayer</a></li>
 			<li class="underline"><a href="/docs/imageoverlay">ImageOverlay</a></li>
-			<li class="underline"><a href="/docs/videooverlay">VideoOPverlay</a></li>
+			<li class="underline"><a href="/docs/videooverlay">VideoOverlay</a></li>
 			<li class="underline"><a href="/docs/circle">Circle</a></li>
 			<li class="underline"><a href="/docs/circlemarker">CircleMarker</a></li>
 			<li class="underline"><a href="/docs/rectangle">Rectangle</a></li>
