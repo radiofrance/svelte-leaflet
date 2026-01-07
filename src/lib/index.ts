@@ -28,8 +28,9 @@ import MarkerClusterGroup from './MarkerClusterGroup.svelte';
 import Polygon from './Polygon.svelte';
 import Polyline from './Polyline.svelte';
 import Popup from './Popup.svelte';
+import GeoJSON from './GeoJSON.svelte';
 
-export { DivIcon, Map, Marker, MarkerClusterGroup, Popup, Polyline, Polygon, LocateControl };
+export { DivIcon, Map, Marker, MarkerClusterGroup, Popup, Polyline, Polygon, LocateControl, GeoJSON };
 
 export type {
 	Circle as LeafletCircle,
@@ -54,6 +55,7 @@ export type {
 	PopupOptions,
 	ResizeEvent,
 	TooltipEvent,
+	GeoJSONOptions
 } from 'leaflet';
 
 // TODO : use recursive approach to support 2D and 3D latlngs

@@ -42,6 +42,7 @@
 				<li><a href="popup">Popup</a></li>
 				<li><a href="cluster">Cluster</a></li>
 				<li><a href="polygon">Polygon</a></li>
+				<li><a href="geojson">GeoJSON</a></li>
 				<li><a href="list">List</a></li>
 				<li><a href="tooltip">Tooltip</a></li>
 				<li><a href="attribution-prefix">Attribution prefix</a></li>

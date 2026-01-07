@@ -58,6 +58,7 @@
 			<li class="underline"><a href="/docs/popup">Popup</a></li>
 			<li class="underline"><a href="/docs/cluster">Cluster</a></li>
 			<li class="underline"><a href="/docs/polygon">Polygon</a></li>
+			<li class="underline"><a href="/docs/geojson">GeoJSON</a></li>
 			<li class="underline"><a href="/docs/list">List</a></li>
 			<li class="underline"><a href="/docs/tooltip">Tooltip</a></li>
 			<li class="underline"><a href="/docs/attribution-prefix">Attribution prefix</a></li>
