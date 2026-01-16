@@ -98,7 +98,7 @@
 
 		// waits for the user layers before adding a default layer
 		await tick();
-		if (!hasTileLayer(instance)) {
+		if (!hasDisplayLayer(instance)) {
 			const defaultBaseLayer = window.L.tileLayer(tilesUrl, {
 				attribution,
 			});
@@ -113,10 +113,11 @@
 		});
 	}
 
-	function hasTileLayer(map: LeafletMap) {
+	// checks if at least one TileLayer or MaplibreGL layer is present on the map
+	function hasDisplayLayer(map: LeafletMap) {
 		let hasTileLayer = false;
 		map.eachLayer(function (layer) {
-			if (layer instanceof window.L.TileLayer) {
+			if (layer instanceof window.L.TileLayer || layer instanceof window.L.MaplibreGL) {
 				hasTileLayer = true;
 			}
 		});
@@ -130,6 +131,8 @@
 			// A single tile is around 30ko gzipped.
 			// TODO: consider making it optional (handle loading in MarkerClusterGroup.svelte ?)
 			await import('leaflet.markercluster');
+			
+			await import('@maplibre/maplibre-gl-leaflet');
 			onLoad();
 		})();
 	}
