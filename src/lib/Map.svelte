@@ -116,7 +116,7 @@
 	function hasTileLayer(map: LeafletMap) {
 		let hasTileLayer = false;
 		map.eachLayer(function (layer) {
-			if (layer instanceof window.L.TileLayer) {
+			if (layer instanceof window.L.TileLayer || layer instanceof window.L.GridLayer) {
 				hasTileLayer = true;
 			}
 		});
