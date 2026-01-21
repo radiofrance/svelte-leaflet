@@ -58,6 +58,8 @@ export type {
 	GeoJSONOptions
 } from 'leaflet';
 
+export type {StyleSpecification, Map as MaplibreMap, MapMouseEvent as MaplibreMapMouseEvent} from 'maplibre-gl';
+
 // TODO : use recursive approach to support 2D and 3D latlngs
 export type Latlngs<D = 2> = 2 extends D
 	? LatLngExpression[] | LatLngExpression[][]

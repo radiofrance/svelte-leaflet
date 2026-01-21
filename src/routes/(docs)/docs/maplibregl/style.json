@@ -1,0 +1,131 @@
+{
+  "version": 8,
+  "name": "Empty Style",
+  "metadata": {"maputnik:renderer": "mlgljs"},
+  "sources": {
+    "xdv2anv": {
+      "type": "vector",
+      "url": "http://localhost:8080/france-communes.json"
+    }
+  },
+  "sprite": "",
+  "glyphs": "https://orangemug.github.io/font-glyphs/glyphs/{fontstack}/{range}.pbf",
+  "layers": [
+    {
+      "id": "bg",
+      "type": "background",
+      "paint": {"background-color": "rgba(213, 213, 213, 1)"}
+    },
+    {
+      "id": "region-boundaries",
+      "type": "line",
+      "source": "xdv2anv",
+      "source-layer": "boundaries",
+      "maxzoom": 8,
+      "filter": ["all", ["==", "admin_level", 4]],
+      "paint": {"line-width": 2, "line-color": "rgba(42, 59, 109, 1)"}
+    },
+    {
+      "id": "department-boundaries",
+      "type": "line",
+      "source": "xdv2anv",
+      "source-layer": "departments",
+      "minzoom": 3,
+      "layout": {"visibility": "visible"},
+      "paint": {"line-color": "rgba(63, 59, 205, 1)"}
+    },
+    {
+      "id": "departments",
+      "type": "symbol",
+      "source": "xdv2anv",
+      "source-layer": "departments",
+      "minzoom": 6,
+      "maxzoom": 10,
+      "layout": {
+        "text-field": "{nom}",
+        "text-size": 14,
+        "icon-allow-overlap": false,
+        "text-allow-overlap": false,
+        "text-pitch-alignment": "auto",
+        "symbol-placement": "point",
+        "text-font": ["Open Sans Bold", "Arial Unicode MS Regular"],
+        "text-ignore-placement": false,
+        "text-transform": ["literal", "uppercase"]
+      },
+      "paint": {
+        "text-color": "#111827",
+        "text-halo-color": "rgba(226, 226, 243, 1)",
+        "text-halo-width": 2,
+        "text-halo-blur": 1
+      }
+    },
+    {
+      "id": "communes-color",
+      "type": "fill",
+      "source": "xdv2anv",
+      "source-layer": "communes",
+      "minzoom": 0,
+      "layout": {"visibility": "visible"},
+      "paint": {"fill-color": ["to-color", ["get", "color"], "#aaa"]}
+    },
+    {
+      "id": "commune-nuances",
+      "type": "symbol",
+      "source": "xdv2anv",
+      "source-layer": "communes",
+      "minzoom": 9,
+      "layout": {
+        "text-field": "{nuance}",
+        "visibility": "visible",
+        "symbol-placement": "point",
+        "symbol-avoid-edges": false
+      },
+      "paint": {
+        "text-halo-blur": 1,
+        "text-color": "rgba(17, 16, 16, 0.9)",
+        "text-halo-color": "rgba(220, 220, 220, 1)",
+        "text-halo-width": 5
+      }
+    },
+    {
+      "id": "cities",
+      "type": "symbol",
+      "source": "xdv2anv",
+      "source-layer": "place_labels",
+      "layout": {"text-size": 12, "text-field": "{name}"},
+      "paint": {
+        "text-halo-width": 2,
+        "text-halo-blur": 1,
+        "text-halo-color": "rgba(203, 201, 229, 1)",
+        "text-color": "#111827"
+      }
+    },
+    {
+      "id": "roads",
+      "type": "line",
+      "source": "xdv2anv",
+      "source-layer": "streets",
+      "minzoom": 10,
+      "filter": ["all", ["==", "kind", "primary"]],
+      "paint": {
+        "line-color": "rgba(88, 84, 73, 0.3)",
+        "line-gap-width": 0.5,
+        "line-width": 1
+      }
+    },
+    {
+      "id": "highways",
+      "type": "line",
+      "source": "xdv2anv",
+      "source-layer": "streets",
+      "minzoom": 9,
+      "filter": ["all", ["==", "kind", "motorway"]],
+      "paint": {
+        "line-gap-width": 1,
+        "line-color": "rgba(117, 95, 56, 0.3)",
+        "line-width": 2
+      }
+    }
+  ],
+  "id": "ugtmou3"
+}

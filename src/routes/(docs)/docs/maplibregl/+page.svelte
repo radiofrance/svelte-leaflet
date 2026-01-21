@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { LeafletMap, LatLngTuple, LatLngBoundsLiteral, MapOptions } from '$lib/index.js';
+	import { type MapMouseEvent } from 'maplibre-gl';
+	import type { LeafletMap, LatLngTuple, StyleSpecification, MaplibreMap } from '$lib/index.js';
 	import Map from '$lib/Map.svelte';
-	import type { PickOptionByType } from '$lib/utils.js';
-	import Controls from '$components/Controls.svelte';
-	import Details from '$components/Details.svelte';
 	import MaplibreGL from '$lib/MaplibreGL.svelte';
+	import style from './style.json' with { type: 'json' };
 
 	let map: LeafletMap | undefined = $state();
+	let maplibreMapInstance: MaplibreMap | undefined = $state();
 	const initialView: LatLngTuple = [44.0488244,4.6556238];
 	let options = $state({
 		// boolean options
@@ -49,25 +49,20 @@
 		center: initialView,
 	});
 
-	function changeCenter(event: Event) {
-		const target = event.target as HTMLInputElement;
-		const center = JSON.parse(target.value);
-		options.center = center;
+		function handleMapClick(e: MapMouseEvent) {
+		if (!map) return;
+
+		// Vérifier s'il y a des features de la couche "cities" au point cliqué
+		const features = 	maplibreMapInstance?.queryRenderedFeatures(e.point, {
+			layers: ['cities']
+		});
+
+		if (features && features.length > 0) {
+			const cityName = features[0].properties?.name;
+			
+			alert(`You clicked on city: ${cityName}`);
+		}
 	}
-
-	function changeMaxBounds(event: Event) {
-		const target = event.target as HTMLInputElement;
-	}
-
-	// svelte-ignore state_referenced_locally
-	const booleanOptions = Object.keys(options).filter(
-		(key) => typeof options[key as keyof typeof options] === 'boolean',
-	) as PickOptionByType<MapOptions, boolean>[];
-
-	// svelte-ignore state_referenced_locally
-	const numberOptions = Object.keys(options).filter(
-		(key) => typeof options[key as keyof typeof options] === 'number',
-	) as PickOptionByType<MapOptions, number>[];
 </script>
 
 <Map
@@ -78,36 +73,10 @@
 	bind:options
 	bind:instance={map}
 	oncontextmenu={() => console.log('contextmenu')}
+	onclick={handleMapClick}
 >
 <MaplibreGL
-		options={{
-			style: 'https://demotiles.maplibre.org/style.json',
-		}}
+		options={{style: style as StyleSpecification}}
+		bind:maplibreMapInstance={maplibreMapInstance}
 	/>
 </Map>
-
-<Controls>
-	<Details title="Number">
-		{#each numberOptions as key}
-			<label>
-				{key}
-				<input type="number" bind:value={options[key]} />
-			</label>
-		{/each}
-	</Details>
-	<Details title="Boolean">
-		{#each booleanOptions as key}
-			<button class="btn preset-filled-primary-500" onclick={() => (options[key] = !options[key])}
-				>{key}: {options[key]}</button
-			>
-		{/each}
-	</Details>
-	<label>
-		center
-		<input type="text" onchange={changeCenter} value={JSON.stringify(initialView)} />
-	</label>
-	<label>
-		maxBounds
-		<input type="text" onchange={changeMaxBounds} value={JSON.stringify(options.maxBounds)} />
-	</label>
-</Controls>
