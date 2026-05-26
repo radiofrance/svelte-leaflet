@@ -20,7 +20,13 @@ import type {
 } from 'leaflet';
 
 // Reexport your entry components here
+import Circle from './Circle.svelte';
+import CircleMarker from './CircleMarker.svelte';
 import DivIcon from './DivIcon.svelte';
+import GeoJSON from './GeoJSON.svelte';
+import Icon from './Icon.svelte';
+import ImageOverlay from './ImageOverlay.svelte';
+import LayersControl from './LayersControl.svelte';
 import LocateControl from './LocateControl.svelte';
 import Map from './Map.svelte';
 import Marker from './Marker.svelte';
@@ -28,9 +34,15 @@ import MarkerClusterGroup from './MarkerClusterGroup.svelte';
 import Polygon from './Polygon.svelte';
 import Polyline from './Polyline.svelte';
 import Popup from './Popup.svelte';
-import GeoJSON from './GeoJSON.svelte';
+import Rectangle from './Rectangle.svelte';
+import SVGOverlay from './SVGOverlay.svelte';
+import TileLayer from './TileLayer.svelte';
+import TileLayerWMS from './TileLayerWMS.svelte';
+import Tooltip from './Tooltip.svelte';
+import VideoOverlay from './VideoOverlay.svelte';
+import ZoomControl from './ZoomControl.svelte';
 
-export { DivIcon, Map, Marker, MarkerClusterGroup, Popup, Polyline, Polygon, LocateControl, GeoJSON };
+export { Circle, CircleMarker, DivIcon, GeoJSON, Icon, ImageOverlay, LayersControl, LocateControl, Map, Marker, MarkerClusterGroup, Polygon, Polyline, Popup, Rectangle, SVGOverlay, TileLayer, TileLayerWMS, Tooltip, VideoOverlay, ZoomControl };
 
 export type {
 	Circle as LeafletCircle,
